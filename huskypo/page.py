@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Literal, Any 
+from typing import Literal, Any
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as ec
