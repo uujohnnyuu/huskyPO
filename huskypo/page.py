@@ -906,7 +906,7 @@ class Page:
             area_height = int(window_height * area_height)
 
         area = (area_x, area_y, area_width, area_height)
-        logstack._logging(f'🟢 area: {area}')
+        logstack._info(f'area: {area}')
         return area
 
     def __get_offset(
@@ -925,7 +925,7 @@ class Page:
             end_y = area_y + int(area_height * end_y)
 
         offset = (start_x, start_y, end_x, end_y)
-        logstack._logging(f'🟢 offset: {offset}')
+        logstack._info(f'offset: {offset}')
         return offset
 
     def js_mobile_scroll_direction(self, direction: str = 'down'):

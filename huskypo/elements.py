@@ -126,17 +126,6 @@ class Elements:
         """
         return Timeout.DEFAULT if self.timeout is None else self.timeout
 
-    def test_attributes(self):
-        """
-        unit test
-        """
-        logstack.info(f'by              : {self.by}')
-        logstack.info(f'value           : {self.value}')
-        logstack.info(f'locator         : {self.locator}')
-        logstack.info(f'timeout         : {self.timeout}')
-        logstack.info(f'initial_timeout : {self.initial_timeout}')
-        logstack.info(f'remark          : {self.remark}\n')
-
     def find_elements(self) -> list[WebElement]:
         """
         Using the traditional find_elements method

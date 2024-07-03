@@ -165,19 +165,6 @@ class Element:
         """
         return Timeout.DEFAULT if self.timeout is None else self.timeout
 
-    def test_attributes(self):
-        """
-        Unit test.
-        You can call this function to check the attributes are expected.
-        """
-        logstack.info(f'by              : {self.by}')
-        logstack.info(f'value           : {self.value}')
-        logstack.info(f'locator         : {self.locator}')
-        logstack.info(f'index           : {self.index}')
-        logstack.info(f'timeout         : {self.timeout}')
-        logstack.info(f'initial_timeout : {self.initial_timeout}')
-        logstack.info(f'remark          : {self.remark}\n')
-
     def find_element(self) -> WebElement:
         """
         Using the traditional find_element method
@@ -846,19 +833,30 @@ class Element:
 
         Args:
         - offset: The swiping range, which can be set as:
-            - int: The absolute coordinates.
-                - dict: {'start_x': int, 'start_y': int, 'end_x': int, 'end_y': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
+            - int: The absolute coordinates, for example:
+                - dict: {'start_x': 200, 'start_y': 300, 'end_x': 200, 'end_y': 100}
+                - tuple: (200, 300, 200, 100) corresponding to the keys in the dict.
             - float: The ratio of the border (swipeable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': float, 'start_y': float, 'end_x': float, 'end_y': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
-        - area: The swipeable area, default is the current window size, which can be set as:
-            - int: The absolute rectangle.
-                - dict: {'x': int, 'y': int, 'width': int, 'height': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
-            - float: The ratio of the current window size, which should be between 0.0 and 1.0.
-                - dict: {'x': float, 'y': float, 'width': float, 'height': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
+                - dict: {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25}
+                - tuple: (0.5, 0.75, 0.5, 0.25) corresponding to the keys in the dict.
+        - area: The swipeable area, default is the current window rect, which can be set as:
+            - int: The absolute rect.
+                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
+                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
+            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
+                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
+                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
+            - Here is the calculation logic for float values:
+	            - current window rect = (10, 20, 500, 1000) indicates the current view is
+                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
+	            - area float rest = (0.2, 0.1, 0.6, 0.8)
+	            - The resulting swipeable range will be:
+                    - x: 10 + 500 * 0.2 = 110
+                    - y: 20 + 1000 * 0.1 = 120
+                    - width: 500 * 0.6 = 300
+                    - height: 1000 * 0.8 = 800
+	            - Therefore, the final area (swipeable range) will be a rectangle 
+                    with the top-left corner at (110, 120) and dimensions 300 x 800.
         - timeout: The maximum time in seconds to wait for the element to become viewable (visible).
         - max_swipe: The maximum number of swipes allowed.
         - max_adjust: The maximum number of adjustments to align all borders of the element within the view border.
@@ -928,19 +926,30 @@ class Element:
 
         Args:
         - offset: The swiping range, which can be set as:
-            - int: The absolute coordinates.
-                - dict: {'start_x': int, 'start_y': int, 'end_x': int, 'end_y': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
+            - int: The absolute coordinates, for example:
+                - dict: {'start_x': 200, 'start_y': 300, 'end_x': 200, 'end_y': 100}
+                - tuple: (200, 300, 200, 100) corresponding to the keys in the dict.
             - float: The ratio of the border (swipeable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': float, 'start_y': float, 'end_x': float, 'end_y': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
-        - area: The swipeable area, default is the current window size, which can be set as:
-            - int: The absolute rectangle.
-                - dict: {'x': int, 'y': int, 'width': int, 'height': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
-            - float: The ratio of the current window size, which should be between 0.0 and 1.0.
-                - dict: {'x': float, 'y': float, 'width': float, 'height': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
+                - dict: {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25}
+                - tuple: (0.5, 0.75, 0.5, 0.25) corresponding to the keys in the dict.
+        - area: The swipeable area, default is the current window rect, which can be set as:
+            - int: The absolute rect.
+                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
+                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
+            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
+                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
+                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
+            - Here is the calculation logic for float values:
+	            - current window rect = (10, 20, 500, 1000) indicates the current view is
+                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
+	            - area float rest = (0.2, 0.1, 0.6, 0.8)
+	            - The resulting swipeable range will be:
+                    - x: 10 + 500 * 0.2 = 110
+                    - y: 20 + 1000 * 0.1 = 120
+                    - width: 500 * 0.6 = 300
+                    - height: 1000 * 0.8 = 800
+	            - Therefore, the final area (swipeable range) will be a rectangle 
+                    with the top-left corner at (110, 120) and dimensions 300 x 800.
         - timeout: The maximum time in seconds to wait for the element to become viewable (visible).
         - max_flick: The maximum number of swipes allowed.
         - max_adjust: The maximum number of adjustments to align all borders of the element within the view border.
@@ -1033,7 +1042,7 @@ class Element:
             area_height = int(window_height * area_height)
 
         area = (area_x, area_y, area_width, area_height)
-        logstack._logging(f'🟢 area: {area}')
+        logstack._info(f'area: {area}')
         return area
 
     def __get_offset(
@@ -1052,7 +1061,7 @@ class Element:
             end_y = int(area_y + area_height * end_y)
 
         offset = (start_x, start_y, end_x, end_y)
-        logstack._logging(f'🟢 offset: {offset}')
+        logstack._info(f'offset: {offset}')
         return offset
 
     def __start_swiping_by(
@@ -1062,16 +1071,16 @@ class Element:
         timeout: int | float,
         max_swipe: int
     ) -> int | Literal[False]:
-        logstack._logging(f'🟢 Start swiping to element {self.remark}.')
+        logstack._info(f'Start swiping to element {self.remark}.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
-                logstack._logging(
-                    f'🟡 Stop swiping to element {self.remark} as the maximum swipe count of {max_swipe} has been reached.')
+                logstack._warning(
+                    f'Stop swiping to element {self.remark} as the maximum swipe count of {max_swipe} has been reached.')
                 return False
             self.driver.swipe(*offset, duration)
             count += 1
-        logstack._logging(f'✅ End swiping as the element {self.remark} is now viewable.')
+        logstack._info(f'End swiping as the element {self.remark} is now viewable.')
         return count
 
     def __start_flicking_by(
@@ -1080,16 +1089,16 @@ class Element:
         timeout: int | float,
         max_swipe: int
     ) -> int | Literal[False]:
-        logstack._logging(f'🟢 Start flicking to element {self.remark}.')
+        logstack._info(f'Start flicking to element {self.remark}.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
-                logstack._logging(
+                logstack._warning(
                     f'🟡 Stop flicking to element {self.remark} as the maximum flick count of {max_swipe} has been reached.')
                 return False
             self.driver.flick(*offset)
             count += 1
-        logstack._logging(f'✅ End flicking as the element {self.remark} is now viewable.')
+        logstack._info(f'End flicking as the element {self.remark} is now viewable.')
         return count
 
     def __start_adjusting_by(
@@ -1104,7 +1113,7 @@ class Element:
         def get_final_delta(delta):
             return int(math.copysign(min_distance, delta)) if abs(delta) < min_distance else delta
 
-        logstack._logging(f'🟢 Start adjusting to element {self.remark}')
+        logstack._info(f'Start adjusting to element {self.remark}')
 
         for i in range(1, max_adjust + 2):
 
@@ -1144,17 +1153,17 @@ class Element:
 
             # Set the end point by adjust actions.
             if adjust in adjust_actions:
-                logstack._logging(f'🟢 Adjust (left, right, top, bottom): {adjust}')
+                logstack._info(f'Adjust (left, right, top, bottom): {adjust}')
                 delta_x, delta_y = adjust_actions[adjust]
                 end_x = start_x + delta_x
                 end_y = start_y + delta_y
             else:
-                logstack._logging(f'✅ End adjusting as the element {self.remark} is in area.')
+                logstack._info(f'End adjusting as the element {self.remark} is in area.')
                 return i
 
             # max
             if i == max_adjust + 1:
-                logstack._logging(
+                logstack._warning(
                     f'🟡 End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
                 return False
 
@@ -2368,7 +2377,7 @@ class Element:
             top, bottom = [int(window_top + window_height * y / 100) for y in (top, bottom)]
 
         border = (left, right, top, bottom)
-        logstack._logging(f'✅ border: {border}')
+        logstack._info(f'border: {border}')
         return border
 
     def __get_range(
@@ -2423,7 +2432,7 @@ class Element:
             raise ValueError(f'Parameter "dirtype" should be {SA.V}, {SA.VA}, {SA.H} or {SA.HA}.')
 
         coordinate = (sx, sy, ex, ey)
-        logstack._logging(f'✅ coordinate: {coordinate}')
+        logstack._info(f'coordinate: {coordinate}')
         return coordinate
 
     def __start_swiping(
@@ -2439,16 +2448,16 @@ class Element:
         """
         Return viewable or not.
         """
-        logstack._logging(f'🟢 Start swiping to element {self.remark}.')
+        logstack._info(f'Start swiping to element {self.remark}.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
-                logstack._logging(
-                    f'🟡 Stop swiping to element {self.remark} as the maximum swipe count of {max_swipe} has been reached.')
+                logstack._warning(
+                    f'Stop swiping to element {self.remark} as the maximum swipe count of {max_swipe} has been reached.')
                 return False
             self.driver.swipe(sx, sy, ex, ey, duration)
             count += 1
-        logstack._logging(f'✅ End swiping as the element {self.remark} is now viewable.')
+        logstack._info(f'End swiping as the element {self.remark} is now viewable.')
         return count
 
     def __start_adjusting(
@@ -2468,7 +2477,7 @@ class Element:
         """
         Start adjusting.
         """
-        logstack._logging(f'🟢 Start adjusting to element {self.remark}')
+        logstack._info(f'Start adjusting to element {self.remark}')
         for i in range(1, max_adjust + 2):
             element_left, element_right, element_top, element_bottom = self.border.values()
             delta_left = left - element_left
@@ -2476,26 +2485,26 @@ class Element:
             delta_top = top - element_top
             delta_bottom = element_bottom - bottom
             if delta_left > 0:
-                logstack._logging(f'🟢 Adjust {i}: swipe right.')
+                logstack._info(f'Adjust {i}: swipe right.')
                 adjust_distance = delta_left if delta_left > min_distance else min_distance
                 ex = sx + int(adjust_distance)
             elif delta_right > 0:
-                logstack._logging(f'🟢 Adjust {i}: swipe left.')
+                logstack._info(f'Adjust {i}: swipe left.')
                 adjust_distance = delta_right if delta_right > min_distance else min_distance
                 ex = sx - int(adjust_distance)
             elif delta_top > 0:
-                logstack._logging(f'🟢 Adjust {i}: swipe down.')
+                logstack._info(f'Adjust {i}: swipe down.')
                 adjust_distance = delta_top if delta_top > min_distance else min_distance
                 ey = sy + int(adjust_distance)
             elif delta_bottom > 0:
-                logstack._logging(f'🟢 Adjust {i}: swipe up.')
+                logstack._info(f'Adjust {i}: swipe up.')
                 adjust_distance = delta_bottom if delta_bottom > min_distance else min_distance
                 ey = sy - int(adjust_distance)
             else:
-                logstack._logging(f'✅ End adjusting as the element {self.remark} border is in view border.')
+                logstack._info(f'End adjusting as the element {self.remark} border is in view border.')
                 return i
             if i == max_adjust + 1:
-                logstack._logging(
+                logstack._warning(
                     f'🟡 End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
                 return False
             self.driver.swipe(sx, sy, ex, ey, duration)

@@ -19,7 +19,7 @@ import os
 
 from typing import Mapping
 
-from .config import InnerLog
+from .config import Log
 
 
 def debug(
@@ -167,9 +167,31 @@ def get_stack_infos(
         del frames
 
 
-def _logging(message: str = 'NULL') -> None:
-    """
-    Internal use. To record debug level log.
-    """
-    if InnerLog.RECORD:
+def _debug(message: str = '') -> None:
+    if Log.RECORD:
         debug(message)
+
+
+def _info(message: str = '') -> None:
+    if Log.RECORD:
+        info(message)
+
+
+def _warning(message: str = '') -> None:
+    if Log.RECORD:
+        warning(message)
+
+
+def _error(message: str = '') -> None:
+    if Log.RECORD:
+        error(message)
+
+
+def _exception(message: str = '') -> None:
+    if Log.RECORD:
+        exception(message)
+
+
+def _critical(message: str = '') -> None:
+    if Log.RECORD:
+        critical(message)
