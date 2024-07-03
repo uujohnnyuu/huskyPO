@@ -36,13 +36,12 @@ from .types import WebDriver, WebElement
 from .by import SwipeAction as SA
 
 P = TypeVar('P', bound=Page)
-
-ElementReferenceException = (AttributeError, StaleElementReferenceException, InvalidSessionIdException)
-
 IntCoordinate = dict[str, int] | tuple[int, int, int, int]
 FloatCoordinate = dict[str, float] | tuple[float, float, float, float]
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate = IntCoordinate | FloatCoordinate
+
+ElementReferenceException = (AttributeError, StaleElementReferenceException, InvalidSessionIdException)
 
 
 class Element:
