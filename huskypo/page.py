@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Literal, TypeAlias
+from typing import Literal, Any 
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as ec
@@ -32,10 +32,10 @@ from .types import WebDriver, WebElement, WebDriverTuple
 # TODO deprecate
 from .by import SwipeAction as SA
 
-IntCoordinate: TypeAlias = dict[str, int] | tuple[int, int, int, int]
-FloatCoordinate: TypeAlias = dict[str, float] | tuple[float, float, float, float]
-TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, float, float]
-Coordinate: TypeAlias = IntCoordinate | FloatCoordinate
+IntCoordinate = dict[str, int] | tuple[int, int, int, int]
+FloatCoordinate = dict[str, float] | tuple[float, float, float, float]
+TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
+Coordinate = IntCoordinate | FloatCoordinate
 
 
 class Page:

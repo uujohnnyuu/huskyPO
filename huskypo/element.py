@@ -13,7 +13,7 @@ from __future__ import annotations
 import warnings
 import math
 import platform
-from typing import Type, TypeVar, Any, Literal
+from typing import Type, TypeVar, Literal, Any
 
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, InvalidSessionIdException
 from selenium.webdriver.common.action_chains import ActionChains

@@ -20,7 +20,6 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.types import WaitExcTypes
 
-from . import logstack
 from . import ec_extension as ecex
 from .config import Timeout
 from .by import ByAttribute

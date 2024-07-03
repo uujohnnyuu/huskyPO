@@ -7,7 +7,7 @@ from __future__ import annotations
 
 
 class Log:
-    RECORD = False  # debug level
+    RECORD = False
 
 
 class Timeout:
