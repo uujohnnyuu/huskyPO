@@ -736,18 +736,29 @@ class Page:
         Args:
         - offset: The swiping range, which can be set as:
             - int: The absolute coordinates.
-                - dict: {'start_x': int, 'start_y': int, 'end_x': int, 'end_y': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
+                - dict: {'start_x': 200, 'start_y': 400, 'end_x': 200, 'end_y': 100}
+                - tuple: (200, 400, 200, 100) corresponding to the keys in the dict.
             - float: The ratio of the border (swipeable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': float, 'start_y': float, 'end_x': float, 'end_y': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
+                - dict: {'start_x': 0.5, 'start_y': 0.25, 'end_x': 0.5, 'end_y': 0.75}
+                - tuple: (0.5, 0.25, 0.5, 0.75) corresponding to the keys in the dict.
         - area: The swipeable area, default is the current window size, which can be set as:
-            - int: The absolute rectangle.
-                - dict: {'x': int, 'y': int, 'width': int, 'height': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
-            - float: The ratio of the current window size, which should be between 0.0 and 1.0.
-                - dict: {'x': float, 'y': float, 'width': float, 'height': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
+            - int: The absolute rect.
+                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
+                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
+            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
+                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
+                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
+            - Here is the calculation logic for float values:
+                    - current window rect = (10, 20, 500, 1000) indicates the current view is
+                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
+                    - area float rest = (0.2, 0.1, 0.6, 0.8)
+                    - The resulting swipeable range will be:
+                    - x: 10 + 500 * 0.2 = 110
+                    - y: 20 + 1000 * 0.1 = 120
+                    - width: 500 * 0.6 = 300
+                    - height: 1000 * 0.8 = 800
+                    - Therefore, the final area (swipeable range) will be a rectangle
+                    with the top-left corner at (110, 120) and dimensions 300 x 800.
         - duration: Defines the swipe speed as the time taken to swipe from point A to point B, in milliseconds.
             The default is set to 250 by ActionBuilder.
         - times: The number of times to perform the swipe.
@@ -816,18 +827,29 @@ class Page:
         Args:
         - offset: The flicking range, which can be set as:
             - int: The absolute coordinates.
-                - dict: {'start_x': int, 'start_y': int, 'end_x': int, 'end_y': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
+                - dict: {'start_x': 200, 'start_y': 400, 'end_x': 200, 'end_y': 100}
+                - tuple: (200, 400, 200, 100) corresponding to the keys in the dict.
             - float: The ratio of the border (flickable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': float, 'start_y': float, 'end_x': float, 'end_y': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
+                - dict: {'start_x': 0.5, 'start_y': 0.25, 'end_x': 0.5, 'end_y': 0.75}
+                - tuple: (0.5, 0.25, 0.5, 0.75) corresponding to the keys in the dict.
         - area: The flickable area, default is the current window size, which can be set as:
-            - int: The absolute rectangle.
-                - dict: {'x': int, 'y': int, 'width': int, 'height': int}
-                - tuple: (int, int, int, int) corresponding to the keys in the dict.
-            - float: The ratio of the current window size, which should be between 0.0 and 1.0.
-                - dict: {'x': float, 'y': float, 'width': float, 'height': float}
-                - tuple: (float, float, float, float) corresponding to the keys in the dict.
+            - int: The absolute rect.
+                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
+                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
+            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
+                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
+                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
+            - Here is the calculation logic for float values:
+                    - current window rect = (10, 20, 500, 1000) indicates the current view is
+                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
+                    - area float rest = (0.2, 0.1, 0.6, 0.8)
+                    - The resulting swipeable range will be:
+                    - x: 10 + 500 * 0.2 = 110
+                    - y: 20 + 1000 * 0.1 = 120
+                    - width: 500 * 0.6 = 300
+                    - height: 1000 * 0.8 = 800
+                    - Therefore, the final area (swipeable range) will be a rectangle
+                    with the top-left corner at (110, 120) and dimensions 300 x 800.
         - times: The number of times to perform the flick.
 
         Usage::

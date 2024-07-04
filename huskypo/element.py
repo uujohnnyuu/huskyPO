@@ -928,10 +928,10 @@ class Element:
             - int: The absolute coordinates, for example:
                 - dict: {'start_x': 200, 'start_y': 300, 'end_x': 200, 'end_y': 100}
                 - tuple: (200, 300, 200, 100) corresponding to the keys in the dict.
-            - float: The ratio of the border (swipeable range), which should be between 0.0 and 1.0.
+            - float: The ratio of the border (flickable range), which should be between 0.0 and 1.0.
                 - dict: {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25}
                 - tuple: (0.5, 0.75, 0.5, 0.25) corresponding to the keys in the dict.
-        - area: The swipeable area, default is the current window rect, which can be set as:
+        - area: The flickable area, default is the current window rect, which can be set as:
             - int: The absolute rect.
                 - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
                 - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
@@ -942,12 +942,12 @@ class Element:
                     - current window rect = (10, 20, 500, 1000) indicates the current view is
                     a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
                     - area float rest = (0.2, 0.1, 0.6, 0.8)
-                    - The resulting swipeable range will be:
+                    - The resulting flickable range will be:
                     - x: 10 + 500 * 0.2 = 110
                     - y: 20 + 1000 * 0.1 = 120
                     - width: 500 * 0.6 = 300
                     - height: 1000 * 0.8 = 800
-                    - Therefore, the final area (swipeable range) will be a rectangle
+                    - Therefore, the final area (flickable range) will be a rectangle
                     with the top-left corner at (110, 120) and dimensions 300 x 800.
         - timeout: The maximum time in seconds to wait for the element to become viewable (visible).
         - max_flick: The maximum number of swipes allowed.
