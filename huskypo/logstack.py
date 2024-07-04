@@ -122,7 +122,8 @@ def get_stack_level(starts_with: str = 'test', stack_adjust: int = 0) -> int:
         e.g. stack_adjust = 2 -> default stack level will be 1 + 2 = 3
     """
     try:
-        frames = inspect.stack()
+        # Setting context=0 ignores source code lines and significantly speeds up the first call.
+        frames = inspect.stack(0)
         stack_default = 1 + stack_adjust  # 0: get_stack_level
         for index, frame in enumerate(frames[stack_default:], start=stack_default):
             if frame.function.startswith(starts_with):
@@ -150,7 +151,8 @@ def get_stack_infos(
     - to_dict is False: '|xxx.py:19|my_func|'
     """
     try:
-        frames = inspect.stack()
+        # Setting context=0 ignores source code lines and significantly speeds up the first call.
+        frames = inspect.stack(0)
         stack_default = 1 + stack_adjust  # 0: get_stack_info
         frame_target = frames[stack_default]
         for frame in frames[stack_default:]:
