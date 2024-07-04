@@ -117,8 +117,8 @@ class Element:
     def __get__(self, instance: P, owner: Type[P]) -> Element:
         """
         Internal use.
-        Make "Element" a data descriptor for "Page" or "other classes that inherit from Page". 
-        Dynamically create and record instance attributes related to Page, 
+        Make "Element" a data descriptor for "Page" or "other classes that inherit from Page".
+        Dynamically create and record instance attributes related to Page,
         allowing Element to interact with Page-related attributes or methods.
         """
         self._page = instance
@@ -220,7 +220,7 @@ class Element:
 
         Args:
         - timeout: Maximum time in seconds to wait for the element to become present.
-        - reraise: If a timeout occurs, True means reraising TimeoutException, 
+        - reraise: If a timeout occurs, True means reraising TimeoutException,
             and False means returning False directly.
 
         Returns:

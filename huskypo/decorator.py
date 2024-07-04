@@ -23,7 +23,7 @@ def dynamic(func):
         def my_element(self, par):
             return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 
-        # You can NOT set the dynamic element without using the dynamic decorator, 
+        # You can NOT set the dynamic element without using the dynamic decorator,
         # as it will not trigger the descriptor method.
         # The following is incorrect:
         def my_element(self, par):
