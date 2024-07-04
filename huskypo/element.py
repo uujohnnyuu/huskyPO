@@ -58,13 +58,13 @@ class Element:
         Initial Element attributes.
 
         Args:
-        - by: The locator strategy. You can use all `By` methods as `from huskypo import By`.
-        - value: The locator value.
+        - by: Element locator strategy (from huskypo import By).
+        - value: Element locator value.
         - index:
             - None: Using `find_element` strategy.
             - int: Using `find_elements` with list index strategy.
         - timeout: Element timeout in seconds of explicit wait.
-        - remark: Comments convenient for element identification, or logging.
+        - remark: Element note, can be used for easy identification or logging.
 
         Usage (without parameter name)::
 
@@ -87,8 +87,7 @@ class Element:
             element = Element(By.ID, 'element_id', 3, 10, 'this is xxx')
 
         """
-        # (by, value)
-        # Allowing `None` to initialize an empty descriptor for dynamic elements.
+        # (by, value), allowing `None` to initialize an empty descriptor for dynamic elements.
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The locator strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
@@ -118,8 +117,9 @@ class Element:
     def __get__(self, instance: P, owner: Type[P]) -> Element:
         """
         Internal use.
-        Dynamically obtain the instance of Page and
-        execute the corresponding function only when needed.
+        Make "Element" a data descriptor for "Page" or "other classes that inherit from Page". 
+        Dynamically create and record instance attributes related to Page, 
+        allowing Element to interact with Page-related attributes or methods.
         """
         self._page = instance
         return self
@@ -127,7 +127,7 @@ class Element:
     def __set__(self, instance: P, value: tuple) -> None:
         """
         Internal use.
-        Setting element attribute values at runtime,
+        Dynamically set element attribute values at runtime,
         typically used for configuring dynamic elements.
         """
         self.__init__(*value)
@@ -135,7 +135,7 @@ class Element:
     @property
     def driver(self) -> WebDriver:
         """
-        Get driver from Page.
+        Get driver from Page-related instance.
         """
         return self._page._driver
 
@@ -143,14 +143,14 @@ class Element:
     def _action(self) -> ActionChains:
         """
         Internal use.
-        Get ActionChains object from Page.
+        Get ActionChains object from Page-related instance.
         """
         return self._page._action
 
     @property
     def locator(self) -> tuple[str, str]:
         """
-        Return locator (by, value)
+        Get locator (by, value).
         """
         if self.by and self.value:
             return (self.by, self.value)
@@ -180,8 +180,6 @@ class Element:
     ) -> WebDriverWait:
         """
         Get an object of WebDriverWait.
-        The ignored exceptions include NoSuchElementException and StaleElementReferenceException
-        to capture their stacktrace when a TimeoutException occurs.
 
         Args:
         - timeout: The maximum time in seconds to wait for the expected condition.
@@ -196,8 +194,7 @@ class Element:
     def wait_timeout(self) -> int | float | None:
         """
         Get the final waiting timeout of the element.
-        If no element action has been executed yet,
-        it will return None.
+        If no element action has been executed yet, it will return None.
         """
         try:
             return self._wait_timeout
@@ -223,18 +220,19 @@ class Element:
 
         Args:
         - timeout: Maximum time in seconds to wait for the element to become present.
-        - reraise: True means reraising TimeoutException; vice versa.
+        - reraise: If a timeout occurs, True means reraising TimeoutException, 
+            and False means returning False directly.
 
         Returns:
-        - WebElement: The element is present before timeout.
-        - False: The element is still not present after timeout.
+        - WebElement: If the element becomes present before the timeout.
+        - False: "reraise" is False and the element is not present after the timeout.
         """
         return self.wait_present(timeout, reraise)
 
     @property
     def present_element(self) -> WebElement:
         """
-        Obtaining a present webelement simply.
+        Obtaining the present WebElement simply.
         The same as element.wait_present(reraise=True).
         Note that a TimeoutException will be raised
         if the element is abesent within the timeout period.
@@ -244,7 +242,7 @@ class Element:
     @property
     def visible_element(self) -> WebElement:
         """
-        Obtaining a visible webelement simply.
+        Obtaining the visible WebElement simply.
         The same as element.wait_visible(reraise=True).
         Note that a TimeoutException will be raised
         if the element is invisible or abesent within the timeout period.
@@ -254,7 +252,7 @@ class Element:
     @property
     def clickable_element(self) -> WebElement:
         """
-        Obtaining a clickable webelement simply.
+        Obtaining the clickable WebElement simply.
         The same as element.wait_clickable(reraise=True).
         Note that a TimeoutException will be raised
         if the element is unclickable or abesent within the timeout period.
@@ -267,7 +265,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Waiting for the element to become `present`.
+        Wait for the element to become `present`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
@@ -302,7 +300,7 @@ class Element:
         reraise: bool | None = None
     ) -> bool:
         """
-        Waiting for the element to become `absent`.
+        Wait for the element to become `absent`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
@@ -336,7 +334,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Waiting for the element to become `visible`.
+        Wait for the element to become `visible`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
@@ -377,11 +375,14 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | bool:
         """
-        Waiting for the element to become `invisible`.
+        Wait for the element to become `invisible`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
             Defaults (None) to the element's timeout value.
+        - present: Indicates whether the element should be present.
+            - True: The element should be present in the expected state.
+            - False: The element can be either present in the expected state or absent.
         - reraise: When the element state is not as expected, the behavior can be set in the following ways:
             - bool: True indicates to reraise a TimeoutException; False means to return False.
             - None: Follow the config.Timeout.RERAISE setting, which is a boolean.
@@ -418,7 +419,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Waiting for the element to become `clickable`.
+        Wait for the element to become `clickable`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
@@ -460,24 +461,14 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | bool:
         """
-        Waiting for the element to become `unclickable` or `absent`.
-        The expected status is decided by the "present" argument.
-        Please follow the description below.
-
-        Usage::
-
-            # Element should be unclickable.
-            my_page.my_element.wait_unclickable()
-
-            # Element can be unclickable, or absent.
-            my_page.my_element.wait_unclickable(present=False)
+        Wait for the element to become `unclickable`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
             Defaults (None) to the element's timeout value.
-        - present:
-            - True (Default): The element should be present and reach the expected status.
-            - False: The element can be absent.
+        - present: Indicates whether the element should be present.
+            - True: The element should be present in the expected state.
+            - False: The element can be either present in the expected state or absent.
         - reraise: When the element state is not as expected, the behavior can be set in the following ways:
             - bool: True indicates to reraise a TimeoutException; False means to return False.
             - None: Follow the config.Timeout.RERAISE setting, which is a boolean.
@@ -514,7 +505,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Waiting for the element to become `selected`.
+        Wait for the element to become `selected`.
 
         Args:
         - timeout: The maximum time (in seconds) to wait for the element to reach the expected state.
@@ -606,6 +597,7 @@ class Element:
     def is_visible(self) -> bool:
         """
         Whether the element is visible.
+        It is the same as the official "is_displayed()" method.
         """
         try:
             return self._present_element.is_displayed()

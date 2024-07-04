@@ -74,8 +74,11 @@ def presence_of_element_located(
     Return:
     - WebElement: The element is present.
 
-    Exception (should be caught in until):
-    - NoSuchElementException (default)
+    Exception handling:
+	- WebDriverWait:
+	    - NoSuchElementException (default)
+    - Other external process: Unnecessary.
+
     """
 
     def _predicate(driver: WebDriver):
@@ -89,8 +92,8 @@ def presence_of_all_elements_located(
 ) -> Callable[[WebDriver], list[WebElement]]:
     """
     Extended `presence_of_all_elements_located`.
-    Whether there are `at least one (any)` elements can be found by the locator.
-    Note that `all` here means `at least one (any)` for the logic of `find_elements`
+    Whether there are `at least one` elements can be found by the locator.
+    Note that `all` here means `at least one` for the logic of `find_elements`
     is to find `at least one matched elements`.
 
     Args:
@@ -100,7 +103,9 @@ def presence_of_all_elements_located(
     - list[WebElement]: WebElements.
     - []: No any elements are found.
 
-    Exception (should be caught in until): None
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -126,7 +131,9 @@ def absence_of_element_located(
     - True: The element is absent.
     - False: The element is present.
 
-    Exception (should be caught in until): None
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -144,16 +151,18 @@ def absence_of_all_elements_located(
 ) -> Callable[[WebDriver], bool]:
     """
     Whether `all the elements are absent` by the locator.
-    Note that this is `completely opposite to presence_of_all_elements_located`.
+    Note that this is completely opposite to presence_of_all_elements_located.
 
     Args:
     - locator: (by, value)
 
     Return:
-    - True: No any elements are found.
-    - False: At least one element is found.
+    - True: All the elements are absent.
+    - False: At least one element is present.
 
-    Exception (should be caught in until): None
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -178,11 +187,13 @@ def visibility_of_element_located(
 
     Return:
     - WebElement: The element is visible.
-    - False: The element is invisible.
+    - False: The element is present and invisible.
 
-    Exception (should be caught in until):
-    - NoSuchElementException (default)
-    - StaleElementReferenceException
+    Exception handling:
+	- WebDriverWait:
+	    - NoSuchElementException (default)
+        - StaleElementReferenceException
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -204,12 +215,12 @@ def visibility_of_element(
 
     Return:
     - WebElement: The element is visible.
-    - False: The element is invisible.
+    - False: The element is present and invisible.
 
-    Exception (should be caught in until): None
-
-    Exception (should be caught in external):
-    - StaleElementReferenceException: retry by locator.
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process:
+        - StaleElementReferenceException: The element is stale and retry by the locator.
     """
 
     def _predicate(_):
@@ -230,11 +241,13 @@ def visibility_of_any_elements_located(
 
     Return:
     - list[WebElement]: At least one element is visible.
-    - [] (empty list): All elements are absent or invisible.
+    - [] (empty list): All elements are present and invisible.
 
-    Exception (should be caught in until):
-    - NoSuchElementException: when find_elements is [].
-    - StaleElementReferenceException: when at least one element staled.
+    Exception handling:
+	- WebDriverWait:
+        - NoSuchElementException: All elements are absent.
+        - StaleElementReferenceException: At least one element is stale.
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -255,12 +268,13 @@ def visibility_of_all_elements_located(
 
     Return:
     - list[WebElement]: All elements are visible.
-    - [] (empty list): All elements are absent.
-    - False: One of the element is invisible or StaleElementReferenceException occurs.
+    - False: At least one of the element is present and invisible.
 
-    Exception (should be caught in until):
-    - NoSuchElementException: when find_elements is [].
-    - StaleElementReferenceException: when at least one element staled.
+    Exception handling:
+	- WebDriverWait:
+        - NoSuchElementException: All the elements are absent.
+        - StaleElementReferenceException: At least one element is staled.
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -280,25 +294,30 @@ def invisibility_of_element_located(
 ) -> Callable[[WebDriver], WebElement | bool]:
     """
     Extended `invisibility_of_element_located`.
-    Whether the element is invisible or absent.
+    This condition depends on the present parameter and has the following two cases:
+    - present=True: Only allows the element to be present and invisible.
+    - present=False: Allows the element to be present and invisible, 
+        or to be absent at all.
 
     Args:
     - locator: (by, value)
     - index:
         - None: driver.find_element(*locator)
         - int: driver.find_elements(*locator)[index]
-    - present: Whether element should be present or not.
-        - True: Element should be invisible.
-        - False: Element can be absent.
+    - present: Whether the element should be present or not.
+        - True: Element should be present and invisible.
+        - False: Element can be present and invisible, or absent at all.
 
     Return:
-    - WebElement: The element is invisible.
-    - False: The element is visible.
+    - WebElement: The element is present and invisible.
     - True: The element is absent and "present" is False.
+    - False: The element is visible.
 
-    Exception (should be caught in until) when "present" is True:
-    - NoSuchElementException (default)
-    - StaleElementReferenceException
+    Exception handing:
+    - WebDriverWait (when "present" is True):
+        - NoSuchElementException (default)
+        - StaleElementReferenceException
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -324,15 +343,15 @@ def invisibility_of_element(
     - element: WebElement
 
     Return:
-    - WebElement: The element is invisible.
+    - WebElement: The element is present and invisible.
     - False: The element is visible.
 
-    Exception (should be caught in until): None
-
-    Exception (should be caught in external):
-    - StaleElementReferenceException:
-        - The element should be present: retry by locator.
-        - The element can be absent: return True.
+    Exception handing:
+    - WebDriverWait: Unnecessary.
+    - Other external process:
+        - StaleElementReferenceException:
+            - The element should be present: retry by the locator.
+            - The element can be absent: return True.
     """
 
     def _predicate(_):
@@ -357,11 +376,13 @@ def element_located_to_be_clickable(
 
     Return:
     - WebElement: The element is clickable.
-    - False: The element is unclickable.
+    - False: The element is present and unclickable.
 
-    Exception (should be caught in until):
-    - NoSuchElementException (default)
-    - StaleElementReferenceException
+    Exception handing:
+    - WebDriverWait:
+        - NoSuchElementException (default)
+        - StaleElementReferenceException
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -383,12 +404,12 @@ def element_to_be_clickable(
 
     Return:
     - WebElement: The element is clickable.
-    - False: The element is unclickable.
+    - False: The element is present and unclickable.
 
-    Exception (should be caught in until): None
-
-    Exception (should be caught in external):
-    - StaleElementReferenceException: retry by locator
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process:
+        - StaleElementReferenceException: The element is stale and retry by the locator.
     """
 
     def _predicate(_):
@@ -403,7 +424,10 @@ def element_located_to_be_unclickable(
     present: bool = True
 ) -> Callable[[WebDriver], WebElement | bool]:
     """
-    Whether the element is unclickable or absent.
+    This condition depends on the present parameter and has the following two cases:
+    - present=True: Only allows the element to be present and unclickable.
+    - present=False: Allows the element to be present and unclickable, 
+        or to be absent at all.
 
     Args:
     - locator: (by, value)
@@ -411,17 +435,19 @@ def element_located_to_be_unclickable(
         - None: driver.find_element(*locator)
         - int: driver.find_elements(*locator)[index]
     - present: Whether element should be present or not.
-        - True: Element should be unclickable.
-        - False: Element can be absent.
+        - True: Element should be present and unclickable.
+        - False: Element can be present and unclickable, or absent at all.
 
     Return:
-    - WebElement: The element is unclickable.
-    - False: The element is clickable.
+    - WebElement: The element is present and unclickable.
     - True: The element is absent and "present" is False.
+    - False: The element is clickable.
 
-    Exception (should be caught in until) when "present" is True:
-    - NoSuchElementException (default)
-    - StaleElementReferenceException
+    Exception handing:
+    - WebDriverWait (when "present" is True):
+        - NoSuchElementException (default)
+        - StaleElementReferenceException
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -440,21 +466,21 @@ def element_to_be_unclickable(
     element: WebElement
 ) -> Callable[[WebDriver], WebElement | Literal[False]]:
     """
-    Whether the element is unclickable.
+    Whether the element is present and unclickable.
 
     Args:
     - element: WebElement
 
     Return:
-    - WebElement: The element is unclickable.
+    - WebElement: The element is present and unclickable.
     - False: The element is clickable.
 
-    Exception (should be caught in until): None
-
-    Exception (should be caught in external):
-    - StaleElementReferenceException:
-        - The element should be present: retry by locator.
-        - The element can be absent: return True.
+    Exception handing:
+    - WebDriverWait: Unnecessary.
+    - Other external process:
+        - StaleElementReferenceException:
+            - The element should be present: retry by the locator.
+            - The element can be absent: return True.
     """
 
     def _predicate(_):
@@ -481,9 +507,11 @@ def element_located_to_be_selected(
     - WebElement: The element is selected.
     - False: The element is unselected.
 
-    Exception (should be caught in until):
-    - NoSuchElementException (default)
-    - StaleElementReferenceException
+    Exception handing:
+    - WebDriverWait:
+        - NoSuchElementException (default)
+        - StaleElementReferenceException
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -507,10 +535,10 @@ def element_to_be_selected(
     - WebElement: The element is selected.
     - False: The element is unselected.
 
-    Exception (should be caught in until): None
-
-    Exception (should be caught in external):
-    - StaleElementReferenceException: retry by locator.
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process:
+        - StaleElementReferenceException: The element is stale and retry by the locator.
     """
 
     def _predicate(_):
@@ -536,9 +564,11 @@ def element_located_to_be_unselected(
     - WebElement: The element is unselected.
     - False: The element is selected.
 
-    Exception (should be caught in until):
-    - NoSuchElementException (default)
-    - StaleElementReferenceException
+    Exception handing:
+    - WebDriverWait:
+        - NoSuchElementException (default)
+        - StaleElementReferenceException
+    - Other external process: Unnecessary.
     """
 
     def _predicate(driver: WebDriver):
@@ -552,7 +582,7 @@ def element_to_be_unselected(
     element: WebElement
 ) -> Callable[[WebDriver], WebElement | Literal[False]]:
     """
-    Whether the element is presnet and unselected.
+    Whether the element is unselected.
 
     Args:
     - element: WebElement
@@ -561,10 +591,10 @@ def element_to_be_unselected(
     - WebElement: The element is unselected.
     - False: The element is selected.
 
-    Exception (should be caught in until): None
-
-    Exception (should be caught in external):
-    - StaleElementReferenceException: retry by locator.
+    Exception handling:
+	- WebDriverWait: Unnecessary.
+    - Other external process:
+        - StaleElementReferenceException: The element is stale and retry by the locator.
     """
 
     def _predicate(_):
@@ -578,7 +608,15 @@ def webview_is_present(
     index: int = -1
 ) -> Callable[[AppiumWebDriver], list[str] | Literal[False]]:
     """
-    Wait for context WEBVIEW_XXX is present.
+    Whether "WEBVIEW" context is present.
+
+    Args:
+	- switch: Switch to the WEBVIEW context when it exists and "switch" is True.
+	- index: Switch to the specified context index, defaulting to the most recently appeared.
+
+    Returns:
+	- list[str] (contexts): Returns all current contexts when a WEBVIEW exists.
+	- False: Returns False when no WEBVIEW exists.
     """
 
     def _predicate(driver: AppiumWebDriver):
