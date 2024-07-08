@@ -1290,7 +1290,7 @@ class Page:
             raise TypeError('Cookies should be a list.')
 
         for cookie in cookies:
-            if not isinstance(cookie, dict): 
+            if not isinstance(cookie, dict):
                 raise TypeError('Each cookie in cookies should be a dict.')
             self.driver.add_cookie(cookie)
 
