@@ -593,7 +593,7 @@ class Element:
         - False: The element is still not present after timeout.
         """
         return True if self.wait_present(timeout, False) else False
-    
+
     def is_visible(self) -> bool:
         """
         Whether the element is visible.
@@ -627,7 +627,7 @@ class Element:
         except ElementReferenceException:
             element = self.present_element
             result = element.is_displayed() and element.is_enabled()
-        
+
         if result:
             self._clickable_element = self._visible_element = self._present_element
 
