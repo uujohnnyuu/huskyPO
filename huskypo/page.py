@@ -1214,6 +1214,24 @@ class Page:
 
         """
         return self.driver.save_screenshot(filename)
+    
+    def switch_to_frame(self, reference: str | int):
+        """
+        Switches focus to the specified frame by name or index.
+        If you want to switch to an iframe WebElement, 
+        use `xxx_page.my_element.switch_to_frame()` instead.
+
+
+        Args:
+        - reference: The name of the window to switch to, or an integer representing the index.
+        
+        Usage::
+
+            xxx_page.switch_to_frame('name')
+            xxx_page.switch_to_frame(1)
+
+        """
+        self.driver.switch_to.frame(reference)
 
     def switch_to_parent_frame(self) -> None:
         """
