@@ -1214,17 +1214,17 @@ class Page:
 
         """
         return self.driver.save_screenshot(filename)
-    
+
     def switch_to_frame(self, reference: str | int):
         """
         Switches focus to the specified frame by name or index.
-        If you want to switch to an iframe WebElement, 
+        If you want to switch to an iframe WebElement,
         use `xxx_page.my_element.switch_to_frame()` instead.
 
 
         Args:
         - reference: The name of the window to switch to, or an integer representing the index.
-        
+
         Usage::
 
             xxx_page.switch_to_frame('name')
@@ -1286,14 +1286,13 @@ class Page:
             page.add_cookies(cookies)
 
         """
-        if isinstance(cookies, list):
-            for cookie in cookies:
-                if isinstance(cookie, dict):
-                    self.driver.add_cookie(cookie)
-                else:
-                    raise TypeError('Each cookie in cookies should be a dict.')
-        else:
+        if not isinstance(cookies, list):
             raise TypeError('Cookies should be a list.')
+
+        for cookie in cookies:
+            if not isinstance(cookie, dict): 
+                raise TypeError('Each cookie in cookies should be a dict.')
+            self.driver.add_cookie(cookie)
 
     def delete_cookie(self, name) -> None:
         """
@@ -1341,20 +1340,6 @@ class Page:
         Gets the text of the Alert.
         """
         return self.driver.switch_to.alert.text
-
-    def move_by_offset(self, xoffset, yoffset, perform: bool = True):
-        """
-        selenium API
-        Moving the mouse to an offset from current mouse position.
-
-        :Args:
-         - x: X offset to move to, as a positive or negative integer.
-         - y: Y offset to move to, as a positive or negative integer.
-        """
-        action = ActionChains(self.driver).move_by_offset(xoffset, yoffset)
-        if not perform:
-            return action
-        action.perform()
 
     def implicitly_wait(self, timeout: int | float = 30) -> None:
         """
