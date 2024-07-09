@@ -213,7 +213,7 @@ class Elements:
         if all elements are abesent within the timeout period.
         """
         return self.wait_all_present(reraise=True)
-    
+
     @property
     def all_visible_elements(self) -> list[WebElement]:
         """
@@ -303,7 +303,7 @@ class Elements:
             if Timeout.reraise(reraise):
                 raise
             return False
-        
+
     def wait_all_visible(
         self,
         timeout: int | float | None = None,
@@ -385,7 +385,7 @@ class Elements:
         - False: All the elements are still not present after timeout.
         """
         return True if self.wait_all_present(timeout, False) else False
-    
+
     def are_all_visible(self) -> bool:
         """
         Selenium and Appium API.
@@ -421,7 +421,7 @@ class Elements:
             return len(self.present_elements)
         except TimeoutException:
             return 0
-        
+
     @property
     def all_visible_quantity(self) -> int:
         """
@@ -432,7 +432,7 @@ class Elements:
             return len(self.all_visible_elements)
         except TimeoutException:
             return 0
-        
+
     @property
     def any_visible_quantity(self) -> int:
         """
@@ -480,7 +480,7 @@ class Elements:
             for element in self.present_elements
             for rect in [element.rect]
         ]
-    
+
     @property
     def all_visible_rects(self) -> list[dict[str, int]]:
         """
@@ -492,7 +492,7 @@ class Elements:
             for element in self.all_visible_elements
             for rect in [element.rect]
         ]
-    
+
     @property
     def any_visible_rects(self) -> list[dict[str, int]]:
         """
@@ -512,7 +512,7 @@ class Elements:
         Gets locations of all present elements.
         """
         return [element.location for element in self.present_elements]
-    
+
     @property
     def all_visible_locations(self) -> list[dict[str, int]]:
         """
@@ -520,7 +520,7 @@ class Elements:
         Gets locations of all visible elements.
         """
         return [element.location for element in self.all_visible_elements]
-    
+
     @property
     def any_visible_locations(self) -> list[dict[str, int]]:
         """
@@ -528,7 +528,7 @@ class Elements:
         Gets locations of any visible elements.
         """
         return [element.location for element in self.any_visible_elements]
-    
+
     @property
     def sizes(self) -> list[dict[str, int]]:
         """
@@ -541,7 +541,7 @@ class Elements:
             for element in self.present_elements
             for size in [element.size]
         ]
-    
+
     @property
     def all_visible_sizes(self) -> list[dict[str, int]]:
         """
@@ -554,7 +554,7 @@ class Elements:
             for element in self.all_visible_elements
             for size in [element.size]
         ]
-    
+
     @property
     def any_visible_sizes(self) -> list[dict[str, int]]:
         """
@@ -567,7 +567,7 @@ class Elements:
             for element in self.any_visible_elements
             for size in [element.size]
         ]
-    
+
     @property
     def centers(self) -> list[dict[str, int]]:
         """
@@ -579,7 +579,7 @@ class Elements:
             for element in self.present_elements
             for rect in [element.rect]
         ]
-    
+
     @property
     def all_visible_centers(self) -> list[dict[str, int]]:
         """
@@ -591,7 +591,7 @@ class Elements:
             for element in self.all_visible_elements
             for rect in [element.rect]
         ]
-    
+
     @property
     def any_visible_centers(self) -> list[dict[str, int]]:
         """
@@ -610,14 +610,14 @@ class Elements:
         Gets specific attributes or properties of all present elements.
         """
         return [element.get_attribute(name) for element in self.present_elements]
-    
+
     def get_all_visible_attributes(self, name: str) -> list[str | dict | None]:
         """
         Selenium and Appium API.
         Gets specific attributes or properties of all visible elements.
         """
         return [element.get_attribute(name) for element in self.all_visible_elements]
-    
+
     def get_any_visible_attributes(self, name: str) -> list[str | dict | None]:
         """
         Selenium and Appium API.
@@ -631,14 +631,14 @@ class Elements:
         Gets specific properties of all present elements.
         """
         return [element.get_property(name) for element in self.present_elements]
-    
+
     def get_all_visible_properties(self, name: str) -> list[WebElement | bool | dict | str]:
         """
         Selenium API.
         Gets specific properties of all visible elements.
         """
         return [element.get_property(name) for element in self.all_visible_elements]
-    
+
     def get_any_visible_properties(self, name: str) -> list[WebElement | bool | dict | str]:
         """
         Selenium API.
@@ -653,7 +653,7 @@ class Elements:
         Gets locations relative to the view of all present elements.
         """
         return [element.location_in_view for element in self.present_elements]
-    
+
     @property
     def all_visible_locations_in_view(self) -> list[dict[str, int]]:
         """
@@ -661,7 +661,7 @@ class Elements:
         Gets locations relative to the view of all visible elements.
         """
         return [element.location_in_view for element in self.all_visible_elements]
-    
+
     @property
     def any_visible_locations_in_view(self) -> list[dict[str, int]]:
         """

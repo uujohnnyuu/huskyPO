@@ -104,7 +104,7 @@ def presence_of_all_elements_located(
     - []: No any elements are found.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process: Unnecessary.
     """
 
@@ -132,7 +132,7 @@ def absence_of_element_located(
     - False: The element is present.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process: Unnecessary.
     """
 
@@ -271,7 +271,7 @@ def visibility_of_all_elements_located(
     - False: At least one of the element is present and invisible.
 
     Exception handling:
-        - WebDriverWait:
+    - WebDriverWait:
         - NoSuchElementException: All the elements are absent.
         - StaleElementReferenceException: At least one element is staled.
     - Other external process: Unnecessary.
@@ -407,7 +407,7 @@ def element_to_be_clickable(
     - False: The element is present and unclickable.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process:
         - StaleElementReferenceException: The element is stale and retry by the locator.
     """
@@ -536,7 +536,7 @@ def element_to_be_selected(
     - False: The element is unselected.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process:
         - StaleElementReferenceException: The element is stale and retry by the locator.
     """
@@ -592,7 +592,7 @@ def element_to_be_unselected(
     - False: The element is selected.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process:
         - StaleElementReferenceException: The element is stale and retry by the locator.
     """
@@ -611,12 +611,12 @@ def webview_is_present(
     Whether "WEBVIEW" context is present.
 
     Args:
-        - switch: Switch to the WEBVIEW context when it exists and "switch" is True.
-        - index: Switch to the specified context index, defaulting to the most recently appeared.
+    - switch: Switch to the WEBVIEW context when it exists and "switch" is True.
+    - index: Switch to the specified context index, defaulting to the most recently appeared.
 
     Returns:
-        - list[str] (contexts): Returns all current contexts when a WEBVIEW exists.
-        - False: Returns False when no WEBVIEW exists.
+    - list[str] (contexts): Returns all current contexts when a WEBVIEW exists.
+    - False: Returns False when no WEBVIEW exists.
     """
 
     def _predicate(driver: AppiumWebDriver):

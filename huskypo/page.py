@@ -425,9 +425,9 @@ class Page:
         """
         rect = self.driver.get_window_rect()
         return {
-            'left': int(rect['x']), 
-            'right': int(rect['x'] + rect['width']), 
-            'top': int(rect['y']), 
+            'left': int(rect['x']),
+            'right': int(rect['x'] + rect['width']),
+            'top': int(rect['y']),
             'bottom': int(rect['y'] + rect['height'])
         }
 
@@ -437,7 +437,7 @@ class Page:
         """
         rect = self.driver.get_window_rect()
         return {
-            'x': int(rect['x'] + rect['width'] / 2), 
+            'x': int(rect['x'] + rect['width'] / 2),
             'y': int(rect['y'] + rect['height'] / 2)
         }
 
@@ -1409,7 +1409,7 @@ class Page:
         # TODO deprecate
         warnings.warn(
             'This function is deprecated and will be removed in future versions. Please use "swipe_by" instead.',
-            DeprecationWarning, 
+            DeprecationWarning,
             stacklevel=2
         )
 
