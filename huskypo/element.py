@@ -1005,34 +1005,28 @@ class Element:
         self.__start_flicking_by(offset, timeout, max_flick)
         self.__start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
-
+    
     def __get_coordinate(
         self,
         coordinate: Coordinate,
         name: str
     ) -> TupleCoordinate:
-
-        # is dict or tuple
-        if isinstance(coordinate, dict):
-            values = tuple(coordinate.values())
-        elif isinstance(coordinate, tuple):
-            values = coordinate
-        else:
+        
+        # Check coordinate type.
+        if not isinstance(coordinate, (dict, tuple)):
             raise TypeError(f'"{name}" should be dict or tuple.')
+        if isinstance(coordinate, dict):
+            coordinate = tuple(coordinate.values())
 
-        # is coordinate
-        if all(isinstance(value, int) for value in values):
-            values_type = int
-        elif all(isinstance(value, float) for value in values):
-            values_type = float
-        else:
+        # Check all values in coordinate should be int or float.
+        if not (all(isinstance(c, int) for c in coordinate) or all(isinstance(c, float) for c in coordinate)):
             raise TypeError(f'All "{name}" values should be "int" or "float".')
 
-        # if float, all should be (0 <= x <= 1)
-        if values_type == float and not all(0 <= value <= 1 for value in values):
+        # If float, all should be (0 <= x <= 1).
+        if isinstance(coordinate[0], float) and not all(0 <= abs(c) <= 1 for c in coordinate):
             raise ValueError(f'All "{name}" values are floats and should be between "0.0" and "1.0".')
 
-        return values
+        return coordinate
 
     def __get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
 
@@ -2337,10 +2331,7 @@ class Element:
         It is advisable not to alter these unless specific conditions necessitate changes.
         """
         # TODO deprecate
-        warnings.warn(
-            'This function is deprecated and will be removed in future versions. Please use "swipe_by" instead.',
-            DeprecationWarning,
-            stacklevel=2)
+        warnings.warn('Please use "swipe_by" instead.', DeprecationWarning, stacklevel=2)
 
         # Get border.
         border = self.__get_border(direction, border)
