@@ -424,20 +424,22 @@ class Page:
         window border: {'left': int, 'right': int, 'top': int, 'bottom': int}
         """
         rect = self.driver.get_window_rect()
-        left = int(rect['x'])
-        right = int(rect['x'] + rect['width'])
-        top = int(rect['y'])
-        bottom = int(rect['y'] + rect['height'])
-        return {'left': left, 'right': right, 'top': top, 'bottom': bottom}
+        return {
+            'left': int(rect['x']), 
+            'right': int(rect['x'] + rect['width']), 
+            'top': int(rect['y']), 
+            'bottom': int(rect['y'] + rect['height'])
+        }
 
     def get_window_center(self) -> dict[str, int]:
         """
         window center: {'x': int, 'y': int}
         """
         rect = self.driver.get_window_rect()
-        x = int(rect['x'] + rect['width'] / 2)
-        y = int(rect['y'] + rect['height'] / 2)
-        return {'x': x, 'y': y}
+        return {
+            'x': int(rect['x'] + rect['width'] / 2), 
+            'y': int(rect['y'] + rect['height'] / 2)
+        }
 
     def number_of_windows_to_be(
         self,
@@ -1407,8 +1409,9 @@ class Page:
         # TODO deprecate
         warnings.warn(
             'This function is deprecated and will be removed in future versions. Please use "swipe_by" instead.',
-            DeprecationWarning,
-            stacklevel=2)
+            DeprecationWarning, 
+            stacklevel=2
+        )
 
         vertical = 'v'
         horizontal = 'h'

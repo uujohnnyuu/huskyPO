@@ -213,6 +213,16 @@ class Elements:
         if all elements are abesent within the timeout period.
         """
         return self.wait_all_present(reraise=True)
+    
+    @property
+    def all_visible_elements(self) -> list[WebElement]:
+        """
+        Obtaining all visible webelements simply.
+        The same as element.wait_all_visible(reraise=True).
+        Note that a TimeoutException will be raised
+        if at least one element is invisible or absent within the timeout period.
+        """
+        return self.wait_all_visible(reraise=True)
 
     @property
     def any_visible_elements(self) -> list[WebElement]:
@@ -223,16 +233,6 @@ class Elements:
         if all elements are invisible or absent within the timeout period.
         """
         return self.wait_any_visible(reraise=True)
-
-    @property
-    def all_visible_elements(self) -> list[WebElement]:
-        """
-        Obtaining all visible webelements simply.
-        The same as element.wait_all_visible(reraise=True).
-        Note that a TimeoutException will be raised
-        if at least one element is invisible or absent within the timeout period.
-        """
-        return self.wait_all_visible(reraise=True)
 
     def wait_all_present(
         self,
@@ -303,6 +303,40 @@ class Elements:
             if Timeout.reraise(reraise):
                 raise
             return False
+        
+    def wait_all_visible(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> list[WebElement] | Literal[False]:
+        """
+        Waiting for `all elements to become visible`.
+
+        Args:
+        - timeout: The maximum time (in seconds) to wait for the elements to reach the expected state.
+            Defaults (None) to the elements' timeout value.
+        - reraise: When the elements state is not as expected, the behavior can be set in the following ways:
+            - bool: True indicates to reraise a TimeoutException; False means to return False.
+            - None: Follow the config.Timeout.RERAISE setting, which is a boolean.
+                Its logic is the same as the boolean, and the default is True.
+
+        Returns:
+        - list[WebElement] (Expected): The elements reached the expected status before the timeout.
+        - False (Unexpected): The elements did not reach the expected status after the timeout
+            if TimeoutException is not reraised.
+
+        Exception:
+        - TimeoutException: Raised if "reraise" is True and
+            the elements did not reach the expected status after the timeout.
+        """
+        try:
+            return self.wait(timeout, StaleElementReferenceException).until(
+                ecex.visibility_of_all_elements_located(self.locator),
+                self.__timeout_message('all elements are visible'))
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
 
     def wait_any_visible(
         self,
@@ -338,40 +372,6 @@ class Elements:
                 raise
             return False
 
-    def wait_all_visible(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> list[WebElement] | Literal[False]:
-        """
-        Waiting for `all elements to become visible`.
-
-        Args:
-        - timeout: The maximum time (in seconds) to wait for the elements to reach the expected state.
-            Defaults (None) to the elements' timeout value.
-        - reraise: When the elements state is not as expected, the behavior can be set in the following ways:
-            - bool: True indicates to reraise a TimeoutException; False means to return False.
-            - None: Follow the config.Timeout.RERAISE setting, which is a boolean.
-                Its logic is the same as the boolean, and the default is True.
-
-        Returns:
-        - list[WebElement] (Expected): The elements reached the expected status before the timeout.
-        - False (Unexpected): The elements did not reach the expected status after the timeout
-            if TimeoutException is not reraised.
-
-        Exception:
-        - TimeoutException: Raised if "reraise" is True and
-            the elements did not reach the expected status after the timeout.
-        """
-        try:
-            return self.wait(timeout, StaleElementReferenceException).until(
-                ecex.visibility_of_all_elements_located(self.locator),
-                self.__timeout_message('all elements are visible'))
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
     def are_all_present(self, timeout: int | float | None = None) -> bool:
         """
         Selenium and Appium API.
@@ -385,18 +385,7 @@ class Elements:
         - False: All the elements are still not present after timeout.
         """
         return True if self.wait_all_present(timeout, False) else False
-
-    def are_any_visible(self) -> bool:
-        """
-        Selenium and Appium API.
-        Whether at least one element is visible.
-
-        Returns:
-        - True: At least one element is visible.
-        - False: All the elements are not visible.
-        """
-        return True if [element for element in self.present_elements if element.is_displayed()] else False
-
+    
     def are_all_visible(self) -> bool:
         """
         Selenium and Appium API.
@@ -411,14 +400,47 @@ class Elements:
                 return False
         return True
 
+    def are_any_visible(self) -> bool:
+        """
+        Selenium and Appium API.
+        Whether at least one element is visible.
+
+        Returns:
+        - True: At least one element is visible.
+        - False: All the elements are not visible.
+        """
+        return True if [element for element in self.present_elements if element.is_displayed()] else False
+
     @property
     def quantity(self) -> int:
         """
         Selenium and Appium API.
-        Get the quantity of elements.
+        Get the quantity of all present elements.
         """
         try:
             return len(self.present_elements)
+        except TimeoutException:
+            return 0
+        
+    @property
+    def all_visible_quantity(self) -> int:
+        """
+        Selenium and Appium API.
+        Get the quantity of all visible elements.
+        """
+        try:
+            return len(self.all_visible_elements)
+        except TimeoutException:
+            return 0
+        
+    @property
+    def any_visible_quantity(self) -> int:
+        """
+        Selenium and Appium API.
+        Get the quantity of any visible elements.
+        """
+        try:
+            return len(self.any_visible_elements)
         except TimeoutException:
             return 0
 
@@ -431,6 +453,14 @@ class Elements:
         return [element.text for element in self.present_elements]
 
     @property
+    def all_visible_texts(self) -> list[str]:
+        """
+        Selenium and Appium API.
+        Gets texts of all visible elements.
+        """
+        return [element.text for element in self.all_visible_elements]
+
+    @property
     def any_visible_texts(self) -> list[str]:
         """
         Selenium and Appium API.
@@ -440,22 +470,38 @@ class Elements:
         return [element.text for element in self.any_visible_elements]
 
     @property
-    def all_visible_texts(self) -> list[str]:
-        """
-        Selenium and Appium API.
-        Gets texts of all visible elements.
-        """
-        return [element.text for element in self.all_visible_elements]
-
-    @property
     def rects(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets locations relative to the view and size of all elements.\n
+        Gets locations relative to the view and size of all present elements.\n
         """
         return [
             {'x': rect['x'], 'y': rect['y'], 'width': rect['width'], 'height': rect['height']}
             for element in self.present_elements
+            for rect in [element.rect]
+        ]
+    
+    @property
+    def all_visible_rects(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets locations relative to the view and size of all visible elements.\n
+        """
+        return [
+            {'x': rect['x'], 'y': rect['y'], 'width': rect['width'], 'height': rect['height']}
+            for element in self.all_visible_elements
+            for rect in [element.rect]
+        ]
+    
+    @property
+    def any_visible_rects(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets locations relative to the view and size of any visible elements.\n
+        """
+        return [
+            {'x': rect['x'], 'y': rect['y'], 'width': rect['width'], 'height': rect['height']}
+            for element in self.any_visible_elements
             for rect in [element.rect]
         ]
 
@@ -463,15 +509,31 @@ class Elements:
     def locations(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets locations of all elements.
+        Gets locations of all present elements.
         """
         return [element.location for element in self.present_elements]
-
+    
+    @property
+    def all_visible_locations(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets locations of all visible elements.
+        """
+        return [element.location for element in self.all_visible_elements]
+    
+    @property
+    def any_visible_locations(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets locations of any visible elements.
+        """
+        return [element.location for element in self.any_visible_elements]
+    
     @property
     def sizes(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets sizes of all elements.
+        Gets sizes of all present elements.
         Note that it will rearrange size to {'width': width, 'height': height}
         """
         return [
@@ -479,40 +541,134 @@ class Elements:
             for element in self.present_elements
             for size in [element.size]
         ]
-
+    
+    @property
+    def all_visible_sizes(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets sizes of all visible elements.
+        Note that it will rearrange size to {'width': width, 'height': height}
+        """
+        return [
+            {'width': size['width'], 'height': size['height']}
+            for element in self.all_visible_elements
+            for size in [element.size]
+        ]
+    
+    @property
+    def any_visible_sizes(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets sizes of any visible elements.
+        Note that it will rearrange size to {'width': width, 'height': height}
+        """
+        return [
+            {'width': size['width'], 'height': size['height']}
+            for element in self.any_visible_elements
+            for size in [element.size]
+        ]
+    
     @property
     def centers(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets center locations relative to the view of all elements.
+        Gets center locations relative to the view of all present elements.
         """
         return [
             {'x': int(rect['x'] + rect['width'] / 2), 'y': int(rect['y'] + rect['height'] / 2)}
             for element in self.present_elements
             for rect in [element.rect]
         ]
+    
+    @property
+    def all_visible_centers(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets center locations relative to the view of all visible elements.
+        """
+        return [
+            {'x': int(rect['x'] + rect['width'] / 2), 'y': int(rect['y'] + rect['height'] / 2)}
+            for element in self.all_visible_elements
+            for rect in [element.rect]
+        ]
+    
+    @property
+    def any_visible_centers(self) -> list[dict[str, int]]:
+        """
+        Selenium and Appium API.
+        Gets center locations relative to the view of any visible elements.
+        """
+        return [
+            {'x': int(rect['x'] + rect['width'] / 2), 'y': int(rect['y'] + rect['height'] / 2)}
+            for element in self.any_visible_elements
+            for rect in [element.rect]
+        ]
 
     def get_attributes(self, name: str) -> list[str | dict | None]:
         """
         Selenium and Appium API.
-        Gets specific attributes or properties of all elements.
+        Gets specific attributes or properties of all present elements.
         """
         return [element.get_attribute(name) for element in self.present_elements]
+    
+    def get_all_visible_attributes(self, name: str) -> list[str | dict | None]:
+        """
+        Selenium and Appium API.
+        Gets specific attributes or properties of all visible elements.
+        """
+        return [element.get_attribute(name) for element in self.all_visible_elements]
+    
+    def get_any_visible_attributes(self, name: str) -> list[str | dict | None]:
+        """
+        Selenium and Appium API.
+        Gets specific attributes or properties of any visible elements.
+        """
+        return [element.get_attribute(name) for element in self.any_visible_elements]
 
     def get_properties(self, name: str) -> list[WebElement | bool | dict | str]:
         """
         Selenium API.
-        Gets specific properties of all elements.
+        Gets specific properties of all present elements.
         """
         return [element.get_property(name) for element in self.present_elements]
+    
+    def get_all_visible_properties(self, name: str) -> list[WebElement | bool | dict | str]:
+        """
+        Selenium API.
+        Gets specific properties of all visible elements.
+        """
+        return [element.get_property(name) for element in self.all_visible_elements]
+    
+    def get_any_visible_properties(self, name: str) -> list[WebElement | bool | dict | str]:
+        """
+        Selenium API.
+        Gets specific properties of any visible elements.
+        """
+        return [element.get_property(name) for element in self.any_visible_elements]
 
     @property
     def locations_in_view(self) -> list[dict[str, int]]:
         """
         Appium API.
-        Gets locations relative to the view of all elements.
+        Gets locations relative to the view of all present elements.
         """
         return [element.location_in_view for element in self.present_elements]
+    
+    @property
+    def all_visible_locations_in_view(self) -> list[dict[str, int]]:
+        """
+        Appium API.
+        Gets locations relative to the view of all visible elements.
+        """
+        return [element.location_in_view for element in self.all_visible_elements]
+    
+    @property
+    def any_visible_locations_in_view(self) -> list[dict[str, int]]:
+        """
+        Appium API.
+        Gets locations relative to the view of any visible elements.
+        """
+        return [element.location_in_view for element in self.any_visible_elements]
 
     def wait_all_not_present(
         self,

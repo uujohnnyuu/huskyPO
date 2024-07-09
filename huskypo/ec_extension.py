@@ -75,8 +75,8 @@ def presence_of_element_located(
     - WebElement: The element is present.
 
     Exception handling:
-        - WebDriverWait:
-            - NoSuchElementException (default)
+    - WebDriverWait:
+        - NoSuchElementException (default)
     - Other external process: Unnecessary.
 
     """
@@ -161,7 +161,7 @@ def absence_of_all_elements_located(
     - False: At least one element is present.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process: Unnecessary.
     """
 
@@ -190,8 +190,8 @@ def visibility_of_element_located(
     - False: The element is present and invisible.
 
     Exception handling:
-        - WebDriverWait:
-            - NoSuchElementException (default)
+    - WebDriverWait:
+        - NoSuchElementException (default)
         - StaleElementReferenceException
     - Other external process: Unnecessary.
     """
@@ -218,7 +218,7 @@ def visibility_of_element(
     - False: The element is present and invisible.
 
     Exception handling:
-        - WebDriverWait: Unnecessary.
+    - WebDriverWait: Unnecessary.
     - Other external process:
         - StaleElementReferenceException: The element is stale and retry by the locator.
     """
@@ -244,7 +244,7 @@ def visibility_of_any_elements_located(
     - [] (empty list): All elements are present and invisible.
 
     Exception handling:
-        - WebDriverWait:
+    - WebDriverWait:
         - NoSuchElementException: All elements are absent.
         - StaleElementReferenceException: At least one element is stale.
     - Other external process: Unnecessary.
