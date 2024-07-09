@@ -803,7 +803,7 @@ class Element:
             return self.driver.scroll(self._present_element, target._present_element, duration)
         except ElementReferenceException:
             return self.driver.scroll(self.present_element, target.present_element, duration)
-    
+
     def is_viewable(self, timeout: int | float | None = None) -> bool:
         """
         Appium API.
