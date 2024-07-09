@@ -1005,13 +1005,13 @@ class Element:
         self.__start_flicking_by(offset, timeout, max_flick)
         self.__start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
-    
+
     def __get_coordinate(
         self,
         coordinate: Coordinate,
         name: str
     ) -> TupleCoordinate:
-        
+
         # Check coordinate type.
         if not isinstance(coordinate, (dict, tuple)):
             raise TypeError(f'"{name}" should be dict or tuple.')
