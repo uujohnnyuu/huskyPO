@@ -25,7 +25,7 @@ class Appium:
     WD_HUB = '/wd/hub'  # appium 1.0
 
 
-class Swipe:
+class Offset:
     UP = (0.5, 0.5, 0.5, 0.25)
     DOWN = (0.5, 0.5, 0.5, 0.75)
     LEFT = (0.5, 0.5, 0.25, 0.5)
@@ -34,3 +34,6 @@ class Swipe:
     UPPER_RIGHT = (0.5, 0.5, 0.75, 0.25)
     LOWER_LEFT = (0.5, 0.5, 0.25, 0.75)
     LOWER_RIGHT = (0.5, 0.5, 0.75, 0.75)
+
+class Area:
+    FULL = (0.0, 0.0, 1.0, 1.0)

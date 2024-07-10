@@ -26,7 +26,7 @@ from selenium.types import WaitExcTypes
 
 from . import logstack
 from . import ec_extension as ecex
-from .config import Timeout
+from .config import Timeout, Offset, Area
 from .by import ByAttribute
 from .page import Page
 from .types import SeleniumWebElement, AppiumWebDriver
@@ -821,8 +821,8 @@ class Element:
 
     def swipe_by(
         self,
-        offset: Coordinate = {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25},
-        area: Coordinate = {'x': 0.0, 'y': 0.0, 'width': 1.0, 'height': 1.0},
+        offset: Coordinate = Offset.UP,
+        area: Coordinate = Area.FULL,
         timeout: int | float = 3,
         max_swipe: int = 10,
         max_adjust: int = 2,
@@ -836,7 +836,7 @@ class Element:
         within the specified area.
 
         Args:
-        - offset: The swiping range, which can be set as:
+        - offset: The swiping range, which can be set by Swipe class or:
             - int: The absolute coordinates, for example:
                 - dict: {'start_x': 200, 'start_y': 300, 'end_x': 200, 'end_y': 100}
                 - tuple: (200, 300, 200, 100) corresponding to the keys in the dict.
@@ -881,6 +881,20 @@ class Element:
             # y: From 75% (0.75) to 25% (0.25) of current window height (100% (1.0) window height).
             my_page.target_element.swipe_by()
 
+            # The "offset" parameter can be directly obtained from 
+            # the "Offset" class for common swipe ranges:
+
+            from huskypo import Offset
+
+            # Swipe down from the center point
+            my_page.my_element.swipe_by(Offset.DOWN)
+
+            # Swipe right from the center point
+            my_page.my_element.swipe_by(Offset.RIGHT)
+
+            # Swipe to the upper left from the center point
+            my_page.my_element.swipe_by(Offset.UPPER_LEFT)
+
             # Swipe with customize absolute offset.
             # Note that the area parameter will affect the adjusting process.
             # We recommend not setting the area in this case,
@@ -914,8 +928,8 @@ class Element:
 
     def flick_by(
         self,
-        offset: Coordinate = {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25},
-        area: Coordinate = {'x': 0.0, 'y': 0.0, 'width': 1.0, 'height': 1.0},
+        offset: Coordinate = Offset.UP,
+        area: Coordinate = Area.FULL,
         timeout: int | float = 3,
         max_flick: int = 10,
         max_adjust: int = 2,
@@ -974,6 +988,20 @@ class Element:
             # x: Fixed 50% (0.5) of current window width (100% (1.0) window width).
             # y: From 75% (0.75) to 25% (0.25) of current window height (100% (1.0) window height).
             my_page.target_element.flick_by()
+
+            # The "offset" parameter can be directly obtained from 
+            # the "Offset" class for common swipe ranges:
+
+            from huskypo import Offset
+
+            # Flick down from the center point
+            my_page.my_element.flick_by(Offset.DOWN)
+
+            # Flick right from the center point
+            my_page.my_element.flick_by(Offset.RIGHT)
+
+            # Flick to the upper left from the center point
+            my_page.my_element.flick_by(Offset.UPPER_LEFT)
 
             # Flick with customize absolute offset.
             # Note that the area parameter will affect the adjusting process.

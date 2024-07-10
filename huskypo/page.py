@@ -25,7 +25,7 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 
 from . import logstack
 from . import ec_extension as ecex
-from .config import Timeout
+from .config import Timeout, Offset, Area
 from .types import AppiumWebDriver
 from .types import WebDriver, WebElement, WebDriverTuple
 
@@ -730,8 +730,8 @@ class Page:
 
     def swipe_by(
         self,
-        offset: Coordinate = {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25},
-        area: Coordinate = {'x': 0.0, 'y': 0.0, 'width': 1.0, 'height': 1.0},
+        offset: Coordinate = Offset.UP,
+        area: Coordinate = Area.FULL,
         duration: int = 1000,
         times: int = 1
     ) -> AppiumWebDriver:
@@ -774,6 +774,20 @@ class Page:
             # x: Fixed 50% (half) of current window width.
             # y: From 75% to 25% of current window height.
             my_page.swipe_by()
+
+            # The "offset" parameter can be directly obtained from 
+            # the "Offset" class for common swipe ranges:
+
+            from huskypo import Offset
+
+            # Swipe down from the center point
+            my_page.swipe_by(Offset.DOWN)
+
+            # Swipe right from the center point
+            my_page.swipe_by(Offset.RIGHT)
+
+            # Swipe to the upper left from the center point
+            my_page.swipe_by(Offset.UPPER_LEFT)
 
             # Swipe with customize absolute offset.
             # Note that the area parameter will not affect any swiping behavior.
@@ -825,8 +839,8 @@ class Page:
 
     def flick_by(
         self,
-        offset: Coordinate = {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25},
-        area: Coordinate = {'x': 0.0, 'y': 0.0, 'width': 1.0, 'height': 1.0},
+        offset: Coordinate = Offset.UP,
+        area: Coordinate = Area.FULL,
         times: int = 1
     ) -> AppiumWebDriver:
         """
@@ -866,6 +880,20 @@ class Page:
             # x: Fixed 50% (half) of current window width.
             # y: From 75% to 25% of current window height.
             my_page.flick_by()
+
+            # The "offset" parameter can be directly obtained from 
+            # the "Offset" class for common swipe ranges:
+
+            from huskypo import Offset
+
+            # Flick down from the center point
+            my_page.flick_by(Offset.DOWN)
+
+            # Flick right from the center point
+            my_page.flick_by(Offset.RIGHT)
+
+            # Flick to the upper left from the center point
+            my_page.flick_by(Offset.UPPER_LEFT)
 
             # Flick with customize absolute offset.
             # Note that the area parameter will not affect any swiping behavior.
