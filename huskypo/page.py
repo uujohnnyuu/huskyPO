@@ -894,33 +894,27 @@ class Page:
         name: str
     ) -> TupleCoordinate:
 
-        # is dict or tuple
-        if isinstance(coordinate, dict):
-            values = tuple(coordinate.values())
-        elif isinstance(coordinate, tuple):
-            values = coordinate
-        else:
+        # Check coordinate type.
+        if not isinstance(coordinate, (dict, tuple)):
             raise TypeError(f'"{name}" should be dict or tuple.')
+        if isinstance(coordinate, dict):
+            coordinate = tuple(coordinate.values())
 
-        # is coordinate
-        if all(isinstance(value, int) for value in values):
-            values_type = int
-        elif all(isinstance(value, float) for value in values):
-            values_type = float
-        else:
+        # Check all values in coordinate should be int or float.
+        if not (all(isinstance(c, int) for c in coordinate) or all(isinstance(c, float) for c in coordinate)):
             raise TypeError(f'All "{name}" values should be "int" or "float".')
 
-        # if float, all should be (0 <= x <= 1)
-        if values_type == float and not all(0 <= value <= 1 for value in values):
+        # If float, all should be (0 <= x <= 1).
+        if isinstance(coordinate[0], float) and not all(0 <= abs(c) <= 1 for c in coordinate):
             raise ValueError(f'All "{name}" values are floats and should be between "0.0" and "1.0".')
 
-        return values
+        return coordinate
 
     def __get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
 
         area_x, area_y, area_width, area_height = self.__get_coordinate(area, 'area')
 
-        if isinstance(area_width, float):
+        if isinstance(area_x, float):
             window_x, window_y, window_width, window_height = self.get_window_rect().values()
             area_x = window_x + int(window_width * area_x)
             area_y = window_y + int(window_height * area_y)
