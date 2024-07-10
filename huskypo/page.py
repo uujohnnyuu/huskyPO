@@ -739,45 +739,15 @@ class Page:
         Swipe from one point to another, allowing customization of the offset and border settings.
 
         Args:
-        - offset: The swiping range, which can be set as:
-            - int: The absolute coordinates.
-                - dict: {'start_x': 200, 'start_y': 400, 'end_x': 200, 'end_y': 100}
-                - tuple: (200, 400, 200, 100) corresponding to the keys in the dict.
-            - float: The ratio of the border (swipeable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': 0.5, 'start_y': 0.25, 'end_x': 0.5, 'end_y': 0.75}
-                - tuple: (0.5, 0.25, 0.5, 0.75) corresponding to the keys in the dict.
-        - area: The swipeable area, default is the current window size, which can be set as:
-            - int: The absolute rect.
-                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
-                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
-            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
-                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
-                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
-            - Here is the calculation logic for float values:
-                - current window rect = (10, 20, 500, 1000) indicates the current view is
-                    a rectangle with its top-left corner at (10, 20) and dimensions (500 x 1000).
-                - area float rect = (0.2, 0.1, 0.6, 0.8)
-                - The resulting swipeable range will be:
-                - x: 10 + 500 * 0.2 = 110
-                - y: 20 + 1000 * 0.1 = 120
-                - width: 500 * 0.6 = 300
-                - height: 1000 * 0.8 = 800
-                - Therefore, the final area (swipeable range) will be a rectangle
-                    with the top-left corner at (110, 120) and dimensions (300 x 800).
+        - offset: Please refer to the Usage.
+        - area: Please refer to the Usage.
         - duration: Defines the swipe speed as the time taken to swipe from point A to point B, in milliseconds.
             The default is set to 250 by ActionBuilder.
         - times: The number of times to perform the swipe.
 
         Usage::
 
-            # Default is swiping down.
-            # x: Fixed 50% (half) of current window width.
-            # y: From 75% to 25% of current window height.
-            my_page.swipe_by()
-
-            # The "offset" parameter can be directly obtained from
-            # the "Offset" class for common swipe ranges:
-
+            # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges:
             from huskypo import Offset
 
             # Swipe down from the center point
@@ -789,25 +759,37 @@ class Page:
             # Swipe to the upper left from the center point
             my_page.swipe_by(Offset.UPPER_LEFT)
 
-            # Swipe with customize absolute offset.
-            # Note that the area parameter will not affect any swiping behavior.
-            my_page.swipe_by((250, 300, 400, 700))
+            # Default is swiping up.
+            # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
+            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
+            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
+            # offset y: From 50% (0.5) to 25% (0.25) of 100% (1.0) current window height.
+            my_page.swipe_by()
 
-            # Swipe with ratio of border.
-            # Area is current window size (default).
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35))
-
-            # Swipe with ratio of border.
-            # Area is ratio of current window size.
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (0.2, 0.2, 0.6, 0.8))
-
-            # Swipe with ratio of border.
-            # Area is absolute coordinate.
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
-
-            # Get absolute border coordinate by scrollable element rect.
+            # This is the most recommended method to swipe within a swipeable range.
+            # Get the absolute area coordinates using the scrollable element's rect.
             area = my_page.scrollable_element.rect
             my_page.swipe_by((0.3, 0.85, 0.5, 0.35), area)
+
+            # Swipe with customize absolute offset.
+            # This is the same as official driver.swipe() method.
+            my_page.swipe_by((250, 300, 400, 700))
+
+            # Swipe with customize relative offset of current window size.
+            my_page.swipe_by((0.3, 0.85, 0.5, 0.35))
+
+            # Swipe with customize relative offset of customize relative area.
+            # The area is relative to current window rect, for example:
+            # current window rect = (10, 20, 500, 1000)
+            # area = (0.1, 0.2, 0.6, 0.7)
+            # area x = 10 + 500 x 0.1 = 60
+            # area y = 20 + 1000 x 0.2 = 220
+            # area width = 500 x 0.6 = 300
+            # area height = 1000 x 0.7 = 700
+            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
+
+            # Swipe with customize relative offset of customize absolute area.
+            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
 
@@ -846,44 +828,14 @@ class Page:
         """
         Flick from one point to another, allowing customization of the offset and border settings.
 
-        Args:
-        - offset: The flicking range, which can be set as:
-            - int: The absolute coordinates.
-                - dict: {'start_x': 200, 'start_y': 400, 'end_x': 200, 'end_y': 100}
-                - tuple: (200, 400, 200, 100) corresponding to the keys in the dict.
-            - float: The ratio of the border (flickable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': 0.5, 'start_y': 0.25, 'end_x': 0.5, 'end_y': 0.75}
-                - tuple: (0.5, 0.25, 0.5, 0.75) corresponding to the keys in the dict.
-        - area: The flickable area, default is the current window size, which can be set as:
-            - int: The absolute rect.
-                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
-                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
-            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
-                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
-                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
-            - Here is the calculation logic for float values:
-                - current window rect = (10, 20, 500, 1000) indicates the current view is
-                    a rectangle with its top-left corner at (10, 20) and dimensions (500 x 1000).
-                - area float rest = (0.2, 0.1, 0.6, 0.8)
-                - The resulting swipeable range will be:
-                - x: 10 + 500 * 0.2 = 110
-                - y: 20 + 1000 * 0.1 = 120
-                - width: 500 * 0.6 = 300
-                - height: 1000 * 0.8 = 800
-                - Therefore, the final area (swipeable range) will be a rectangle
-                    with the top-left corner at (110, 120) and dimensions (300 x 800).
+       Args:
+        - offset: Please refer to the Usage.
+        - area: Please refer to the Usage.
         - times: The number of times to perform the flick.
 
         Usage::
 
-            # Default is flicking down.
-            # x: Fixed 50% (half) of current window width.
-            # y: From 75% to 25% of current window height.
-            my_page.flick_by()
-
-            # The "offset" parameter can be directly obtained from
-            # the "Offset" class for common swipe ranges:
-
+            # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges:
             from huskypo import Offset
 
             # Flick down from the center point
@@ -895,25 +847,36 @@ class Page:
             # Flick to the upper left from the center point
             my_page.flick_by(Offset.UPPER_LEFT)
 
-            # Flick with customize absolute offset.
-            # Note that the area parameter will not affect any swiping behavior.
-            my_page.flick_by((250, 300, 400, 700))
+            # Default is flicking up.
+            # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
+            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
+            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
+            # offset y: From 50% (0.5) to 25% (0.25) of 100% (1.0) current window height.
+            my_page.flick_by()
 
-            # Flick with ratio of border.
-            # Area is current window size (default).
-            my_page.flick_by((0.3, 0.85, 0.5, 0.35))
-
-            # Flick with ratio of border.
-            # Area is ratio of current window size.
-            my_page.flick_by((0.3, 0.85, 0.5, 0.35), (0.2, 0.2, 0.6, 0.8))
-
-            # Flick with ratio of border.
-            # Area is absolute coordinate.
-            my_page.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
-
-            # Get absolute border coordinate by scrollable element rect.
+            # This is the most recommended method to flick within a swipeable range.
+            # Get the absolute area coordinates using the scrollable element's rect.
             area = my_page.scrollable_element.rect
             my_page.flick_by((0.3, 0.85, 0.5, 0.35), area)
+
+            # Flick with customize absolute offset.
+            my_page.flick_by((250, 300, 400, 700))
+
+            # Flick with customize relative offset of current window size.
+            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35))
+
+            # Flick with customize relative offset of customize relative area.
+            # The area is relative to current window rect, for example:
+            # current window rect = (10, 20, 500, 1000)
+            # area = (0.1, 0.2, 0.6, 0.7)
+            # area x = 10 + 500 x 0.1 = 60
+            # area y = 20 + 1000 x 0.2 = 220
+            # area width = 500 x 0.6 = 300
+            # area height = 1000 x 0.7 = 700
+            my_page.flick_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
+
+            # Flick with customize relative offset of customize absolute area.
+            my_page.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
 

@@ -868,8 +868,8 @@ class Element:
             # Default is swiping up.
             # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
             # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 50% (0.5) of current 100% (1.0) window width.
-            # offset y: From 50% (0.5) to 25% (0.25) of current 100% (1.0) window height.
+            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
+            # offset y: From 50% (0.5) to 25% (0.25) of 100% (1.0) current window height.
             my_page.target_element.swipe_by()
 
             # This is the most recommended method to swipe within a swipeable range.
@@ -957,8 +957,8 @@ class Element:
             # Default is flicking up.
             # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
             # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 50% (0.5) of current 100% (1.0) window width.
-            # offset y: From 50% (0.5) to 25% (0.25) of current 100% (1.0) window height.
+            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
+            # offset y: From 50% (0.5) to 25% (0.25) of 100% (1.0) current window height.
             my_page.target_element.flick_by()
 
             # This is the most recommended method to flick within a swipeable range.
