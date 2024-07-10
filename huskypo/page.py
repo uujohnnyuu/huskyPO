@@ -775,7 +775,7 @@ class Page:
             # y: From 75% to 25% of current window height.
             my_page.swipe_by()
 
-            # The "offset" parameter can be directly obtained from 
+            # The "offset" parameter can be directly obtained from
             # the "Offset" class for common swipe ranges:
 
             from huskypo import Offset
@@ -881,7 +881,7 @@ class Page:
             # y: From 75% to 25% of current window height.
             my_page.flick_by()
 
-            # The "offset" parameter can be directly obtained from 
+            # The "offset" parameter can be directly obtained from
             # the "Offset" class for common swipe ranges:
 
             from huskypo import Offset

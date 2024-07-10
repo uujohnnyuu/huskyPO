@@ -851,15 +851,15 @@ class Element:
                 - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
                 - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
             - Here is the calculation logic for float values:
-                    - current window rect = (10, 20, 500, 1000) indicates the current view is
+                - current window rect = (10, 20, 500, 1000) indicates the current view is
                     a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
-                    - area float rest = (0.2, 0.1, 0.6, 0.8)
-                    - The resulting swipeable range will be:
-                    - x: 10 + 500 * 0.2 = 110
-                    - y: 20 + 1000 * 0.1 = 120
-                    - width: 500 * 0.6 = 300
-                    - height: 1000 * 0.8 = 800
-                    - Therefore, the final area (swipeable range) will be a rectangle
+                - area float rest = (0.2, 0.1, 0.6, 0.8)
+                - The resulting swipeable range will be:
+                - x: 10 + 500 * 0.2 = 110
+                - y: 20 + 1000 * 0.1 = 120
+                - width: 500 * 0.6 = 300
+                - height: 1000 * 0.8 = 800
+                - Therefore, the final area (swipeable range) will be a rectangle
                     with the top-left corner at (110, 120) and dimensions 300 x 800.
         - timeout: The maximum time in seconds to wait for the element to become viewable (visible).
         - max_swipe: The maximum number of swipes allowed.
@@ -881,7 +881,7 @@ class Element:
             # y: From 75% (0.75) to 25% (0.25) of current window height (100% (1.0) window height).
             my_page.target_element.swipe_by()
 
-            # The "offset" parameter can be directly obtained from 
+            # The "offset" parameter can be directly obtained from
             # the "Offset" class for common swipe ranges:
 
             from huskypo import Offset
@@ -989,7 +989,7 @@ class Element:
             # y: From 75% (0.75) to 25% (0.25) of current window height (100% (1.0) window height).
             my_page.target_element.flick_by()
 
-            # The "offset" parameter can be directly obtained from 
+            # The "offset" parameter can be directly obtained from
             # the "Offset" class for common swipe ranges:
 
             from huskypo import Offset

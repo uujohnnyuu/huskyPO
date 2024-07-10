@@ -35,5 +35,6 @@ class Offset:
     LOWER_LEFT = (0.5, 0.5, 0.25, 0.75)
     LOWER_RIGHT = (0.5, 0.5, 0.75, 0.75)
 
+
 class Area:
     FULL = (0.0, 0.0, 1.0, 1.0)
