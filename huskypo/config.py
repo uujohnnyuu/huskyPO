@@ -19,9 +19,9 @@ class Timeout:
     """
     Timeout settings.
 
-    DEFAULT: The default wait time for each element, which can be directly called and modified. 
+    DEFAULT: The default wait time for each element, which can be directly called and modified.
         It will immediately affect all subsequent elements.
-    RERAISE: True means that a TimeoutException will be raised immediately when a timeout occurs; 
+    RERAISE: True means that a TimeoutException will be raised immediately when a timeout occurs;
         otherwise, False will be returned.
     """
     DEFAULT = 30
@@ -32,7 +32,7 @@ class Timeout:
         """
         When a timeout occurs, used to determine whether to re-raise a TimeoutException or return False.
         Typically used in wait-related methods within Element or Elements.
-        
+
         Args:
         - switch:
             - bool: True means a TimeoutException will be raised; False means False will be returned.
