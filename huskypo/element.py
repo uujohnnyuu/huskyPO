@@ -836,64 +836,46 @@ class Element:
         within the specified area.
 
         Args:
-        - offset: The swiping range, which can be set by Swipe class or:
-            - int: The absolute coordinates, for example:
-                - dict: {'start_x': 200, 'start_y': 300, 'end_x': 200, 'end_y': 100}
-                - tuple: (200, 300, 200, 100) corresponding to the keys in the dict.
-            - float: The ratio of the border (swipeable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25}
-                - tuple: (0.5, 0.75, 0.5, 0.25) corresponding to the keys in the dict.
-        - area: The swipeable area, default is the current window rect, which can be set as:
-            - int: The absolute rect.
-                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
-                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
-            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
-                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
-                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
-            - Here is the calculation logic for float values:
-                - current window rect = (10, 20, 500, 1000) indicates the current view is
-                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
-                - area float rest = (0.2, 0.1, 0.6, 0.8)
-                - The resulting swipeable range will be:
-                - x: 10 + 500 * 0.2 = 110
-                - y: 20 + 1000 * 0.1 = 120
-                - width: 500 * 0.6 = 300
-                - height: 1000 * 0.8 = 800
-                - Therefore, the final area (swipeable range) will be a rectangle
-                    with the top-left corner at (110, 120) and dimensions 300 x 800.
-        - timeout: The maximum time in seconds to wait for the element to become viewable (visible).
+        - offset: Please refer to the Usage.
+        - area: Please refer to the Usage.
+        - timeout: The maximum time in seconds to wait for the element to become visible.
         - max_swipe: The maximum number of swipes allowed.
         - max_adjust: The maximum number of adjustments to align all borders of the element within the view border.
         - min_distance: The minimum swipe distance to avoid being mistaken for a click.
         - duration: The duration of the swipe in milliseconds, from start to end.
 
-        Note of Args `min_distance` and `duration`:
-        - `min_distance` and `duration` are interdependent.
-        - The default settings are based on sliding at a rate of 100 pixels per second,
-            which has been found to be stable.
-        - It is advisable not to alter these unless specific conditions necessitate changes.
+        Note on Args "min_distance" and "duration":
+        Both parameters are used to adjust the element position with a swipe
+        when the element is visible but not within the desired area.
+        The default settings are based on sliding at a rate of 100 pixels per second,
+        which has been found to be stable.
+        It is recommended not to change these parameter values unless you have specific testing scenarios.
 
         Usage::
 
-            # Default is swiping up.
-            # offset = (0.5, 0.75, 0.5, 0.25) and area = (0.0, 0.0, 1.0, 1.0) means
-            # x: Fixed 50% (0.5) of current window width (100% (1.0) window width).
-            # y: From 75% (0.75) to 25% (0.25) of current window height (100% (1.0) window height).
-            my_page.target_element.swipe_by()
-
-            # The "offset" parameter can be directly obtained from
-            # the "Offset" class for common swipe ranges:
-
+            # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges:
             from huskypo import Offset
 
             # Swipe down from the center point
-            my_page.my_element.swipe_by(Offset.DOWN)
+            my_page.target_element.swipe_by(Offset.DOWN)
 
             # Swipe right from the center point
-            my_page.my_element.swipe_by(Offset.RIGHT)
+            my_page.target_element.swipe_by(Offset.RIGHT)
 
             # Swipe to the upper left from the center point
-            my_page.my_element.swipe_by(Offset.UPPER_LEFT)
+            my_page.target_element.swipe_by(Offset.UPPER_LEFT)
+
+            # Default is swiping up.
+            # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
+            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
+            # offset x: Fixed 50% (0.5) of current 100% (1.0) window width.
+            # offset y: From 50% (0.5) to 25% (0.25) of current 100% (1.0) window height.
+            my_page.target_element.swipe_by()
+
+            # This is the most recommended method to swipe within a swipeable range.
+            # Get the absolute area coordinates using the scrollable element's rect.
+            area = my_page.scrollable_element.rect
+            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), area)
 
             # Swipe with customize absolute offset.
             # Note that the area parameter will affect the adjusting process.
@@ -903,21 +885,21 @@ class Element:
             # and the target element should be inside the area after swiping.)
             my_page.target_element.swipe_by((250, 300, 400, 700))
 
-            # Swipe with ratio of area.
-            # Area is current window size (default).
+            # Swipe with customize relative offset of current window size.
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
 
-            # Swipe with ratio of area.
-            # Area is ratio of current window size.
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (0.2, 0.2, 0.6, 0.8))
+            # Swipe with customize relative offset of customize relative area. 
+            # The area is relative to current window rect, for example:
+            # current window rect = (10, 20, 500, 1000)
+            # area = (0.1, 0.2, 0.6, 0.7)
+            # area x = 10 + 500 x 0.1 = 60
+            # area y = 20 + 1000 x 0.2 = 220
+            # area width = 500 x 0.6 = 300
+            # area height = 1000 x 0.7 = 700
+            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
 
-            # Swipe with ratio of area.
-            # Area is absolute coordinate.
+            # Swipe with customize relative offset of customize absolute area. 
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
-
-            # Get absolute area coordinate by scrollable element rect.
-            area = my_page.scrollable_element.rect
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), area)
 
         """
         area = self.__get_area(area)
@@ -943,89 +925,70 @@ class Element:
         within the specified area.
 
         Args:
-        - offset: The swiping range, which can be set as:
-            - int: The absolute coordinates, for example:
-                - dict: {'start_x': 200, 'start_y': 300, 'end_x': 200, 'end_y': 100}
-                - tuple: (200, 300, 200, 100) corresponding to the keys in the dict.
-            - float: The ratio of the border (flickable range), which should be between 0.0 and 1.0.
-                - dict: {'start_x': 0.5, 'start_y': 0.75, 'end_x': 0.5, 'end_y': 0.25}
-                - tuple: (0.5, 0.75, 0.5, 0.25) corresponding to the keys in the dict.
-        - area: The flickable area, default is the current window rect, which can be set as:
-            - int: The absolute rect.
-                - dict: {'x': 0, 'y': 0, 'width': 400, 'height': 900}
-                - tuple: (0, 0, 400, 900) corresponding to the keys in the dict.
-            - float: The ratio of the current window rect, which should be between 0.0 and 1.0.
-                - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
-                - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
-            - Here is the calculation logic for float values:
-                    - current window rect = (10, 20, 500, 1000) indicates the current view is
-                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
-                    - area float rest = (0.2, 0.1, 0.6, 0.8)
-                    - The resulting flickable range will be:
-                    - x: 10 + 500 * 0.2 = 110
-                    - y: 20 + 1000 * 0.1 = 120
-                    - width: 500 * 0.6 = 300
-                    - height: 1000 * 0.8 = 800
-                    - Therefore, the final area (flickable range) will be a rectangle
-                    with the top-left corner at (110, 120) and dimensions 300 x 800.
-        - timeout: The maximum time in seconds to wait for the element to become viewable (visible).
+        - offset: Please refer to the Usage.
+        - area: Please refer to the Usage.
+        - timeout: The maximum time in seconds to wait for the element to become visible.
         - max_flick: The maximum number of swipes allowed.
         - max_adjust: The maximum number of adjustments to align all borders of the element within the view border.
         - min_distance: Adjusting. The minimum swipe distance to avoid being mistaken for a click.
         - duration: Adjustung. The duration of the swipe in milliseconds, from start to end.
 
-        Note of Args `min_distance` and `duration`:
-        - Both are using swipe (not flick) to adjust the element position.
-        - `min_distance` and `duration` are interdependent.
-        - The default settings are based on sliding at a rate of 100 pixels per second,
-            which has been found to be stable.
-        - It is advisable not to alter these unless specific conditions necessitate changes.
+        Note on Args "min_distance" and "duration":
+        Both parameters are used to adjust the element position with a swipe (not a flick)
+        when the element is visible but not within the desired area.
+        The default settings are based on sliding at a rate of 100 pixels per second,
+        which has been found to be stable.
+        It is recommended not to change these parameter values unless you have specific testing scenarios.
 
         Usage::
 
-            # Default is flicking up.
-            # offset = (0.5, 0.75, 0.5, 0.25) and area = (0.0, 0.0, 1.0, 1.0) means
-            # x: Fixed 50% (0.5) of current window width (100% (1.0) window width).
-            # y: From 75% (0.75) to 25% (0.25) of current window height (100% (1.0) window height).
-            my_page.target_element.flick_by()
-
-            # The "offset" parameter can be directly obtained from
-            # the "Offset" class for common swipe ranges:
-
+            # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges:
             from huskypo import Offset
 
             # Flick down from the center point
-            my_page.my_element.flick_by(Offset.DOWN)
+            my_page.target_element.flick_by(Offset.DOWN)
 
             # Flick right from the center point
-            my_page.my_element.flick_by(Offset.RIGHT)
+            my_page.target_element.flick_by(Offset.RIGHT)
 
             # Flick to the upper left from the center point
-            my_page.my_element.flick_by(Offset.UPPER_LEFT)
+            my_page.target_element.flick_by(Offset.UPPER_LEFT)
+
+            # Default is flicking up.
+            # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
+            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
+            # offset x: Fixed 50% (0.5) of current 100% (1.0) window width.
+            # offset y: From 50% (0.5) to 25% (0.25) of current 100% (1.0) window height.
+            my_page.target_element.flick_by()
+
+            # This is the most recommended method to flick within a swipeable range.
+            # Get the absolute area coordinates using the scrollable element's rect.
+            area = my_page.scrollable_element.rect
+            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), area)
 
             # Flick with customize absolute offset.
             # Note that the area parameter will affect the adjusting process.
             # We recommend not setting the area in this case,
             # unless you have a specific testing scenario.
-            # (ex. flicking range is not within the area,
+            # (ex. Swiping range is not within the area,
             # and the target element should be inside the area after flicking.)
             my_page.target_element.flick_by((250, 300, 400, 700))
 
-            # Flick with ratio of area.
-            # Area is current window size (default).
+            # Flick with customize relative offset of current window size.
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35))
 
-            # Flick with ratio of area.
-            # Area is ratio of current window size.
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (0.2, 0.2, 0.6, 0.8))
+            # Flick with customize relative offset of customize relative area. 
+            # The area is relative to current window rect, for example:
+            # current window rect = (10, 20, 500, 1000)
+            # area = (0.1, 0.2, 0.6, 0.7)
+            # area x = 10 + 500 x 0.1 = 60
+            # area y = 20 + 1000 x 0.2 = 220
+            # area width = 500 x 0.6 = 300
+            # area height = 1000 x 0.7 = 700
+            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
 
-            # Flick with ratio of area.
-            # Area is absolute coordinate.
+            # Flick with customize relative offset of customize absolute area. 
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
-
-            # Get absolute area coordinate by scrollable element rect.
-            area = my_page.scrollable_element.rect
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), area)
 
         """
         area = self.__get_area(area)
@@ -1205,6 +1168,7 @@ class Element:
             my_page.my_element.clear()
             my_page.my_element.clear().send_keys('my_text')
             my_page.my_element.click().clear().send_keys('my_text')
+
         """
         try:
             try:
@@ -1230,6 +1194,7 @@ class Element:
             my_page.my_element.send_keys('my_text')
             my_page.my_element.clear().send_keys('my_text')
             my_page.my_element.click().clear().send_keys('my_text')
+
         """
         try:
             try:
@@ -2332,64 +2297,7 @@ class Element:
         duration: int = 1000
     ) -> Element:
         """
-        Appium API.
-        For native iOS and Android apps, this function swipes the screen vertically or horizontally
-        until the element becomes present(Android) or visible(iOS) within the specified border.
-
-        Args:
-        - direction: Use `SwipeAction`, from huskypo import SwipeAction as SA.
-            - vertical: `SA.V` or `SA.VA`, where `VA` denotes `vertical and the border uses absolute pixel values`.
-            - horizontal: `SA.H` or `SA.HA`, where `HA` denotes `horizontal and the border uses absolute pixel values`.
-        - border: The actual border pixel value or a percentage from 0 to 100.
-        - start: The start ratio (0 to 100) of the border parameter.
-        - end: The end ratio (0 to 100) of the border parameter.
-        - fix:
-            - True: Uses the `target element's center x or y` as the fixed coordinate when swiping vertically or horizontally.
-            - False: Uses the `border center x or y` as the fixed coordinate when swiping vertically or horizontally.
-            - int: Assigns an `absolute x or y` as the fixed coordinate when swiping vertically or horizontally.
-        - timeout: The maximum time in seconds to wait for the element to become viewable (either present or visible).
-        - max_swipe: The maximum number of swipes allowed.
-        - max_adjust: The maximum number of adjustments to align all borders of the element with the view border.
-        - min_distance: The minimum swipe distance to avoid being mistaken for a click.
-        - duration: The duration of the swipe in milliseconds, from start to end.
-
-        Usage::
-
-            from huskypo.by import Key
-
-            # Default scroll down to find the element.
-            page.element.swipe_into_view()
-
-            # Scroll up to find the element with an absolute border.
-            border = (50, 450, 100, 700)  # You can determine the actual border by the scrollable element.
-            page.element.swipe_into_view(Key.VA, border, 20, 80)
-
-            # Scroll right to find the element with a ratio-based border.
-            page.element.swipe_into_view(Key.H)
-
-            # Scroll left to find the element with a ratio-based border.
-            border = (10, 90, 10, 90)  # (left, right, top, bottom) will be the ratio of the window size.
-            page.element.swipe_into_view(Key.H, border, 25, 75)
-
-            # Horizontal scrolling with a fixed "y" coordinate obtained from the target element.
-            # This is applicable to iOS. (Element outside the window is present but not visible.)
-            page.element.swipe_into_view(Key.HA, border, 80, 20, True)
-
-            # Horizontal scrolling with a fixed "y" coordinate assigned by an absolute pixel value.
-            # This is suitable for Android. (Element outside the window is not present.)
-            ty = page.another_present_element.center['y']  # Or you can directly assign a value.
-            page.element.swipe_into_view(Key.HA, border, 80, 20, ty)
-
-            # Vertical scrolling with a fixed "x" coordinate assigned by an absolute pixel value.
-            # This is suitable for Android. (Element outside the window is not present.)
-            tx = page.another_present_element.center['x']  # Or you can directly assign a value.
-            page.element.swipe_into_view(Key.VA, border, 80, 20, tx)
-
-        Note:
-        `min_distance` and `duration` are interdependent;
-        the default settings are based on sliding at a rate of 100 pixels per second,
-        which has been found to be stable.
-        It is advisable not to alter these unless specific conditions necessitate changes.
+        Please use "swipe_by" instead.
         """
         # TODO deprecate
         warnings.warn('Please use "swipe_by" instead.', DeprecationWarning, stacklevel=2)
