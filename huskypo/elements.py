@@ -473,7 +473,7 @@ class Elements:
     def rects(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets locations relative to the view and size of all present elements.\n
+        Gets locations relative to the view and size of all present elements.
         """
         return [
             {'x': rect['x'], 'y': rect['y'], 'width': rect['width'], 'height': rect['height']}
@@ -485,7 +485,7 @@ class Elements:
     def all_visible_rects(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets locations relative to the view and size of all visible elements.\n
+        Gets locations relative to the view and size of all visible elements.
         """
         return [
             {'x': rect['x'], 'y': rect['y'], 'width': rect['width'], 'height': rect['height']}
@@ -497,7 +497,7 @@ class Elements:
     def any_visible_rects(self) -> list[dict[str, int]]:
         """
         Selenium and Appium API.
-        Gets locations relative to the view and size of any visible elements.\n
+        Gets locations relative to the view and size of any visible elements.
         """
         return [
             {'x': rect['x'], 'y': rect['y'], 'width': rect['width'], 'height': rect['height']}
@@ -678,5 +678,5 @@ class Elements:
         """
         Please use `wait_all_absent` instead.
         """
-        warnings.warn('Please use "wait_all_absent" instead.', DeprecationWarning, 2)
+        warnings.warn('Please use "wait_all_absent" instead.', DeprecationWarning, stacklevel=2)
         return self.wait_all_absent(timeout, reraise)

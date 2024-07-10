@@ -530,6 +530,7 @@ class Page:
             my_page.my_element1.scroll_to_element().action_click()
             my_page.my_element2.drag_and_drop(my_page.element3)
             my_page.perform()
+
         """
         self._action.perform()
 
@@ -545,6 +546,7 @@ class Page:
             my_page.my_element1.scroll_to_element().action_click()
             my_page.my_element2.drag_and_drop(my_page.element3)
             my_page.reset_actions()
+
         """
         self._action.reset_actions()
 
@@ -669,8 +671,8 @@ class Page:
         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
 
-        Raises: If the origin with offset is outside the viewport.
-        - MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.
+        Exceptions: If the origin with offset is outside the viewport.
+        - MoveTargetOutOfBoundsException: If the origin with offset is outside the viewport.
         """
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
         self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
@@ -686,13 +688,14 @@ class Page:
         Taps on an particular place with up to five fingers, holding for a certain time
 
         Args:
-            positions: an array of tuples representing the x/y coordinates of
-                the fingers to tap. Length can be up to five.
-            duration: length of time to tap, in ms. Default value is 100 ms.
+        - positions: an array of tuples representing the x/y coordinates of
+            the fingers to tap. Length can be up to five.
+        - duration: length of time to tap, in ms. Default value is 100 ms.
 
         Usage::
 
             page.tap([(100, 20), (100, 60), (100, 100)], 500)
+
         """
         return self.driver.tap(positions, duration)
 
@@ -751,16 +754,16 @@ class Page:
                 - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
                 - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
             - Here is the calculation logic for float values:
-                    - current window rect = (10, 20, 500, 1000) indicates the current view is
-                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
-                    - area float rest = (0.2, 0.1, 0.6, 0.8)
-                    - The resulting swipeable range will be:
-                    - x: 10 + 500 * 0.2 = 110
-                    - y: 20 + 1000 * 0.1 = 120
-                    - width: 500 * 0.6 = 300
-                    - height: 1000 * 0.8 = 800
-                    - Therefore, the final area (swipeable range) will be a rectangle
-                    with the top-left corner at (110, 120) and dimensions 300 x 800.
+                - current window rect = (10, 20, 500, 1000) indicates the current view is
+                    a rectangle with its top-left corner at (10, 20) and dimensions (500 x 1000).
+                - area float rect = (0.2, 0.1, 0.6, 0.8)
+                - The resulting swipeable range will be:
+                - x: 10 + 500 * 0.2 = 110
+                - y: 20 + 1000 * 0.1 = 120
+                - width: 500 * 0.6 = 300
+                - height: 1000 * 0.8 = 800
+                - Therefore, the final area (swipeable range) will be a rectangle
+                    with the top-left corner at (110, 120) and dimensions (300 x 800).
         - duration: Defines the swipe speed as the time taken to swipe from point A to point B, in milliseconds.
             The default is set to 250 by ActionBuilder.
         - times: The number of times to perform the swipe.
@@ -791,6 +794,7 @@ class Page:
             # Get absolute border coordinate by scrollable element rect.
             area = my_page.scrollable_element.rect
             my_page.swipe_by((0.3, 0.85, 0.5, 0.35), area)
+
         """
 
         area = self.__get_area(area)
@@ -807,13 +811,15 @@ class Page:
         Flick from one point to another point.
 
         Args:
-            start_x: x-coordinate at which to start
-            start_y: y-coordinate at which to start
-            end_x: x-coordinate at which to stop
-            end_y: y-coordinate at which to stop
+        - start_x: x-coordinate at which to start
+        - start_y: y-coordinate at which to start
+        - end_x: x-coordinate at which to stop
+        - end_y: y-coordinate at which to stop
 
-        Usage:
+        Usage::
+
             page.flick(100, 100, 100, 400)
+
         """
         return self.driver.flick(start_x, start_y, end_x, end_y)
 
@@ -842,16 +848,16 @@ class Page:
                 - dict: {'x': 0.2, 'y': 0.1, 'width': 0.6, 'height': 0.8}
                 - tuple: (0.2, 0.1, 0.6, 0.8) corresponding to the keys in the dict.
             - Here is the calculation logic for float values:
-                    - current window rect = (10, 20, 500, 1000) indicates the current view is
-                    a rectangle with its top-left corner at (10, 20) and dimensions 500 x 1000.
-                    - area float rest = (0.2, 0.1, 0.6, 0.8)
-                    - The resulting swipeable range will be:
-                    - x: 10 + 500 * 0.2 = 110
-                    - y: 20 + 1000 * 0.1 = 120
-                    - width: 500 * 0.6 = 300
-                    - height: 1000 * 0.8 = 800
-                    - Therefore, the final area (swipeable range) will be a rectangle
-                    with the top-left corner at (110, 120) and dimensions 300 x 800.
+                - current window rect = (10, 20, 500, 1000) indicates the current view is
+                    a rectangle with its top-left corner at (10, 20) and dimensions (500 x 1000).
+                - area float rest = (0.2, 0.1, 0.6, 0.8)
+                - The resulting swipeable range will be:
+                - x: 10 + 500 * 0.2 = 110
+                - y: 20 + 1000 * 0.1 = 120
+                - width: 500 * 0.6 = 300
+                - height: 1000 * 0.8 = 800
+                - Therefore, the final area (swipeable range) will be a rectangle
+                    with the top-left corner at (110, 120) and dimensions (300 x 800).
         - times: The number of times to perform the flick.
 
         Usage::
@@ -880,6 +886,7 @@ class Page:
             # Get absolute border coordinate by scrollable element rect.
             area = my_page.scrollable_element.rect
             my_page.flick_by((0.3, 0.85, 0.5, 0.35), area)
+
         """
 
         area = self.__get_area(area)
@@ -1407,11 +1414,7 @@ class Page:
 
         """
         # TODO deprecate
-        warnings.warn(
-            'This function is deprecated and will be removed in future versions. Please use "swipe_by" instead.',
-            DeprecationWarning,
-            stacklevel=2
-        )
+        warnings.warn('Please use "swipe_by" instead.', DeprecationWarning, stacklevel=2)
 
         vertical = 'v'
         horizontal = 'h'

@@ -23,11 +23,11 @@ def basic(
     you can use this method to quickly set them up.
 
     Args:
-        - file: Relative or absolute path of the file.
-        - level: Same as the level parameter in basicConfig.
-        - format: Same as the format parameter in basicConfig.
-        - datefmt: Same as the datefmt parameter in basicConfig.
-        - filemode: Same as the filemode parameter in basicConfig.
+    - file: Relative or absolute path of the file.
+    - level: Same as the level parameter in basicConfig.
+    - format: Same as the format parameter in basicConfig.
+    - datefmt: Same as the datefmt parameter in basicConfig.
+    - filemode: Same as the filemode parameter in basicConfig.
     """
     abspath = os.path.abspath(file)
     dirname = os.path.dirname(abspath)

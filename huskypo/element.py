@@ -795,9 +795,9 @@ class Element:
         Scrolls from one element to another
 
         Args:
-            target: the element to scroll to (center of element)
-            duration: defines speed of scroll action when moving to target.
-                Default is 600 ms for W3C spec.
+        - target: the element to scroll to (center of element)
+        - duration: defines speed of scroll action when moving to target.
+            Default is 600 ms for W3C spec.
         """
         try:
             return self.driver.scroll(self._present_element, target._present_element, duration)
@@ -1032,7 +1032,7 @@ class Element:
 
         area_x, area_y, area_width, area_height = self.__get_coordinate(area, 'area')
 
-        if isinstance(area_width, float):
+        if isinstance(area_x, float):
             window_x, window_y, window_width, window_height = self._page.get_window_rect().values()
             area_x = int(window_x + window_width * area_x)
             area_y = int(window_y + window_height * area_y)
@@ -1108,8 +1108,9 @@ class Element:
         duration: int
     ) -> int | Literal[False]:
 
-        def get_final_delta(delta):
-            return int(math.copysign(min_distance, delta)) if abs(delta) < min_distance else delta
+        def delta(area, element):
+            d = area - element
+            return int(math.copysign(min_distance, d)) if abs(d) < min_distance else d
 
         logstack._info(f'Start adjusting to element {self.remark}')
 
@@ -1127,10 +1128,10 @@ class Element:
             element_left, element_right, element_top, element_bottom = self.border.values()
 
             # delta = (area - element) and compare with min distance
-            delta_left = get_final_delta(area_left - element_left)
-            delta_right = get_final_delta(area_right - element_right)
-            delta_top = get_final_delta(area_top - element_top)
-            delta_bottom = get_final_delta(area_bottom - element_bottom)
+            delta_left = delta(area_left, element_left)
+            delta_right = delta(area_right, element_right)
+            delta_top = delta(area_top, element_top)
+            delta_bottom = delta(area_bottom, element_bottom)
 
             # adjust condition
             adjust_left = delta_left > 0
@@ -1336,6 +1337,7 @@ class Element:
             my_page.my_element1.scroll_to_element().action_click()
             my_page.my_element2.drag_and_drop(my_page.element3)
             my_page.perform()
+
         """
         self._action.perform()
 
@@ -1356,6 +1358,7 @@ class Element:
             my_page.my_element1.scroll_to_element().action_click()
             my_page.my_element2.click_and_hold()
             my_page.reset_actions()
+
         """
         self._action.reset_actions()
 
@@ -1376,6 +1379,7 @@ class Element:
             my_page.my_element1.scroll_to_element().action_click()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.click(self._present_element)
@@ -1400,6 +1404,7 @@ class Element:
             my_page.my_element1.scroll_to_element().click_and_hold()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.click_and_hold(self._present_element)
@@ -1424,6 +1429,7 @@ class Element:
             my_page.my_element1.scroll_to_element().context_click()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.context_click(self._present_element)
@@ -1448,6 +1454,7 @@ class Element:
             my_page.my_element1.scroll_to_element().double_click()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.double_click(self._present_element)
@@ -1476,6 +1483,7 @@ class Element:
             my_page.my_element1.scroll_to_element().drag_and_drop(my_page.my_element2)
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.drag_and_drop(self._present_element, target._present_element)
@@ -1505,6 +1513,7 @@ class Element:
             my_page.my_element.scroll_to_element().drag_and_drop_by_offset(100, 200)
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.drag_and_drop_by_offset(self._present_element, xoffset, yoffset)
@@ -1527,6 +1536,7 @@ class Element:
 
             # switch to previous application(command+shift+tab)
             my_page.my_element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
+
         """
         # key_down, first to focus target element.
         try:
@@ -1558,6 +1568,7 @@ class Element:
 
             # copy(control+c)
             my_page.my_element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+
         """
         if focus:
             try:
@@ -1586,6 +1597,7 @@ class Element:
 
             # copy(control+c)
             my_page.my_element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+
         """
         if focus:
             try:
@@ -1614,6 +1626,7 @@ class Element:
             # This is recommend to use send_keys_to_element() instead.
             my_page.my_element.action_click()  # Need to have focused element first.
             my_page.my_element.action_send_keys('my_keys').perform()
+
         """
         self._action.send_keys(*keys_to_send)
         return self
@@ -1638,6 +1651,7 @@ class Element:
             my_page.my_element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.send_keys_to_element(self._present_element, *keys_to_send)
@@ -1662,6 +1676,7 @@ class Element:
             my_page.my_element.scroll_to_element().move_to_element()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.move_to_element(self._present_element)
@@ -1695,6 +1710,7 @@ class Element:
             my_page.my_element.scroll_to_element().move_to_element_with_offset(100, 200)
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.move_to_element_with_offset(self._present_element, xoffset, yoffset)
@@ -1719,6 +1735,7 @@ class Element:
             my_page.my_element.click_and_hold().release()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.release(self._present_element)
@@ -1752,6 +1769,7 @@ class Element:
             my_page.my_element1.scroll_to_element().action_click()
             ...  # other process
             my_page.perform()
+
         """
         try:
             self._action.scroll_to_element(self._present_element)
@@ -1793,6 +1811,7 @@ class Element:
             my_page.my_element.scroll_from_element(-30, -50, 150, 100).action_click()
             ...  # other process
             my_page.perform()
+
         """
         try:
             scroll_origin = ScrollOrigin.from_element(self._present_element, x_offset, y_offset)
@@ -2024,6 +2043,7 @@ class Element:
 
             my_page.my_element.input('123 456')
             my_page.my_element.input('123').space().input('456')
+
         """
         try:
             self._present_element.send_keys(text)
@@ -2039,6 +2059,7 @@ class Element:
         Usage::
 
             my_page.my_element.input('123 456').enter()
+
         """
         try:
             self._present_element.send_keys(Keys.ENTER)
@@ -2054,6 +2075,7 @@ class Element:
         Usage::
 
             my_page.my_element.select_all().copy()
+
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
@@ -2071,6 +2093,7 @@ class Element:
 
             my_page.my_element1.cut()
             my_page.my_element2.paste()
+
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
@@ -2088,6 +2111,7 @@ class Element:
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
+
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
@@ -2105,6 +2129,7 @@ class Element:
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
+
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
@@ -2124,6 +2149,7 @@ class Element:
         Usage::
 
             my_page.my_element.arrow_left(3)
+
         """
         try:
             self._present_element.send_keys(Keys.ARROW_LEFT * times)
@@ -2142,6 +2168,7 @@ class Element:
         Usage::
 
             my_page.my_element.arrow_right(3)
+
         """
         try:
             self._present_element.send_keys(Keys.ARROW_RIGHT * times)
@@ -2160,6 +2187,7 @@ class Element:
         Usage::
 
             my_page.my_element.arrow_up(3)
+
         """
         try:
             self._present_element.send_keys(Keys.ARROW_UP * times)
@@ -2178,6 +2206,7 @@ class Element:
         Usage::
 
             my_page.my_element.arrow_down(3)
+
         """
         try:
             self._present_element.send_keys(Keys.ARROW_DOWN * times)
@@ -2196,6 +2225,7 @@ class Element:
         Usage::
 
             my_page.my_element.backspace(3).input('123456').enter()
+
         """
         try:
             self._present_element.send_keys(Keys.BACKSPACE * times)
@@ -2214,6 +2244,7 @@ class Element:
         Usage::
 
             my_page.my_element.delete(3)
+
         """
         try:
             self._present_element.send_keys(Keys.DELETE * times)
@@ -2232,6 +2263,7 @@ class Element:
         Usage::
 
             my_page.my_element.tab(2)
+
         """
         try:
             self._present_element.send_keys(Keys.TAB * times)
@@ -2250,6 +2282,7 @@ class Element:
         Usage::
 
             my_page.my_element.space(4)
+
         """
         try:
             self._present_element.send_keys(Keys.SPACE * times)
@@ -2354,9 +2387,7 @@ class Element:
         border: dict[str, int] | tuple[int, int, int, int]
     ) -> tuple[int, int, int, int]:
         """
-        Usage::
-
-            return left, right, top, bottom
+        return left, right, top, bottom
         """
         # Get border.
         if isinstance(border, dict):
@@ -2387,9 +2418,7 @@ class Element:
         fix: bool | int = False
     ) -> tuple[int, int, int, int]:
         """
-        Usage::
-
-            return sx, sy, ex, ey
+        return sx, sy, ex, ey
         """
         width = right - left
         height = bottom - top
@@ -2512,7 +2541,7 @@ class Element:
         """
         Please use `wait_absent` instead.
         """
-        warnings.warn('Please use "wait_absent" instead.', DeprecationWarning, 2)
+        warnings.warn('Please use "wait_absent" instead.', DeprecationWarning, stacklevel=2)
         return self.wait_absent(timeout, reraise)
 
     def wait_not_visible(
@@ -2524,7 +2553,7 @@ class Element:
         """
         Please use `wait_invisible` instead.
         """
-        warnings.warn('Please use "wait_invisible" instead.', DeprecationWarning, 2)
+        warnings.warn('Please use "wait_invisible" instead.', DeprecationWarning, stacklevel=2)
         return self.wait_invisible(timeout, present, reraise)
 
     def wait_not_clickable(
@@ -2536,8 +2565,8 @@ class Element:
         """
         Please use `wait_unclickable` instead.
         """
-        warnings.warn('Please use "wait_unclickable" instead.', DeprecationWarning, 2)
-        self.wait_unclickable(timeout, present, reraise)
+        warnings.warn('Please use "wait_unclickable" instead.', DeprecationWarning, stacklevel=2)
+        return self.wait_unclickable(timeout, present, reraise)
 
     def wait_not_selected(
         self,
@@ -2547,5 +2576,5 @@ class Element:
         """
         Please use `wait_unselected` instead.
         """
-        warnings.warn('Please use "wait_unselected" instead.', DeprecationWarning, 2)
+        warnings.warn('Please use "wait_unselected" instead.', DeprecationWarning, stacklevel=2)
         return self.wait_unselected(timeout, reraise)
