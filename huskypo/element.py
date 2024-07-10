@@ -888,7 +888,7 @@ class Element:
             # Swipe with customize relative offset of current window size.
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
 
-            # Swipe with customize relative offset of customize relative area. 
+            # Swipe with customize relative offset of customize relative area.
             # The area is relative to current window rect, for example:
             # current window rect = (10, 20, 500, 1000)
             # area = (0.1, 0.2, 0.6, 0.7)
@@ -898,7 +898,7 @@ class Element:
             # area height = 1000 x 0.7 = 700
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
 
-            # Swipe with customize relative offset of customize absolute area. 
+            # Swipe with customize relative offset of customize absolute area.
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
@@ -977,7 +977,7 @@ class Element:
             # Flick with customize relative offset of current window size.
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35))
 
-            # Flick with customize relative offset of customize relative area. 
+            # Flick with customize relative offset of customize relative area.
             # The area is relative to current window rect, for example:
             # current window rect = (10, 20, 500, 1000)
             # area = (0.1, 0.2, 0.6, 0.7)
@@ -987,7 +987,7 @@ class Element:
             # area height = 1000 x 0.7 = 700
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
 
-            # Flick with customize relative offset of customize absolute area. 
+            # Flick with customize relative offset of customize absolute area.
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
