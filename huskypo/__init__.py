@@ -3,7 +3,7 @@
 # PyPI: https://pypi.org/project/huskypo/
 # GitHub: https://github.com/uujohnnyuu/huskyPO
 
-from .config import Log, Timeout, Appium
+from .config import Log, Timeout, Appium, Swipe
 from .page import Page
 from .element import Element
 from .elements import Elements
