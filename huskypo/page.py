@@ -752,13 +752,13 @@ class Page:
             # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges:
             from huskypo import Offset
 
-            # Swipe down from the center point
+            # Swipe down.
             my_page.swipe_by(Offset.DOWN)
 
-            # Swipe right from the center point
+            # Swipe to the right.
             my_page.swipe_by(Offset.RIGHT)
 
-            # Swipe to the upper left from the center point
+            # Swipe to the upper left.
             my_page.swipe_by(Offset.UPPER_LEFT)
 
             # Default is swiping up.
@@ -840,13 +840,13 @@ class Page:
             # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges:
             from huskypo import Offset
 
-            # Flick down from the center point
+            # Flick down.
             my_page.flick_by(Offset.DOWN)
 
-            # Flick right from the center point
+            # Flick to the right.
             my_page.flick_by(Offset.RIGHT)
 
-            # Flick to the upper left from the center point
+            # Flick to the upper left.
             my_page.flick_by(Offset.UPPER_LEFT)
 
             # Default is flicking up.
