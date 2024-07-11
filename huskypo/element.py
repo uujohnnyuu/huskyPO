@@ -1085,7 +1085,7 @@ class Element:
         while not self.is_viewable(timeout):
             if count == max_swipe:
                 logstack._warning(
-                    f'🟡 Stop flicking to element {self.remark} as the maximum flick count of {max_swipe} has been reached.')
+                    f'Stop flicking to element {self.remark} as the maximum flick count of {max_swipe} has been reached.')
                 return False
             self.driver.flick(*offset)
             count += 1
@@ -1156,7 +1156,7 @@ class Element:
             # max
             if i == max_adjust + 1:
                 logstack._warning(
-                    f'🟡 End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
+                    f'End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
                 return False
 
             self.driver.swipe(start_x, start_y, end_x, end_y, duration)
@@ -2467,7 +2467,7 @@ class Element:
                 return i
             if i == max_adjust + 1:
                 logstack._warning(
-                    f'🟡 End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
+                    f'End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
                 return False
             self.driver.swipe(sx, sy, ex, ey, duration)
 
