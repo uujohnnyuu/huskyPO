@@ -57,22 +57,24 @@ class Appium:
 
 class Offset:
     """
-    Used in Page and Element to set the offset action for swipe_by and flick_by.
-    Please refer directly to the variable settings.
+    Used in Page and Element to set the `offset` action for `swipe_by` and `flick_by`.
+    You can set the preferred offset by assigning values to these variables,
+    or create another Offset class based on your test scenario.
     """
-    UP = (0.5, 0.5, 0.5, 0.25)
-    DOWN = (0.5, 0.5, 0.5, 0.75)
-    LEFT = (0.5, 0.5, 0.25, 0.5)
-    RIGHT = (0.5, 0.5, 0.75, 0.5)
-    UPPER_LEFT = (0.5, 0.5, 0.25, 0.25)
-    UPPER_RIGHT = (0.5, 0.5, 0.75, 0.25)
-    LOWER_LEFT = (0.5, 0.5, 0.25, 0.75)
-    LOWER_RIGHT = (0.5, 0.5, 0.75, 0.75)
+    UP = (0.5, 0.75, 0.5, 0.25)
+    DOWN = (0.5, 0.25, 0.5, 0.75)
+    LEFT = (0.75, 0.5, 0.25, 0.5)
+    RIGHT = (0.25, 0.5, 0.75, 0.5)
+    UPPER_LEFT = (0.75, 0.75, 0.25, 0.25)
+    UPPER_RIGHT = (0.25, 0.75, 0.75, 0.25)
+    LOWER_LEFT = (0.75, 0.25, 0.25, 0.75)
+    LOWER_RIGHT = (0.25, 0.25, 0.75, 0.75)
 
 
 class Area:
     """
-    Used in Page and Element to set the area action for swipe_by and flick_by.
-    Please refer directly to the variable settings.
+    Used in Page and Element to set the `area` action for `swipe_by` and `flick_by`.
+    You can set the preferred area by assigning values to these variables,
+    or create another Area class based on your test scenario.
     """
     FULL = (0.0, 0.0, 1.0, 1.0)
