@@ -11,6 +11,8 @@
 # inherit from this class to define your own handling.
 
 # TODO Keep tracking selenium 4.0 and appium 2.0 new methods.
+
+
 from __future__ import annotations
 
 import warnings

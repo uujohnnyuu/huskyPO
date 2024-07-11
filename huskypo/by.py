@@ -3,6 +3,7 @@
 # PyPI: https://pypi.org/project/huskypo/
 # GitHub: https://github.com/uujohnnyuu/huskyPO
 
+
 from __future__ import annotations
 
 from appium.webdriver.common.appiumby import AppiumBy
@@ -13,6 +14,7 @@ class By(AppiumBy):
 
 
 class ByAttribute:
+
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]
     VALUES = [getattr(By, attr) for attr in NAMES]
     VALUES_WITH_NONE = VALUES + [None]

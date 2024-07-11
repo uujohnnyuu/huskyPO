@@ -15,6 +15,7 @@
 # because these two approaches should handle exceptions differently,
 # allowing for more comprehensive exception handling.
 
+
 from __future__ import annotations
 
 from typing import Callable, Literal

@@ -8,6 +8,7 @@
 # 2. Keep tarcking the efficiency of reusing WebElement, ActionChains, and Select objects.
 # 3. It still need to confirm whether "clear", "sned_keys", "submit" need to wait until clickable.
 
+
 from __future__ import annotations
 
 import warnings
@@ -35,13 +36,14 @@ from .types import WebDriver, WebElement
 # TODO deprecate
 from .by import SwipeAction as SA
 
+
+ElementReferenceException = (AttributeError, StaleElementReferenceException, InvalidSessionIdException)
+
 P = TypeVar('P', bound=Page)
 IntCoordinate = dict[str, int] | tuple[int, int, int, int]
 FloatCoordinate = dict[str, float] | tuple[float, float, float, float]
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate = IntCoordinate | FloatCoordinate
-
-ElementReferenceException = (AttributeError, StaleElementReferenceException, InvalidSessionIdException)
 
 
 class Element:

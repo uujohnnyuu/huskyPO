@@ -7,6 +7,7 @@
 # TODO Need to confirm the functional difference between 'driver' and 'page'.
 # TODO Tracking the range using wait function.
 
+
 from __future__ import annotations
 
 import warnings
@@ -31,6 +32,7 @@ from .types import WebDriver, WebElement, WebDriverTuple
 
 # TODO deprecate
 from .by import SwipeAction as SA
+
 
 IntCoordinate = dict[str, int] | tuple[int, int, int, int]
 FloatCoordinate = dict[str, float] | tuple[float, float, float, float]

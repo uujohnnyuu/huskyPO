@@ -11,12 +11,12 @@
 # 2. This is why we do not encapsulate the calculation of target_level
 #       into a function in each logging function.
 
+
 from __future__ import annotations
 
 import inspect
 import logging
 import os
-
 from typing import Mapping
 
 from .config import Log
