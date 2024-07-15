@@ -116,6 +116,14 @@ class Element:
         if remark is None:
             self.remark = f'{self.value}' if self.index is None else f'({self.value})[{self.index}]'
 
+        # Avoid referencing an old WebElement when dynamically creating elements.
+        if hasattr(self, '_present_element'):
+            del self._present_element
+        if hasattr(self, '_visible_element'):
+            del self._visible_element
+        if hasattr(self, '_clickable_element'):
+            del self._clickable_element
+
     def __get__(self, instance: P, owner: Type[P]) -> Element:
         """
         Internal use.
