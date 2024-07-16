@@ -116,7 +116,7 @@ class Element:
         if remark is None:
             self.remark = f'{self._value}' if self._index is None else f'({self._value})[{self._index}]'
 
-        # Record the previous page instance and determine 
+        # Record the previous page instance and determine
         # whether to delete the WebElement object to avoid an InvalidSessionIdException.
         self._previous_page = None
 
@@ -131,7 +131,7 @@ class Element:
         allowing Element to interact with Page-related attributes or methods.
         """
         self._page = instance
-        # The Page object has changed, indicating that the driver may have changed. 
+        # The Page object has changed, indicating that the driver may have changed.
         # Delete the WebElement object to avoid an InvalidSessionIdException.
         if self._previous_page != instance:
             self._previous_page = instance
