@@ -112,9 +112,7 @@ class Element:
             self.timeout = None
 
         # (by, value, index, timeout, remark)
-        self.remark = remark
-        if remark is None:
-            self.remark = f'{self._value}' if self._index is None else f'({self._value})[{self._index}]'
+        self._remark = remark
 
         # Record the previous page instance and determine
         # whether to delete the WebElement object to avoid an InvalidSessionIdException.
@@ -180,6 +178,14 @@ class Element:
     def index(self, new_index) -> None:
         self._index = new_index
         self.__delete_webelement()
+
+    @property
+    def remark(self) -> str | None:
+        return f'(by="{self._by}", value="{self._value}", index={self._index})' if self._remark is None else self._remark
+
+    @remark.setter
+    def remark(self, new_remark) -> None:
+        self._remark = new_remark
 
     @property
     def driver(self) -> WebDriver:
@@ -252,7 +258,7 @@ class Element:
 
     def __timeout_message(self, status: str, present: bool = True) -> str:
         """
-        Waiting for element "{self.remark}" to become "{status}" timed out after {self._wait_timeout} seconds.
+        Waiting for element "{self.final_remark}" to become "{status}" timed out after {self._wait_timeout} seconds.
         if not present: status + ' or absent'
         """
         if not present:
