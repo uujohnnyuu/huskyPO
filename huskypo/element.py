@@ -16,7 +16,7 @@ import math
 import platform
 from typing import Type, TypeVar, Literal, Any
 
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, InvalidSessionIdException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.common.keys import Keys
@@ -37,7 +37,7 @@ from .types import WebDriver, WebElement
 from .by import SwipeAction as SA
 
 
-ElementReferenceException = (AttributeError, StaleElementReferenceException, InvalidSessionIdException)
+ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 P = TypeVar('P', bound=Page)
 IntCoordinate = dict[str, int] | tuple[int, int, int, int]
@@ -93,16 +93,16 @@ class Element:
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The locator strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
-            raise TypeError(f'The locator value type should be "str", not "{type(self.value).__name__}".')
-        self.by = by
-        self.value = value
+            raise TypeError(f'The locator value type should be "str", not "{type(self._value).__name__}".')
+        self._by = by
+        self._value = value
 
         # (by, value, index)
-        self.index = index
+        self._index = index
         # (by, value, remark)
         if not isinstance(index, (int, type(None))):
             remark = str(index)
-            self.index = None
+            self._index = None
 
         # (by, value, index, timeout)
         self.timeout = timeout
@@ -114,15 +114,14 @@ class Element:
         # (by, value, index, timeout, remark)
         self.remark = remark
         if remark is None:
-            self.remark = f'{self.value}' if self.index is None else f'({self.value})[{self.index}]'
+            self.remark = f'{self._value}' if self._index is None else f'({self._value})[{self._index}]'
+
+        # Record the previous page instance and determine 
+        # whether to delete the WebElement object to avoid an InvalidSessionIdException.
+        self._previous_page = None
 
         # Avoid referencing an old WebElement when dynamically creating elements.
-        if hasattr(self, '_present_element'):
-            del self._present_element
-        if hasattr(self, '_visible_element'):
-            del self._visible_element
-        if hasattr(self, '_clickable_element'):
-            del self._clickable_element
+        self.__delete_webelement()
 
     def __get__(self, instance: P, owner: Type[P]) -> Element:
         """
@@ -132,6 +131,11 @@ class Element:
         allowing Element to interact with Page-related attributes or methods.
         """
         self._page = instance
+        # The Page object has changed, indicating that the driver may have changed. 
+        # Delete the WebElement object to avoid an InvalidSessionIdException.
+        if self._previous_page != instance:
+            self._previous_page = instance
+            self.__delete_webelement()
         return self
 
     def __set__(self, instance: P, value: tuple) -> None:
@@ -141,6 +145,41 @@ class Element:
         typically used for configuring dynamic elements.
         """
         self.__init__(*value)
+
+    def __delete_webelement(self) -> None:
+        if hasattr(self, '_present_element'):
+            del self._present_element
+        if hasattr(self, '_visible_element'):
+            del self._visible_element
+        if hasattr(self, '_clickable_element'):
+            del self._clickable_element
+
+    @property
+    def by(self) -> str | None:
+        return self._by
+
+    @by.setter
+    def by(self, new_by) -> None:
+        self._by = new_by
+        self.__delete_webelement()
+
+    @property
+    def value(self) -> str | None:
+        return self._value
+
+    @value.setter
+    def value(self, new_value) -> None:
+        self._value = new_value
+        self.__delete_webelement()
+
+    @property
+    def index(self) -> int | None:
+        return self._index
+
+    @index.setter
+    def index(self, new_index) -> None:
+        self._index = new_index
+        self.__delete_webelement()
 
     @property
     def driver(self) -> WebDriver:
@@ -162,8 +201,8 @@ class Element:
         """
         Get locator (by, value).
         """
-        if self.by and self.value:
-            return (self.by, self.value)
+        if self._by and self._value:
+            return (self._by, self._value)
         raise ValueError(
             '"by" and "value" cannot be None when performing element operations. Please ensure both are provided with valid values.')
 
@@ -296,7 +335,7 @@ class Element:
         """
         try:
             self._present_element = self.wait(timeout).until(
-                ecex.presence_of_element_located(self.locator, self.index),
+                ecex.presence_of_element_located(self.locator, self._index),
                 self.__timeout_message('present'))
             return self._present_element
         except TimeoutException:
@@ -331,7 +370,7 @@ class Element:
         """
         try:
             return self.wait(timeout).until(
-                ecex.absence_of_element_located(self.locator, self.index),
+                ecex.absence_of_element_located(self.locator, self._index),
                 self.__timeout_message('absent'))
         except TimeoutException:
             if Timeout.reraise(reraise):
@@ -370,7 +409,7 @@ class Element:
             return self._visible_element
         except ElementReferenceException:
             self._present_element = self._visible_element = self.wait(timeout, StaleElementReferenceException).until(
-                ecex.visibility_of_element_located(self.locator, self.index),
+                ecex.visibility_of_element_located(self.locator, self._index),
                 self.__timeout_message('visible'))
             return self._visible_element
         except TimeoutException:
@@ -415,7 +454,7 @@ class Element:
                 self.__timeout_message('invisible'))
         except ElementReferenceException:
             self._present_element = self.wait(timeout, StaleElementReferenceException).until(
-                ecex.invisibility_of_element_located(self.locator, self.index, present),
+                ecex.invisibility_of_element_located(self.locator, self._index, present),
                 self.__timeout_message('invisible', present))
             return self._present_element
         except TimeoutException:
@@ -456,7 +495,7 @@ class Element:
         except ElementReferenceException:
             self._present_element = self._visible_element = self._clickable_element = self.wait(
                 timeout, StaleElementReferenceException).until(
-                    ecex.element_located_to_be_clickable(self.locator, self.index),
+                    ecex.element_located_to_be_clickable(self.locator, self._index),
                     self.__timeout_message('clickable'))
             return self._clickable_element
         except TimeoutException:
@@ -501,7 +540,7 @@ class Element:
                 self.__timeout_message('unclickable'))
         except ElementReferenceException:
             self._present_element = self.wait(timeout, StaleElementReferenceException).until(
-                ecex.element_located_to_be_unclickable(self.locator, self.index, present),
+                ecex.element_located_to_be_unclickable(self.locator, self._index, present),
                 self.__timeout_message('unclickable', present))
             return self._present_element
         except TimeoutException:
@@ -540,7 +579,7 @@ class Element:
                 self.__timeout_message('selected'))
         except ElementReferenceException:
             self._present_element = self.wait(timeout, StaleElementReferenceException).until(
-                ecex.element_located_to_be_selected(self.locator, self.index),
+                ecex.element_located_to_be_selected(self.locator, self._index),
                 self.__timeout_message('selected'))
             return self._present_element
         except TimeoutException:
@@ -583,7 +622,7 @@ class Element:
                 self.__timeout_message('unselected'))
         except ElementReferenceException:
             self._present_element = self.wait(timeout, StaleElementReferenceException).until(
-                ecex.element_located_to_be_unselected(self.locator, self.index),
+                ecex.element_located_to_be_unselected(self.locator, self._index),
                 self.__timeout_message('unselected'))
             return self._present_element
         except TimeoutException:
