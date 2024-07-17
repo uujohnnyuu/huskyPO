@@ -122,7 +122,7 @@ class Elements:
     @property
     def timeout(self):
         """
-        The initial timeout of the element.
+        The initial timeout of the elements.
         If init timeout is None, return Timeout.DEFAULT.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
@@ -130,7 +130,7 @@ class Elements:
     @property
     def remark(self):
         """
-        The remark of the element.
+        The remark of the elements.
         If init remark is None, return (by="by", value="value").
         """
         return f'(by="{self._by}", value="{self._value}")' if self._remark is None else self._remark
