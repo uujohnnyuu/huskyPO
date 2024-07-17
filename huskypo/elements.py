@@ -84,7 +84,7 @@ class Elements:
         # (by, value, timeout, remark)
         self._remark = remark
 
-    def __get__(self, instance: P, owner: Type[P]) -> Elements:
+    def __get__(self, instance: P, owner: Type[P] | None = None) -> Elements:
         """
         Internal use.
         Dynamically obtain the instance of Page and

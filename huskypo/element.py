@@ -118,7 +118,7 @@ class Element:
         # whether to delete the WebElement object to avoid an InvalidSessionIdException.
         self._page = None
 
-    def __get__(self, instance: P, owner: Type[P]) -> Element:
+    def __get__(self, instance: P, owner: Type[P] | None = None) -> Element:
         """
         Internal use.
         Make "Element" a data descriptor for "Page" or "other classes that inherit from Page".
