@@ -173,20 +173,28 @@ class Element:
         return self._index
 
     @property
-    def timeout(self):
+    def timeout(self) -> int | float:
         """
         The initial timeout of the element.
         If init timeout is None, return Timeout.DEFAULT.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
+    
+    @timeout.setter
+    def timeout(self, new_timeout) -> None:
+        self._timeout = new_timeout
 
     @property
-    def remark(self):
+    def remark(self) -> str:
         """
         The remark of the element.
         If init remark is None, return (by="by", value="value", index="index").
         """
         return f'(by="{self._by}", value="{self._value}", index={self._index})' if self._remark is None else self._remark
+    
+    @remark.setter
+    def remark(self, new_remark) -> None:
+        self._remark = new_remark
 
     @property
     def driver(self) -> WebDriver:
