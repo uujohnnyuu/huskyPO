@@ -126,7 +126,7 @@ class Elements:
         If init timeout is None, return Timeout.DEFAULT.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
-    
+
     @timeout.setter
     def timeout(self, new_timeout) -> None:
         self._timeout = new_timeout
@@ -138,7 +138,7 @@ class Elements:
         If init remark is None, return (by="by", value="value").
         """
         return f'(by="{self._by}", value="{self._value}")' if self._remark is None else self._remark
-    
+
     @remark.setter
     def remark(self, new_remark) -> None:
         self._remark = new_remark
