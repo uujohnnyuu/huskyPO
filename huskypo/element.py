@@ -183,7 +183,8 @@ class Element:
     @timeout.setter
     def timeout(self, new_timeout) -> None:
         if not isinstance(new_timeout, (int, float, type(None))):
-            raise TypeError(f'The timeout type should be "int", "float", or "None", not "{type(new_timeout).__name__}".')
+            raise TypeError(
+                f'The timeout type should be "int", "float", or "None", not "{type(new_timeout).__name__}".')
         self._timeout = new_timeout
 
     @property
