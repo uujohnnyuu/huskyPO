@@ -70,21 +70,19 @@ class Elements:
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The locator strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
-            raise TypeError(f'The locator value type should be "str", not "{type(self.value).__name__}".')
-        self.by = by
-        self.value = value
+            raise TypeError(f'The locator value type should be "str", not "{type(self._value).__name__}".')
+        self._by = by
+        self._value = value
 
         # (by, value, timeout)
-        self.timeout = timeout
+        self._timeout = timeout
         # (by, value, remark)
         if not isinstance(timeout, (int, float, type(None))):
             remark = str(timeout)
-            self.timeout = None
+            self._timeout = None
 
         # (by, value, timeout, remark)
-        self.remark = remark
-        if remark is None:
-            self.remark = self.value
+        self._remark = f'(by="{self._by}", value="{self._value}")' if remark is None else remark
 
     def __get__(self, instance: P, owner: Type[P]) -> Elements:
         """
@@ -115,17 +113,17 @@ class Elements:
         """
         Return locator (by, value)
         """
-        if self.by and self.value:
-            return (self.by, self.value)
+        if self._by and self._value:
+            return (self._by, self._value)
         raise ValueError(
             '"by" and "value" cannot be None when performing elements operations. Please ensure both are provided with valid values.')
 
     @property
-    def initial_timeout(self):
+    def timeout(self):
         """
         Get the initial timeout of the elements.
         """
-        return Timeout.DEFAULT if self.timeout is None else self.timeout
+        return Timeout.DEFAULT if self._timeout is None else self._timeout
 
     def find_elements(self) -> list[WebElement]:
         """
@@ -153,7 +151,7 @@ class Elements:
         - ignored_exceptions: iterable structure of exception classes ignored during calls.
             By default, it contains NoSuchElementException only.
         """
-        self._wait_timeout = self.initial_timeout if timeout is None else timeout
+        self._wait_timeout = self.timeout if timeout is None else timeout
         return WebDriverWait(self.driver, self._wait_timeout, ignored_exceptions=ignored_exceptions)
 
     @property
@@ -170,9 +168,9 @@ class Elements:
 
     def __timeout_message(self, status: str) -> str:
         """
-        Waiting for elements "{self.remark}" to become "{status}" timed out after {self._wait_timeout} seconds.
+        Waiting for elements "{self._remark}" to become "{status}" timed out after {self._wait_timeout} seconds.
         """
-        return f'Waiting for elements "{self.remark}" to become "{status}" timed out after {self._wait_timeout} seconds.'
+        return f'Waiting for elements "{self._remark}" to become "{status}" timed out after {self._wait_timeout} seconds.'
 
     def find(
         self,
