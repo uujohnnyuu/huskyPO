@@ -104,11 +104,11 @@ class Elements:
     @property
     def by(self) -> str | None:
         return self._by
-    
+
     @property
     def value(self) -> str | None:
         return self._value
-    
+
     @property
     def locator(self) -> tuple[str, str]:
         """
@@ -118,7 +118,7 @@ class Elements:
             return (self._by, self._value)
         raise ValueError(
             '"by" and "value" cannot be None when performing elements operations. Please ensure both are provided with valid values.')
-    
+
     @property
     def timeout(self):
         """
@@ -126,7 +126,7 @@ class Elements:
         If init timeout is None, return Timeout.DEFAULT.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
-    
+
     @property
     def remark(self):
         """
