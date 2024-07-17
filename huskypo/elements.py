@@ -82,7 +82,7 @@ class Elements:
             self._timeout = None
 
         # (by, value, timeout, remark)
-        self._remark = f'(by="{self._by}", value="{self._value}")' if remark is None else remark
+        self._remark = remark
 
     def __get__(self, instance: P, owner: Type[P]) -> Elements:
         """
@@ -102,12 +102,13 @@ class Elements:
         self.__init__(*value)
 
     @property
-    def driver(self) -> WebDriver:
-        """
-        Get driver from Page.
-        """
-        return self._page._driver
-
+    def by(self) -> str | None:
+        return self._by
+    
+    @property
+    def value(self) -> str | None:
+        return self._value
+    
     @property
     def locator(self) -> tuple[str, str]:
         """
@@ -117,13 +118,29 @@ class Elements:
             return (self._by, self._value)
         raise ValueError(
             '"by" and "value" cannot be None when performing elements operations. Please ensure both are provided with valid values.')
-
+    
     @property
     def timeout(self):
         """
-        Get the initial timeout of the elements.
+        The initial timeout of the element.
+        If init timeout is None, return Timeout.DEFAULT.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
+    
+    @property
+    def remark(self):
+        """
+        The remark of the element.
+        If init remark is None, return (by="by", value="value").
+        """
+        return f'(by="{self._by}", value="{self._value}")' if self._remark is None else self._remark
+
+    @property
+    def driver(self) -> WebDriver:
+        """
+        Get driver from Page.
+        """
+        return self._page._driver
 
     def find_elements(self) -> list[WebElement]:
         """
@@ -168,9 +185,9 @@ class Elements:
 
     def __timeout_message(self, status: str) -> str:
         """
-        Waiting for elements "{self._remark}" to become "{status}" timed out after {self._wait_timeout} seconds.
+        Waiting for elements "{self.remark}" to become "{status}" timed out after {self._wait_timeout} seconds.
         """
-        return f'Waiting for elements "{self._remark}" to become "{status}" timed out after {self._wait_timeout} seconds.'
+        return f'Waiting for elements "{self.remark}" to become "{status}" timed out after {self._wait_timeout} seconds.'
 
     def find(
         self,

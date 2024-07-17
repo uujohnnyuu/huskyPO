@@ -112,7 +112,7 @@ class Element:
             self._timeout = None
 
         # (by, value, index, timeout, remark)
-        self._remark = f'(by="{self._by}", value="{self._value}", index={self._index})' if remark is None else remark
+        self._remark = remark
 
         # Record the previous page instance and determine
         # whether to delete the WebElement object to avoid an InvalidSessionIdException.
@@ -153,6 +153,44 @@ class Element:
             del self._clickable_element
 
     @property
+    def by(self) -> str | None:
+        return self._by
+    
+    @property
+    def value(self) -> str | None:
+        return self._value
+    
+    @property
+    def locator(self) -> tuple[str, str]:
+        """
+        Get locator (by, value).
+        """
+        if self._by and self._value:
+            return (self._by, self._value)
+        raise ValueError(
+            '"by" and "value" cannot be None when performing element operations. Please ensure both are provided with valid values.')
+    
+    @property
+    def index(self) -> int | None:
+        return self._index
+    
+    @property
+    def timeout(self):
+        """
+        The initial timeout of the element.
+        If init timeout is None, return Timeout.DEFAULT.
+        """
+        return Timeout.DEFAULT if self._timeout is None else self._timeout
+    
+    @property
+    def remark(self):
+        """
+        The remark of the element.
+        If init remark is None, return (by="by", value="value", index="index").
+        """
+        return f'(by="{self._by}", value="{self._value}", index={self._index})' if self._remark is None else self._remark
+
+    @property
     def driver(self) -> WebDriver:
         """
         Get driver from Page-related instance.
@@ -166,23 +204,6 @@ class Element:
         Get ActionChains object from Page-related instance.
         """
         return self._page._action
-
-    @property
-    def locator(self) -> tuple[str, str]:
-        """
-        Get locator (by, value).
-        """
-        if self._by and self._value:
-            return (self._by, self._value)
-        raise ValueError(
-            '"by" and "value" cannot be None when performing element operations. Please ensure both are provided with valid values.')
-
-    @property
-    def timeout(self):
-        """
-        Get the initial timeout of the element.
-        """
-        return Timeout.DEFAULT if self._timeout is None else self._timeout
 
     def find_element(self) -> WebElement:
         """
@@ -228,7 +249,7 @@ class Element:
         """
         if not present:
             status += ' or absent'
-        return f'Waiting for element "{self._remark}" to become "{status}" timed out after {self._wait_timeout} seconds.'
+        return f'Waiting for element "{self.remark}" to become "{status}" timed out after {self._wait_timeout} seconds.'
 
     def find(
         self,
@@ -1080,16 +1101,16 @@ class Element:
         timeout: int | float,
         max_swipe: int
     ) -> int | Literal[False]:
-        logstack._info(f'Start swiping to element {self._remark}.')
+        logstack._info(f'Start swiping to element {self.remark}.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
                 logstack._warning(
-                    f'Stop swiping to element {self._remark} as the maximum swipe count of {max_swipe} has been reached.')
+                    f'Stop swiping to element {self.remark} as the maximum swipe count of {max_swipe} has been reached.')
                 return False
             self.driver.swipe(*offset, duration)
             count += 1
-        logstack._info(f'End swiping as the element {self._remark} is now viewable.')
+        logstack._info(f'End swiping as the element {self.remark} is now viewable.')
         return count
 
     def __start_flicking_by(
@@ -1098,16 +1119,16 @@ class Element:
         timeout: int | float,
         max_swipe: int
     ) -> int | Literal[False]:
-        logstack._info(f'Start flicking to element {self._remark}.')
+        logstack._info(f'Start flicking to element {self.remark}.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
                 logstack._warning(
-                    f'Stop flicking to element {self._remark} as the maximum flick count of {max_swipe} has been reached.')
+                    f'Stop flicking to element {self.remark} as the maximum flick count of {max_swipe} has been reached.')
                 return False
             self.driver.flick(*offset)
             count += 1
-        logstack._info(f'End flicking as the element {self._remark} is now viewable.')
+        logstack._info(f'End flicking as the element {self.remark} is now viewable.')
         return count
 
     def __start_adjusting_by(
@@ -1123,7 +1144,7 @@ class Element:
             d = area - element
             return int(math.copysign(min_distance, d)) if abs(d) < min_distance else d
 
-        logstack._info(f'Start adjusting to element {self._remark}')
+        logstack._info(f'Start adjusting to element {self.remark}')
 
         for i in range(1, max_adjust + 2):
 
@@ -1168,13 +1189,13 @@ class Element:
                 end_x = start_x + delta_x
                 end_y = start_y + delta_y
             else:
-                logstack._info(f'End adjusting as the element {self._remark} is in area.')
+                logstack._info(f'End adjusting as the element {self.remark} is in area.')
                 return i
 
             # max
             if i == max_adjust + 1:
                 logstack._warning(
-                    f'End adjusting to the element {self._remark} as the maximum adjust count of {max_adjust} has been reached.')
+                    f'End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
                 return False
 
             self.driver.swipe(start_x, start_y, end_x, end_y, duration)
@@ -2428,16 +2449,16 @@ class Element:
         """
         Return viewable or not.
         """
-        logstack._info(f'Start swiping to element {self._remark}.')
+        logstack._info(f'Start swiping to element {self.remark}.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
                 logstack._warning(
-                    f'Stop swiping to element {self._remark} as the maximum swipe count of {max_swipe} has been reached.')
+                    f'Stop swiping to element {self.remark} as the maximum swipe count of {max_swipe} has been reached.')
                 return False
             self.driver.swipe(sx, sy, ex, ey, duration)
             count += 1
-        logstack._info(f'End swiping as the element {self._remark} is now viewable.')
+        logstack._info(f'End swiping as the element {self.remark} is now viewable.')
         return count
 
     def __start_adjusting(
@@ -2457,7 +2478,7 @@ class Element:
         """
         Start adjusting.
         """
-        logstack._info(f'Start adjusting to element {self._remark}')
+        logstack._info(f'Start adjusting to element {self.remark}')
         for i in range(1, max_adjust + 2):
             element_left, element_right, element_top, element_bottom = self.border.values()
             delta_left = left - element_left
@@ -2481,11 +2502,11 @@ class Element:
                 adjust_distance = delta_bottom if delta_bottom > min_distance else min_distance
                 ey = sy - int(adjust_distance)
             else:
-                logstack._info(f'End adjusting as the element {self._remark} border is in view border.')
+                logstack._info(f'End adjusting as the element {self.remark} border is in view border.')
                 return i
             if i == max_adjust + 1:
                 logstack._warning(
-                    f'End adjusting to the element {self._remark} as the maximum adjust count of {max_adjust} has been reached.')
+                    f'End adjusting to the element {self.remark} as the maximum adjust count of {max_adjust} has been reached.')
                 return False
             self.driver.swipe(sx, sy, ex, ey, duration)
 
