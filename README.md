@@ -51,8 +51,8 @@ class MyPage(Page):
     def keyword_results(self, keyword: str):
         return Elements(By.XPATH, f'//*[contains(text(), "{keyword}")]')
 
-    # 如果你必須將動態元素設置成property，則兩者的順序如下
-    # 可以記得先用 dynamic 讓元素變成動態，再用 property 變成唯獨屬性。
+
+    # If you must set dynamic elements as properties, follow this order:
     @property
     @dynamic
     def keyword_results(self):

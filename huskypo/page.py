@@ -1003,7 +1003,7 @@ class Page:
             e.g. [{'x': 100, 'y': 100}, {'x': 200, 'y': 100}, {'x': 300, 'y': 100}, ...].
 
             If the nine points are elements,
-            you can simply get the points by 
+            you can simply get the points by
             `my_page.my_elements.centers` or `my_page.my_elements.locations`.
 
         - gesture: A string containing the actual positions of the nine dots,
