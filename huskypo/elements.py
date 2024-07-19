@@ -99,14 +99,12 @@ class Elements:
         Dynamically set element attribute values at runtime,
         typically used for configuring dynamic elements.
         """
-        # Avoid referencing an old WebElement for dynamic element.
         if isinstance(value, tuple):
             self.__init__(*value)
         elif isinstance(value, dict):
             self.__init__(**value)
         else:
             raise TypeError('Please configure dynamic elements according to the logic of the Elements parameters.')
-        self.__delete_webelement()
 
     @property
     def by(self) -> str | None:
