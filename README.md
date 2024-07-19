@@ -79,7 +79,15 @@ class MyPage(Page):
         # such as (by, value, index, timeout, remark).
         # It also includes other configuration methods mentioned in the Element documentation, 
         # such as (by, value, remark), and so on.
-        self.static_element = (By.XPATH, f'//*[contains(text(), "{par}")]')  
+        self.static_element = (By.XPATH, f'//*[contains(text(), "{par}")]', f'This is {par}')  
+        return self.static_element
+
+    def dynamic_element(self, par) -> Element:
+        # If you want to clearly specify parameter names, you can also use a dictionary.
+        self.static_element = {
+            'by': By.XPATH, 
+            'value': f'//*[contains(text(), "{par}")]', 
+            'remark': f'This is {par}'}
         return self.static_element
 ```
 
