@@ -93,13 +93,20 @@ class Elements:
         self._page = instance
         return self
 
-    def __set__(self, instance: P, value: tuple) -> None:
+    def __set__(self, instance: P, value: tuple | dict) -> None:
         """
         Internal use.
-        Setting element attribute values at runtime,
+        Dynamically set element attribute values at runtime,
         typically used for configuring dynamic elements.
         """
-        self.__init__(*value)
+        # Avoid referencing an old WebElement for dynamic element.
+        if isinstance(value, tuple):
+            self.__init__(*value)
+        elif isinstance(value, dict):
+            self.__init__(**value)
+        else:
+            raise TypeError('Please configure dynamic elements according to the logic of the Elements parameters.')
+        self.__delete_webelement()
 
     @property
     def by(self) -> str | None:

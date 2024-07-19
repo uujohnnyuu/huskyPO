@@ -132,14 +132,19 @@ class Element:
             self.__delete_webelement()
         return self
 
-    def __set__(self, instance: P, value: tuple) -> None:
+    def __set__(self, instance: P, value: tuple | dict) -> None:
         """
         Internal use.
         Dynamically set element attribute values at runtime,
         typically used for configuring dynamic elements.
         """
         # Avoid referencing an old WebElement for dynamic element.
-        self.__init__(*value)
+        if isinstance(value, tuple):
+            self.__init__(*value)
+        elif isinstance(value, dict):
+            self.__init__(**value)
+        else:
+            raise TypeError('Please configure dynamic elements according to the logic of the Element parameters.')
         self.__delete_webelement()
 
     def __delete_webelement(self) -> None:
