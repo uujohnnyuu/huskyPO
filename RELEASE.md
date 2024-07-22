@@ -1,7 +1,7 @@
 # Release Note for v1.1.0
 
 ## Overview
-This release includes significant new features, bug fixes, and performance improvements.
+This release includes significant new features, imporvements, bug fixes and deprecations.
 
 ## New Features
 - **config**: Added `offset` and `area` for `swipe` and `flick` relative functions.
