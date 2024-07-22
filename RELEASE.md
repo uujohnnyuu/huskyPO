@@ -18,6 +18,12 @@ This release includes significant new features, bug fixes, and performance impro
 - **element**: Optimized data flow and property control, improving performance and stability.
 - **logstack**: Enhanced the performance of searching for specified function frames.
 
+## Deprecations
+- **by**: `SwipeAction` has been replaced by `Offset` and `Area` in the `config`.
+- **page**: `swipe_ratio` has been replaced by `swipe_by` and `flick_by`.
+- **element**: `wait_not_xxx` methods have been renamed to xxx's antonyms; `swipe_into_view` has been replaced by `swipe_by` and `flick_by`.
+- **elements**: `wait_not_xxx` methods have been renamed to xxx's antonyms.
+
 ## Installation or Upgrade Instructions
 To install or upgrade to this version, run the following command:
 ```sh
