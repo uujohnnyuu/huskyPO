@@ -4,19 +4,21 @@
 This release includes significant new features, bug fixes, and performance improvements.
 
 ## New Features
-- **config**: Added offset and area for swipe and flick relative functions.
+- **config**: Added `offset` and `area` for `swipe` and `flick` relative functions.
 - **page**: Added commonly used methods for Selenium 4.0 and Appium 2.0.
 - **element**: Added commonly used methods for Selenium 4.0 and Appium 2.0.
 - **elements**: Added methods related to visibility status.
 - **ec_extension**: Refactored all existing methods and exception handling for more flexible WebDriverWait operations.
 
-## Bug Fixes
-- **decorator**: Fixed the method of dynamically retrieving attribute information (@wraps).
-
 ## Improvements
 - **page**: Optimized data flow and property control, improving performance and stability.
 - **element**: Optimized data flow and property control, improving performance and stability.
 - **logstack**: Enhanced the performance of searching for specified function frames.
+
+## Bug Fixes
+- **decorator**: Fixed the issue where the function name was always `wrapper` when calling the dynamic element `__name__` attribute.
+- **element**: Fixed the issue where the `remark` attribute could not be dynamically updated.
+- **elements**: Fixed the issue where the `remark` attribute could not be dynamically updated.
 
 ## Deprecations
 - **by**: `SwipeAction` has been replaced by `Offset` and `Area` in the `config`.
