@@ -37,6 +37,8 @@ from .types import WebDriver, WebElement
 from .by import SwipeAction as SA
 
 
+__TmpAttrs = ['_present_element', '_visible_element', '_clickable_element']
+
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 P = TypeVar('P', bound=Page)
@@ -148,12 +150,9 @@ class Element:
         self.__delete_webelement()
 
     def __delete_webelement(self) -> None:
-        if hasattr(self, '_present_element'):
-            del self._present_element
-        if hasattr(self, '_visible_element'):
-            del self._visible_element
-        if hasattr(self, '_clickable_element'):
-            del self._clickable_element
+        for attr in __TmpAttrs:
+            if hasattr(self, attr):
+                delattr(self, attr)
 
     @property
     def by(self) -> str | None:
