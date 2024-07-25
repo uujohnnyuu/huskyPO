@@ -37,7 +37,7 @@ from .types import WebDriver, WebElement
 from .by import SwipeAction as SA
 
 
-_TmpAttrs = ['_present_element', '_visible_element', '_clickable_element']
+_TmpAttrs = ['_present_element', '_visible_element', '_clickable_element', '_select']
 
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
@@ -131,7 +131,7 @@ class Element:
         # Delete the WebElement object to avoid an InvalidSessionIdException.
         if self._page != instance:
             self._page = instance
-            self.__delete_webelement()
+            self.__del_tmpattrs()
         return self
 
     def __set__(self, instance: P, value: tuple | dict) -> None:
@@ -147,9 +147,9 @@ class Element:
             self.__init__(**value)
         else:
             raise TypeError('Please configure dynamic elements according to the logic of the Element parameters.')
-        self.__delete_webelement()
+        self.__del_tmpattrs()
 
-    def __delete_webelement(self) -> None:
+    def __del_tmpattrs(self) -> None:
         for attr in _TmpAttrs:
             if hasattr(self, attr):
                 delattr(self, attr)
