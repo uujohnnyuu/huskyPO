@@ -5,8 +5,7 @@
 
 # TODO
 # 1. Keep tracking selenium 4.0 and appium 2.0 new methods.
-# 2. Keep tarcking the efficiency of reusing WebElement, ActionChains, and Select objects.
-# 3. It still need to confirm whether "clear", "sned_keys", "submit" need to wait until clickable.
+# 2. Keep observing whether it is necessary to add the visible state for each method.
 
 
 from __future__ import annotations
@@ -40,10 +39,8 @@ from .by import SwipeAction as SA
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 P = TypeVar('P', bound=Page)
-IntCoordinate = dict[str, int] | tuple[int, int, int, int]
-FloatCoordinate = dict[str, float] | tuple[float, float, float, float]
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
-Coordinate = IntCoordinate | FloatCoordinate
+Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
 
 
 class Element:
@@ -907,8 +904,17 @@ class Element:
 
         Usage::
 
-            # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges:
+            # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges.
+            # The four values of "offset" represent (start_x, start_y, end_x, end_y),
+            # it can also be written as a dictionary.
             from huskypo import Offset
+
+            # The "area" parameter can also be obtained from the "Area" class, 
+            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # so there is no need to call it actively.
+            # The four values of "area" represent rect (x, y, width, height),
+            # it can also be written as a dictionary.
+            from huskypo import Area
 
             # Swipe down.
             my_page.target_element.swipe_by(Offset.DOWN)
@@ -996,8 +1002,17 @@ class Element:
 
         Usage::
 
-            # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges:
+            # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges.
+            # The four values of "offset" represent (start_x, start_y, end_x, end_y),
+            # it can also be written as a dictionary.
             from huskypo import Offset
+
+            # The "area" parameter can also be obtained from the "Area" class, 
+            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # so there is no need to call it actively.
+            # The four values of "area" represent rect (x, y, width, height),
+            # it can also be written as a dictionary.
+            from huskypo import Area
 
             # Flick down.
             my_page.target_element.flick_by(Offset.DOWN)
@@ -1225,15 +1240,9 @@ class Element:
 
         """
         try:
-            try:
-                self._clickable_element.clear()
-            except ElementReferenceException:
-                self.clickable_element.clear()
-        except TimeoutException:
-            try:
-                self._present_element.clear()
-            except ElementReferenceException:
-                self.present_element.clear()
+            self._clickable_element.clear()
+        except ElementReferenceException:
+            self.clickable_element.clear()
         return self
 
     def send_keys(self, *value) -> Element:
@@ -1251,15 +1260,9 @@ class Element:
 
         """
         try:
-            try:
-                self._clickable_element.send_keys(*value)
-            except ElementReferenceException:
-                self.clickable_element.send_keys(*value)
-        except TimeoutException:
-            try:
-                self._present_element.send_keys(*value)
-            except ElementReferenceException:
-                self.present_element.send_keys(*value)
+            self._clickable_element.send_keys(*value)
+        except ElementReferenceException:
+            self.clickable_element.send_keys(*value)
         return self
 
     def get_attribute(self, name: Any | str) -> Any | str | dict | None:
@@ -1315,15 +1318,9 @@ class Element:
         Submits a form.
         """
         try:
-            try:
-                self._clickable_element.submit()
-            except ElementReferenceException:
-                self.clickable_element.submit()
-        except TimeoutException:
-            try:
-                self._present_element.submit()
-            except ElementReferenceException:
-                self.present_element.submit()
+            self._clickable_element.submit()
+        except ElementReferenceException:
+            self.clickable_element.submit()
 
     @property
     def tag_name(self) -> str:
@@ -1345,6 +1342,16 @@ class Element:
             return self._present_element.value_of_css_property(property_name)
         except ElementReferenceException:
             return self.present_element.value_of_css_property(property_name)
+        
+    def visible_value_of_css_property(self, property_name: Any) -> str:
+        """
+        Selenium API.
+        The visible value of a CSS property.
+        """
+        try:
+            return self._visible_element.value_of_css_property(property_name)
+        except ElementReferenceException:
+            return self.visible_element.value_of_css_property(property_name)
 
     def switch_to_frame(
         self,

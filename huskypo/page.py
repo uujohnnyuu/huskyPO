@@ -5,7 +5,6 @@
 
 # TODO selenium 4.0 and appium 2.0 methods.
 # TODO Need to confirm the functional difference between 'driver' and 'page'.
-# TODO Tracking the range using wait function.
 
 
 from __future__ import annotations
@@ -34,10 +33,8 @@ from .types import WebDriver, WebElement, WebDriverTuple
 from .by import SwipeAction as SA
 
 
-IntCoordinate = dict[str, int] | tuple[int, int, int, int]
-FloatCoordinate = dict[str, float] | tuple[float, float, float, float]
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
-Coordinate = IntCoordinate | FloatCoordinate
+Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
 
 
 class Page:
@@ -749,8 +746,17 @@ class Page:
 
         Usage::
 
-            # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges:
+            # The "offset" parameter can be directly obtained from the "Offset" class for common swipe ranges.
+            # The four values of "offset" represent (start_x, start_y, end_x, end_y),
+            # it can also be written as a dictionary.
             from huskypo import Offset
+
+            # The "area" parameter can also be obtained from the "Area" class, 
+            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # so there is no need to call it actively.
+            # The four values of "area" represent rect (x, y, width, height),
+            # it can also be written as a dictionary.
+            from huskypo import Area
 
             # Swipe down.
             my_page.swipe_by(Offset.DOWN)
@@ -837,8 +843,17 @@ class Page:
 
         Usage::
 
-            # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges:
+            # The "offset" parameter can be directly obtained from the "Offset" class for common flick ranges.
+            # The four values of "offset" represent (start_x, start_y, end_x, end_y),
+            # it can also be written as a dictionary.
             from huskypo import Offset
+
+            # The "area" parameter can also be obtained from the "Area" class, 
+            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # so there is no need to call it actively.
+            # The four values of "area" represent rect (x, y, width, height),
+            # it can also be written as a dictionary.
+            from huskypo import Area
 
             # Flick down.
             my_page.flick_by(Offset.DOWN)

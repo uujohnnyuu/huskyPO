@@ -3,9 +3,9 @@
 # PyPI: https://pypi.org/project/huskypo/
 # GitHub: https://github.com/uujohnnyuu/huskyPO
 
-# We do not store found elements within the Elements class
-# because each element needs to be checked for staleness before use.
-# The overall efficiency is not better than directly re-locating the elements.
+# We do not store found elements within the Elements class because 
+# the results of find_elements can easily change due to platform or operational differences. 
+# Therefore, searching again each time is more robust and can help avoid unexpected errors.
 # If there is a need for repeated use,
 # you can construct a custom function or
 # inherit from this class to define your own handling.
