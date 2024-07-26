@@ -909,8 +909,8 @@ class Element:
             # it can also be written as a dictionary.
             from huskypo import Offset
 
-            # The "area" parameter can also be obtained from the "Area" class, 
-            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # The "area" parameter can also be obtained from the "Area" class,
+            # but here it is mainly used to set the default scrollable area to the entire screen,
             # so there is no need to call it actively.
             # The four values of "area" represent rect (x, y, width, height),
             # it can also be written as a dictionary.
@@ -1007,8 +1007,8 @@ class Element:
             # it can also be written as a dictionary.
             from huskypo import Offset
 
-            # The "area" parameter can also be obtained from the "Area" class, 
-            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # The "area" parameter can also be obtained from the "Area" class,
+            # but here it is mainly used to set the default scrollable area to the entire screen,
             # so there is no need to call it actively.
             # The four values of "area" represent rect (x, y, width, height),
             # it can also be written as a dictionary.
@@ -1342,7 +1342,7 @@ class Element:
             return self._present_element.value_of_css_property(property_name)
         except ElementReferenceException:
             return self.present_element.value_of_css_property(property_name)
-        
+
     def visible_value_of_css_property(self, property_name: Any) -> str:
         """
         Selenium API.

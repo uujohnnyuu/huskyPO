@@ -751,8 +751,8 @@ class Page:
             # it can also be written as a dictionary.
             from huskypo import Offset
 
-            # The "area" parameter can also be obtained from the "Area" class, 
-            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # The "area" parameter can also be obtained from the "Area" class,
+            # but here it is mainly used to set the default scrollable area to the entire screen,
             # so there is no need to call it actively.
             # The four values of "area" represent rect (x, y, width, height),
             # it can also be written as a dictionary.
@@ -848,8 +848,8 @@ class Page:
             # it can also be written as a dictionary.
             from huskypo import Offset
 
-            # The "area" parameter can also be obtained from the "Area" class, 
-            # but here it is mainly used to set the default scrollable area to the entire screen, 
+            # The "area" parameter can also be obtained from the "Area" class,
+            # but here it is mainly used to set the default scrollable area to the entire screen,
             # so there is no need to call it actively.
             # The four values of "area" represent rect (x, y, width, height),
             # it can also be written as a dictionary.
