@@ -37,8 +37,6 @@ from .types import WebDriver, WebElement
 from .by import SwipeAction as SA
 
 
-_TmpAttrs = ['_present_element', '_visible_element', '_clickable_element', '_select']
-
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 P = TypeVar('P', bound=Page)
@@ -49,6 +47,8 @@ Coordinate = IntCoordinate | FloatCoordinate
 
 
 class Element:
+
+    __TmpAttrs = ['_present_element', '_visible_element', '_clickable_element', '_select']
 
     def __init__(
         self,
@@ -150,7 +150,7 @@ class Element:
         self.__del_tmpattrs()
 
     def __del_tmpattrs(self) -> None:
-        for attr in _TmpAttrs:
+        for attr in Element.__TmpAttrs:
             if hasattr(self, attr):
                 delattr(self, attr)
 
@@ -1807,10 +1807,10 @@ class Element:
         Usage::
 
             # Basic usage
-            my_page.my_element.scroll_to_element()
+            my_page.my_element.scroll_to_element().perform()
 
             # Chain with another method
-            my_page.my_element.scroll_to_element().action_click()
+            my_page.my_element.scroll_to_element().action_click().perform()
 
             # or
             my_page.my_element1.scroll_to_element().action_click()
@@ -1862,10 +1862,9 @@ class Element:
         """
         try:
             scroll_origin = ScrollOrigin.from_element(self._present_element, x_offset, y_offset)
-            self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         except ElementReferenceException:
             scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
-            self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
+        self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
     @property
