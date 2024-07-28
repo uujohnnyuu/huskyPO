@@ -1869,9 +1869,10 @@ class Element:
         """
         try:
             scroll_origin = ScrollOrigin.from_element(self._present_element, x_offset, y_offset)
+            self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         except ElementReferenceException:
             scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
-        self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
+            self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
     @property
