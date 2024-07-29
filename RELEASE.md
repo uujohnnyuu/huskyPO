@@ -1,3 +1,18 @@
+# Release Note for v1.1.1
+
+## Overview
+This release focuses on bug fixes and stability improvements.
+
+## Bug Fixes
+- **element**: Fixed an issue where the select object’s temporary information was not deleted after the page instance was changed.
+
+## Installation or Upgrade Instructions
+To install or upgrade to this version, run the following command:
+```sh
+pip install huskypo==1.1.1
+```
+
+
 # Release Note for v1.1.0
 
 ## Overview
@@ -30,3 +45,4 @@ This release includes significant new features, improvements, bug fixes and depr
 To install or upgrade to this version, run the following command:
 ```sh
 pip install huskypo==1.1.0
+```
