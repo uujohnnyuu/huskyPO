@@ -29,7 +29,7 @@ from .config import Timeout, Offset, Area
 from .types import AppiumWebDriver
 from .types import WebDriver, WebElement, WebDriverTuple
 
-# TODO deprecate
+# NOTE DEPRECATED.
 from .by import SwipeAction as SA
 
 
@@ -649,7 +649,7 @@ class Page:
         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
         """
-        self.action.scroll_by_amount(delta_x, delta_y)
+        self._action.scroll_by_amount(delta_x, delta_y)
         return self
 
     def scroll_from_origin(
@@ -1393,31 +1393,10 @@ class Page:
         duration: int = 1000
     ) -> None:
         """
-        Swipe by window ratio vertically or horizontally.
-
-        Args:
-        - dirtype:
-            - vertical: 'vertical', 'v'
-            - horizontal: 'horizontal', 'h'
-        - start: Ratio of full screen size to start swiping.
-        - end: Ratio of full screen size to stop swiping.
-        - fix:
-            - int: Fixed x or y coordinate or its proportion to the full screen
-                when scrolling vertically or horizontally.
-            - None: Fixed x or y coordinate default set to half of full screen.
-        - fix_is_ratio: True, fixed coordination is proportion to the full screen, vice versa.
-        - duration: defines the swipe speed as time taken to swipe from point a to point b, in ms.
-
-        Usage::
-
-            page.swipe_ratio('v', 80, 20)
-            page.swipe_ratio('h', 80, 20)
-            page.swipe_ratio('h', 80, 20, 100)
-            page.swipe_ratio('h', 80, 20, 40, True)
-
+        DEPRECATED.
+        Please use "swipe_by" or "flick_by" instead.
         """
-        # TODO deprecate
-        warnings.warn('Please use "swipe_by" instead.', DeprecationWarning, stacklevel=2)
+        warnings.warn('Please use "swipe_by" or "flick_by" instead.', DeprecationWarning, stacklevel=2)
 
         vertical = 'v'
         horizontal = 'h'

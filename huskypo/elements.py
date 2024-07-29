@@ -709,6 +709,7 @@ class Elements:
         reraise: bool | None = None
     ) -> bool:
         """
+        DEPRECATED.
         Please use `wait_all_absent` instead.
         """
         warnings.warn('Please use "wait_all_absent" instead.', DeprecationWarning, stacklevel=2)

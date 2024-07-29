@@ -32,7 +32,7 @@ from .page import Page
 from .types import SeleniumWebElement, AppiumWebDriver
 from .types import WebDriver, WebElement
 
-# TODO deprecate
+# NOTE DEPRECATED.
 from .by import SwipeAction as SA
 
 
@@ -2358,10 +2358,10 @@ class Element:
         duration: int = 1000
     ) -> Element:
         """
-        Please use "swipe_by" instead.
+        DEPRECATED.
+        Please use "swipe_by" or "flick_by" instead.
         """
-        # TODO deprecate
-        warnings.warn('Please use "swipe_by" instead.', DeprecationWarning, stacklevel=2)
+        warnings.warn('Please use "swipe_by" or "flick_by" instead.', DeprecationWarning, stacklevel=2)
 
         # Get border.
         border = self.__get_border(direction, border)
@@ -2384,6 +2384,7 @@ class Element:
         border: dict[str, int] | tuple[int, int, int, int]
     ) -> tuple[int, int, int, int]:
         """
+        DEPRECATED.
         return left, right, top, bottom
         """
         # Get border.
@@ -2415,6 +2416,7 @@ class Element:
         fix: bool | int = False
     ) -> tuple[int, int, int, int]:
         """
+        DEPRECATED.
         return sx, sy, ex, ey
         """
         width = right - left
@@ -2467,6 +2469,7 @@ class Element:
         max_swipe: int
     ) -> int | Literal[False]:
         """
+        DEPRECATED.
         Return viewable or not.
         """
         logstack._info(f'Start swiping to element {self.remark}.')
@@ -2496,6 +2499,7 @@ class Element:
         duration: int
     ) -> int | Literal[False]:
         """
+        DEPRECATED.
         Start adjusting.
         """
         logstack._info(f'Start adjusting to element {self.remark}')
@@ -2536,6 +2540,7 @@ class Element:
         reraise: bool | None = None
     ) -> bool:
         """
+        DEPRECATED.
         Please use `wait_absent` instead.
         """
         warnings.warn('Please use "wait_absent" instead.', DeprecationWarning, stacklevel=2)
@@ -2548,6 +2553,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | bool:
         """
+        DEPRECATED.
         Please use `wait_invisible` instead.
         """
         warnings.warn('Please use "wait_invisible" instead.', DeprecationWarning, stacklevel=2)
@@ -2560,6 +2566,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | bool:
         """
+        DEPRECATED.
         Please use `wait_unclickable` instead.
         """
         warnings.warn('Please use "wait_unclickable" instead.', DeprecationWarning, stacklevel=2)
@@ -2571,6 +2578,7 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
+        DEPRECATED.
         Please use `wait_unselected` instead.
         """
         warnings.warn('Please use "wait_unselected" instead.', DeprecationWarning, stacklevel=2)
