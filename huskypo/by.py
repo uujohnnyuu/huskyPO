@@ -18,14 +18,14 @@ class By(AppiumBy):
 
 class ByAttribute:
     """
-    This class is primarily used for internal validation of the correctness of `By`. 
-    It is not set as an inner or private method because users can also use this class 
+    This class is primarily used for internal validation of the correctness of `By`.
+    It is not set as an inner or private method because users can also use this class
     to check which methods are available in their current version.
 
     Retrieve all attribute information in huskypo By:
-	- NAMES (list): All attribute names (class attribute variable names) as strings.
-	- VALUES (list): All actual attribute values (class attribute variable values).
-	- VALUES_WITH_NONE (list): VALUES including None.
+        - NAMES (list): All attribute names (class attribute variable names) as strings.
+        - VALUES (list): All actual attribute values (class attribute variable values).
+        - VALUES_WITH_NONE (list): VALUES including None.
     """
 
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]
@@ -37,10 +37,10 @@ class SwipeAction:
     """
     DEPRECATED.
 
-    This method, including the corresponding 
-    page.swipe_ratio() and element.swipe_into_view(), 
-    will be `deprecated` in the future. 
-    Please use the new swipe parameters `Offset` and `Area` (from huskypo import Offset, Area) 
+    This method, including the corresponding
+    page.swipe_ratio() and element.swipe_into_view(),
+    will be `deprecated` in the future.
+    Please use the new swipe parameters `Offset` and `Area` (from huskypo import Offset, Area)
     for the new swipe methods:
     1. page.swipe_by()
     2. page.flick_by()
