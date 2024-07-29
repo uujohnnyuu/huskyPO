@@ -1,4 +1,4 @@
-# Release Note for v1.1.1
+# Release Note for v1.1.2
 
 ## Overview
 This release focuses on bug fixes and stability improvements.
@@ -9,7 +9,7 @@ This release focuses on bug fixes and stability improvements.
 ## Installation or Upgrade Instructions
 To install or upgrade to this version, run the following command:
 ```sh
-pip install huskypo==1.1.1
+pip install huskypo==1.1.2
 ```
 
 
