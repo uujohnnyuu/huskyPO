@@ -126,7 +126,7 @@ def get_stack_level(starts_with: str = 'test', stack_adjust: int = 0) -> int:
         frames = inspect.stack(0)
         stack_default = 1 + stack_adjust  # 0: get_stack_level
         for index, frame in enumerate(frames[stack_default:], start=stack_default):
-            if frame.function.startswith(starts_with):
+            if frame.function.startswith(starts_with) or os.path.basename(frame.filename).startswith(starts_with):
                 return index
         return stack_default
     finally:
@@ -156,7 +156,7 @@ def get_stack_infos(
         stack_default = 1 + stack_adjust  # 0: get_stack_info
         frame_target = frames[stack_default]
         for frame in frames[stack_default:]:
-            if frame.function.startswith(starts_with):
+            if frame.function.startswith(starts_with) or os.path.basename(frame.filename).startswith(starts_with):
                 frame_target = frame
                 break
         filename = os.path.basename(frame_target.filename)
