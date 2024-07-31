@@ -49,7 +49,6 @@ def info(
     Calling logging.info method, and finding stacklevel starts with specific function name.
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.info(f'target_level: {target_level}')
     logging.info(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
