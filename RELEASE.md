@@ -1,3 +1,18 @@
+# Release Note for v1.2.0
+
+## Overview
+This release focuses on improvements of logstack.
+
+## Improvements
+- **logstack**: Significantly enhanced the performance of searching for a specified module or function frame.
+
+## Installation or Upgrade Instructions
+To install or upgrade to this version, run the following command:
+```sh
+pip install huskypo==1.2.0
+```
+
+
 # Release Note for v1.1.2
 
 ## Overview

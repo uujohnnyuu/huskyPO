@@ -4,4 +4,4 @@
 # GitHub: https://github.com/uujohnnyuu/huskyPO
 
 
-version = '1.1.3'
+version = '1.2.0'

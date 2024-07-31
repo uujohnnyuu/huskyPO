@@ -49,6 +49,7 @@ def info(
     Calling logging.info method, and finding stacklevel starts with specific function name.
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
+    logging.info(f'target_level: {target_level}')
     logging.info(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
@@ -121,16 +122,26 @@ def get_stack_level(starts_with: str = 'test', stack_adjust: int = 0) -> int:
     - stack_adjust: setup the default stack level base on 1,
         e.g. stack_adjust = 2 -> default stack level will be 1 + 2 = 3
     """
-    try:
-        # Setting context=0 ignores source code lines and significantly speeds up the first call.
-        frames = inspect.stack(0)
-        stack_default = 1 + stack_adjust  # 0: get_stack_level
-        for index, frame in enumerate(frames[stack_default:], start=stack_default):
-            if frame.function.startswith(starts_with) or os.path.basename(frame.filename).startswith(starts_with):
-                return index
-        return stack_default
-    finally:
-        del frames
+    # Get the current frame.
+    frame = inspect.currentframe()
+
+    # stack = 0 represents the current frame, so +1 is to skip it.
+    # If the user knows the specific number of frames to skip, they can set stack_adjust.
+    stack = stack_default = stack_adjust + 1
+    for _ in range(stack):
+        frame = frame.f_back
+    
+    # Start searching through the subsequent frames.
+    # Once a module or function matches the keyword, return it's stack.
+    while frame:
+        if frame.f_code.co_name.startswith(starts_with) or \
+           os.path.basename(frame.f_code.co_filename).startswith(starts_with):
+            return stack
+        frame = frame.f_back
+        stack += 1
+    
+    # If no matches are found, return the default stack.
+    return stack_default
 
 
 def get_stack_infos(
@@ -150,23 +161,33 @@ def get_stack_infos(
     - to_dict is True: {'filename': 'xxx.py', 'lineno': '19', 'funcname': 'my_func'}
     - to_dict is False: '|xxx.py:19|my_func|'
     """
-    try:
-        # Setting context=0 ignores source code lines and significantly speeds up the first call.
-        frames = inspect.stack(0)
-        stack_default = 1 + stack_adjust  # 0: get_stack_info
-        frame_target = frames[stack_default]
-        for frame in frames[stack_default:]:
-            if frame.function.startswith(starts_with) or os.path.basename(frame.filename).startswith(starts_with):
-                frame_target = frame
-                break
-        filename = os.path.basename(frame_target.filename)
-        lineno = str(frame_target.lineno)
-        funcname = frame_target.function
-        if to_dict:
-            return {'filename': filename, 'lineno': lineno, 'funcname': funcname}
-        return f'|{filename}:{lineno}|{funcname}|'
-    finally:
-        del frames
+    # Get the current frame.
+    frame = inspect.currentframe()
+
+    # stack = 0 represents the current frame, so +1 is to skip it.
+    # If the user knows the specific number of frames to skip, they can set stack_adjust.
+    for _ in range(stack_adjust + 1):
+        frame = frame.f_back
+    
+    # record the current starting frame and search for the one that matches the condition. 
+    # If no matching frame is found, use the default frame_target.
+    frame_target = frame
+    while frame:
+        if frame.f_code.co_name.startswith(starts_with) or \
+           os.path.basename(frame.f_code.co_filename).startswith(starts_with):
+            frame_target = frame
+            break
+        frame = frame.f_back
+    
+    # After obtaining the final frame, return the filename, lineno, and funcname information.
+    filename = os.path.basename(frame_target.f_code.co_filename)
+    lineno = str(frame_target.f_lineno)
+    funcname = frame_target.f_code.co_name
+
+    # Let the user decide the format of the returned content.
+    if to_dict:
+        return {'filename': filename, 'lineno': lineno, 'funcname': funcname}
+    return f'|{filename}:{lineno}|{funcname}|'
 
 
 def _debug(message: str = '') -> None:
