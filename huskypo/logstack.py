@@ -130,7 +130,7 @@ def get_stack_level(starts_with: str = 'test', stack_adjust: int = 0) -> int:
     stack = stack_default = stack_adjust + 1
     for _ in range(stack):
         frame = frame.f_back
-    
+
     # Start searching through the subsequent frames.
     # Once a module or function matches the keyword, return it's stack.
     while frame:
@@ -139,7 +139,7 @@ def get_stack_level(starts_with: str = 'test', stack_adjust: int = 0) -> int:
             return stack
         frame = frame.f_back
         stack += 1
-    
+
     # If no matches are found, return the default stack.
     return stack_default
 
@@ -168,8 +168,8 @@ def get_stack_infos(
     # If the user knows the specific number of frames to skip, they can set stack_adjust.
     for _ in range(stack_adjust + 1):
         frame = frame.f_back
-    
-    # record the current starting frame and search for the one that matches the condition. 
+
+    # record the current starting frame and search for the one that matches the condition.
     # If no matching frame is found, use the default frame_target.
     frame_target = frame
     while frame:
@@ -178,7 +178,7 @@ def get_stack_infos(
             frame_target = frame
             break
         frame = frame.f_back
-    
+
     # After obtaining the final frame, return the filename, lineno, and funcname information.
     filename = os.path.basename(frame_target.f_code.co_filename)
     lineno = str(frame_target.f_lineno)
