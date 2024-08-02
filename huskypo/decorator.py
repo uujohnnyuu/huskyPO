@@ -37,6 +37,7 @@ def dynamic(func):
         target = func(self, *args, **kwargs)
         if isinstance(target, (Element, Element_, Elements)):
             return target.__get__(self)
-        raise TypeError(f'The decorated function "{func.__name__}" must return an Element (Element_) or Elements instance.')
+        raise TypeError(
+            f'The decorated function "{func.__name__}" must return an Element (Element_) or Elements instance.')
 
     return wrapper
