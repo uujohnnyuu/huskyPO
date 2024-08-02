@@ -4,14 +4,15 @@
 This release focuses on new features and improvements.
 
 ## New Features
-- **element_**: Introduced the `Element_` class.
-	1.	Unlike the Element class, `Element_` re-finds the element every time it is called.
-	2.	Does not store a previously obtained WebElement object.
-	3.	More suitable for less stable testing scenarios.
+- **element_**: Introduced the `Element_` class, which is similar to the Element class but has the following differences:
+	1.	It re-finds the element every time it is called.
+	2.	It does not store a previously obtained WebElement object.
+	3.	It is more suitable for less stable testing scenarios.
 
 ## Improvements
-- **logstack**: Significantly enhanced the performance of searching for a specified module or function frame.
-
+- **logstack**: 
+    1.	Significantly enhanced the performance of searching for a specified module or function frame.
+	2.	Improved the internal log display.
 
 ## Installation or Upgrade Instructions
 To install or upgrade to this version, run the following command:
