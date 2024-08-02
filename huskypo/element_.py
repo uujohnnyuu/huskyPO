@@ -1703,6 +1703,29 @@ class Element_:
         scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
         self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
+    
+    @property
+    def select(self):
+        """
+        Selenium Select API.
+        Return a select object of Select.
+
+        Usage::
+
+            # If you want to reuse the select object:
+            select = my_page.my_element.select
+            select.options
+            select.select_by_index(2)
+            ...
+
+            # Alternatively, you can directly call the method.
+            # Note that a new Select object will be created each time 
+            # to avoid StaleElementReferenceException.
+            my_page.my_element.options
+            my_page.my_element.select_by_index(2)
+
+        """
+        return Select(self.present_element)
 
     @property
     def options(self) -> list[SeleniumWebElement]:
@@ -1710,7 +1733,7 @@ class Element_:
         Selenium Select API.
         Returns a list of all options belonging to this select tag.
         """
-        return Select(self.present_element).options
+        return self.select.options
 
     @property
     def all_selected_options(self) -> list[SeleniumWebElement]:
@@ -1718,7 +1741,7 @@ class Element_:
         Selenium Select API.
         Returns a list of all selected options belonging to this select tag.
         """
-        return Select(self.present_element).all_selected_options
+        return self.select.all_selected_options
 
     @property
     def first_selected_option(self) -> SeleniumWebElement:
@@ -1727,7 +1750,7 @@ class Element_:
         The first selected option in this select tag,
         or the currently selected option in a normal select.
         """
-        return Select(self.present_element).first_selected_option
+        return self.select.first_selected_option
 
     def select_by_value(self, value: str) -> None:
         """
@@ -1740,7 +1763,7 @@ class Element_:
         Args:
         - value: The value to match against
         """
-        return Select(self.present_element).select_by_value(value)
+        return self.select.select_by_value(value)
 
     def select_by_index(self, index: int) -> None:
         """
@@ -1753,7 +1776,7 @@ class Element_:
         - index: The option at this index will be selected
             throws NoSuchElementException If there is no option with specified index in SELECT
         """
-        return Select(self.present_element).select_by_index(index)
+        return self.select.select_by_index(index)
 
     def select_by_visible_text(self, text: str) -> None:
         """
@@ -1767,7 +1790,7 @@ class Element_:
         - text: The visible text to match against
             throws NoSuchElementException If there is no option with specified text in SELECT
         """
-        return Select(self.present_element).select_by_visible_text(text)
+        return self.select.select_by_visible_text(text)
 
     def deselect_all(self) -> None:
         """
@@ -1775,7 +1798,7 @@ class Element_:
         Clear all selected entries.
         This is only valid when the SELECT supports multiple selections.
         """
-        return Select(self.present_element).deselect_all()
+        return self.select.deselect_all()
 
     def deselect_by_value(self, value: str) -> None:
         """
@@ -1787,7 +1810,7 @@ class Element_:
         Args:
         - value: The value to match against
         """
-        return Select(self.present_element).deselect_by_value(value)
+        return self.select.deselect_by_value(value)
 
     def deselect_by_index(self, index: int) -> None:
         """
@@ -1799,7 +1822,7 @@ class Element_:
         Args:
         - index: The option at this index will be deselected
         """
-        return Select(self.present_element).deselect_by_index(index)
+        return self.select.deselect_by_index(index)
 
     def deselect_by_visible_text(self, text: str) -> None:
         """
@@ -1811,7 +1834,7 @@ class Element_:
         Args:
         - text: The visible text to match against
         """
-        return Select(self.present_element).deselect_by_visible_text(text)
+        return self.select.deselect_by_visible_text(text)
 
     @property
     def location_in_view(self) -> dict[str, int]:
