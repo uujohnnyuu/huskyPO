@@ -46,10 +46,10 @@ Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
 class Element_:
     """
     This class functions similarly to the Element class, but with the key difference that:
-    1. It re-finds the element every time it is accessed. 
-    2. This is to avoid unexpected StaleElementReferenceException and InvalidSessionIdException. 
-    3. If issues arise when using Element, such as 
-        the element state changing too quickly while checking its visibility in a loop, 
+    1. It re-finds the element every time it is accessed.
+    2. This is to avoid unexpected StaleElementReferenceException and InvalidSessionIdException.
+    3. If issues arise when using Element, such as
+        the element state changing too quickly while checking its visibility in a loop,
         this `Element_` class can be used as an alternative to handle such situations.
     """
 
@@ -402,7 +402,7 @@ class Element_:
             the element did not reach the expected status after the timeout.
         """
         try:
-           return self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, StaleElementReferenceException).until(
                 ecex.visibility_of_element_located(self.locator, self._index),
                 self.__timeout_message('visible'))
         except TimeoutException:
