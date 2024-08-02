@@ -1703,7 +1703,7 @@ class Element_:
         scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
         self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
-    
+
     @property
     def select(self):
         """
@@ -1719,7 +1719,7 @@ class Element_:
             ...
 
             # Alternatively, you can directly call the method.
-            # Note that a new Select object will be created each time 
+            # Note that a new Select object will be created each time
             # to avoid StaleElementReferenceException.
             my_page.my_element.options
             my_page.my_element.select_by_index(2)
