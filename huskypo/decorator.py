@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from functools import wraps
 
-from . import Element_, Elements
+from . import Element, Element_, Elements
 
 
 def dynamic(func):
@@ -35,8 +35,8 @@ def dynamic(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         target = func(self, *args, **kwargs)
-        if isinstance(target, (Element_, Elements)):
+        if isinstance(target, (Element, Element_, Elements)):
             return target.__get__(self)
-        raise TypeError(f'The decorated function "{func.__name__}" must return an Element or Elements instance.')
+        raise TypeError(f'The decorated function "{func.__name__}" must return an Element (Element_) or Elements instance.')
 
     return wrapper
