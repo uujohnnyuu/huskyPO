@@ -1,10 +1,17 @@
 # Release Note for v1.2.0
 
 ## Overview
-This release focuses on improvements of logstack.
+This release focuses on new features and improvements.
+
+## New Features
+- **logstack**: Introduced the Element_ class.
+	1.	Unlike the Element class, Element_ re-finds the element every time it is called.
+	2.	Does not store a previously obtained WebElement object.
+	3.	More suitable for less stable testing scenarios.
 
 ## Improvements
 - **logstack**: Significantly enhanced the performance of searching for a specified module or function frame.
+
 
 ## Installation or Upgrade Instructions
 To install or upgrade to this version, run the following command:
