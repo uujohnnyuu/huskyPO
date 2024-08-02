@@ -3,8 +3,6 @@
 # PyPI: https://pypi.org/project/huskypo/
 # GitHub: https://github.com/uujohnnyuu/huskyPO
 
-# NOTE
-
 # TODO
 # 1. Keep tracking selenium 4.0 and appium 2.0 new methods.
 # 2. Keep observing whether it is necessary to add the visible state for each method.
