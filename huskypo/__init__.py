@@ -6,6 +6,7 @@
 from .config import Log, Timeout, Appium, Offset, Area
 from .page import Page
 from .element import Element
+from .element_ import Element_
 from .elements import Elements
 from .by import By
 from .decorator import dynamic

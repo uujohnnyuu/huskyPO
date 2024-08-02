@@ -3,6 +3,8 @@
 # PyPI: https://pypi.org/project/huskypo/
 # GitHub: https://github.com/uujohnnyuu/huskyPO
 
+# NOTE
+
 # TODO
 # 1. Keep tracking selenium 4.0 and appium 2.0 new methods.
 # 2. Keep observing whether it is necessary to add the visible state for each method.
@@ -36,16 +38,20 @@ from .types import WebDriver, WebElement
 from .by import SwipeAction as SA
 
 
-ElementReferenceException = (AttributeError, StaleElementReferenceException)
-
 P = TypeVar('P', bound=Page)
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
 
 
-class Element:
-
-    __TmpAttrs = ['_present_element', '_visible_element', '_clickable_element', '_select']
+class Element_:
+    """
+    This class functions similarly to the Element class, but with the key difference that:
+    1. It re-finds the element every time it is accessed. 
+    2. This is to avoid unexpected StaleElementReferenceException and InvalidSessionIdException. 
+    3. If issues arise when using Element, such as 
+        the element state changing too quickly while checking its visibility in a loop, 
+        this `Element_` class can be used as an alternative to handle such situations.
+    """
 
     def __init__(
         self,
@@ -117,7 +123,7 @@ class Element:
         # whether to delete the WebElement object to avoid an InvalidSessionIdException.
         self._page = None
 
-    def __get__(self, instance: P, owner: Type[P] | None = None) -> Element:
+    def __get__(self, instance: P, owner: Type[P] | None = None) -> Element_:
         """
         Internal use.
         Make "Element" a data descriptor for "Page" or "other classes that inherit from Page".
@@ -126,9 +132,7 @@ class Element:
         """
         # When a new Page instance is detected, it indicates that the driver may have changed.
         # Delete the WebElement object to avoid an InvalidSessionIdException.
-        if self._page != instance:
-            self._page = instance
-            self.__del_tmpattrs()
+        self._page = instance
         return self
 
     def __set__(self, instance: P, value: tuple | dict) -> None:
@@ -144,12 +148,6 @@ class Element:
             self.__init__(**value)
         else:
             raise TypeError('Please configure dynamic elements according to the logic of the Element parameters.')
-        self.__del_tmpattrs()
-
-    def __del_tmpattrs(self) -> None:
-        for attr in Element.__TmpAttrs:
-            if hasattr(self, attr):
-                delattr(self, attr)
 
     @property
     def by(self) -> str | None:
@@ -336,10 +334,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            self._present_element = self.wait(timeout).until(
+            return self.wait(timeout).until(
                 ecex.presence_of_element_located(self.locator, self._index),
                 self.__timeout_message('present'))
-            return self._present_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -405,15 +402,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            self._visible_element = self.wait(timeout).until(
-                ecex.visibility_of_element(self._present_element),
-                self.__timeout_message('visible'))
-            return self._visible_element
-        except ElementReferenceException:
-            self._present_element = self._visible_element = self.wait(timeout, StaleElementReferenceException).until(
+           return self.wait(timeout, StaleElementReferenceException).until(
                 ecex.visibility_of_element_located(self.locator, self._index),
                 self.__timeout_message('visible'))
-            return self._visible_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -451,14 +442,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            return self.wait(timeout).until(
-                ecex.invisibility_of_element(self._present_element),
-                self.__timeout_message('invisible'))
-        except ElementReferenceException:
-            self._present_element = self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, StaleElementReferenceException).until(
                 ecex.invisibility_of_element_located(self.locator, self._index, present),
                 self.__timeout_message('invisible', present))
-            return self._present_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -490,16 +476,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            self._visible_element = self._clickable_element = self.wait(timeout).until(
-                ecex.element_to_be_clickable(self._present_element),
+            return self.wait(timeout, StaleElementReferenceException).until(
+                ecex.element_located_to_be_clickable(self.locator, self._index),
                 self.__timeout_message('clickable'))
-            return self._clickable_element
-        except ElementReferenceException:
-            self._present_element = self._visible_element = self._clickable_element = self.wait(
-                timeout, StaleElementReferenceException).until(
-                    ecex.element_located_to_be_clickable(self.locator, self._index),
-                    self.__timeout_message('clickable'))
-            return self._clickable_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -537,14 +516,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            return self.wait(timeout).until(
-                ecex.element_to_be_unclickable(self._present_element),
-                self.__timeout_message('unclickable'))
-        except ElementReferenceException:
-            self._present_element = self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, StaleElementReferenceException).until(
                 ecex.element_located_to_be_unclickable(self.locator, self._index, present),
                 self.__timeout_message('unclickable', present))
-            return self._present_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -576,14 +550,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            return self.wait(timeout).until(
-                ecex.element_to_be_selected(self._present_element),
-                self.__timeout_message('selected'))
-        except ElementReferenceException:
-            self._present_element = self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, StaleElementReferenceException).until(
                 ecex.element_located_to_be_selected(self.locator, self._index),
                 self.__timeout_message('selected'))
-            return self._present_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -619,14 +588,9 @@ class Element:
             the element did not reach the expected status after the timeout.
         """
         try:
-            return self.wait(timeout).until(
-                ecex.element_to_be_unselected(self._present_element),
-                self.__timeout_message('unselected'))
-        except ElementReferenceException:
-            self._present_element = self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, StaleElementReferenceException).until(
                 ecex.element_located_to_be_unselected(self.locator, self._index),
                 self.__timeout_message('unselected'))
-            return self._present_element
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -650,68 +614,40 @@ class Element:
         Whether the element is visible.
         It is the same as the official "is_displayed()" method.
         """
-        try:
-            result = self._present_element.is_displayed()
-        except ElementReferenceException:
-            result = self.present_element.is_displayed()
-
-        if result:
-            self._visible_element = self._present_element
-
-        return result
+        return self.present_element.is_displayed()
 
     def is_enabled(self) -> bool:
         """
         Whether the element is enabled.
         """
-        try:
-            return self._present_element.is_enabled()
-        except ElementReferenceException:
-            return self.present_element.is_enabled()
+        return self.present_element.is_enabled()
 
     def is_clickable(self) -> bool:
         """
         Whether the element is clickable.
         """
-        try:
-            result = self._present_element.is_displayed() and self._present_element.is_enabled()
-        except ElementReferenceException:
-            element = self.present_element
-            result = element.is_displayed() and element.is_enabled()
-
-        if result:
-            self._clickable_element = self._visible_element = self._present_element
-
-        return result
+        element = self.present_element
+        return element.is_displayed() and element.is_enabled()
 
     def is_selected(self) -> bool:
         """
         Whether the element is selected.
         """
-        try:
-            return self._present_element.is_selected()
-        except ElementReferenceException:
-            return self.present_element.is_selected()
+        return self.present_element.is_selected()
 
     @property
     def text(self) -> str:
         """
         The text of the element when it is present.
         """
-        try:
-            return self._present_element.text
-        except ElementReferenceException:
-            return self.present_element.text
+        return self.present_element.text
 
     @property
     def visible_text(self) -> str:
         """
         The text of the element when it is visible.
         """
-        try:
-            return self._visible_element.text
-        except ElementReferenceException:
-            return self.visible_element.text
+        return self.visible_element.text
 
     @property
     def rect(self) -> dict:
@@ -724,10 +660,7 @@ class Element:
         Note that the official rect may have decimals;
         We remain consistent with the official standards.
         """
-        try:
-            rect = self._present_element.rect
-        except ElementReferenceException:
-            rect = self.present_element.rect
+        rect = self.present_element.rect
         return {
             'x': rect['x'], 'y': rect['y'],
             'width': rect['width'], 'height': rect['height']
@@ -744,10 +677,7 @@ class Element:
         Note that the official location has been rounded,
         so the x, y may be different with rect.
         """
-        try:
-            return self._present_element.location
-        except ElementReferenceException:
-            return self.present_element.location
+        return self.present_element.location
 
     @property
     def size(self) -> dict[str, int]:
@@ -760,10 +690,7 @@ class Element:
         Note that the official size may have decimals;
         We remain consistent with the official standards.
         """
-        try:
-            size = self._present_element.size
-        except ElementReferenceException:
-            size = self.present_element.size
+        size = self.present_element.size
         return {'width': size['width'], 'height': size['height']}
 
     @property
@@ -774,10 +701,7 @@ class Element:
         Return is rounded down:
         - {'left': int, 'right': int, 'top': int, 'bottom': int}
         """
-        try:
-            rect = self._present_element.rect
-        except ElementReferenceException:
-            rect = self.present_element.rect
+        rect = self.present_element.rect
         return {
             'left': int(rect['x']),
             'right': int(rect['x'] + rect['width']),
@@ -793,26 +717,20 @@ class Element:
         Return is rounded down:
         - {'x': int, 'y': int}
         """
-        try:
-            rect = self._present_element.rect
-        except ElementReferenceException:
-            rect = self.present_element.rect
+        rect = self.present_element.rect
         return {
             'x': int(rect['x'] + rect['width'] / 2),
             'y': int(rect['y'] + rect['height'] / 2)
         }
 
-    def click(self) -> Element:
+    def click(self) -> Element_:
         """
         Click the element when it is clickable.
         """
-        try:
-            self._clickable_element.click()
-        except ElementReferenceException:
-            self.clickable_element.click()
+        self.clickable_element.click()
         return self
 
-    def tap(self, duration: int | None = None) -> Element:
+    def tap(self, duration: int | None = None) -> Element_:
         """
         Appium API.
         Tap the center location of the element when it is present.
@@ -823,11 +741,10 @@ class Element:
         Args:
         - duration: length of time to tap, in ms
         """
-        center = tuple(self.center.values())
-        self.driver.tap([center], duration)
+        self.driver.tap([tuple(self.center.values())], duration)
         return self
 
-    def app_drag_and_drop(self, target: Element) -> AppiumWebDriver:
+    def app_drag_and_drop(self, target: Element_) -> AppiumWebDriver:
         """
         Appium API.
         Drag the origin element to the destination element.
@@ -835,12 +752,9 @@ class Element:
         Args:
         - target: the element to drag to
         """
-        try:
-            return self.driver.drag_and_drop(self._present_element, target._present_element)
-        except ElementReferenceException:
-            return self.driver.drag_and_drop(self.present_element, target.present_element)
+        return self.driver.drag_and_drop(self.present_element, target.present_element)
 
-    def app_scroll(self, target: Element, duration: int | None = None) -> AppiumWebDriver:
+    def app_scroll(self, target: Element_, duration: int | None = None) -> AppiumWebDriver:
         """
         Appium API.
         Scrolls from one element to another
@@ -850,10 +764,7 @@ class Element:
         - duration: defines speed of scroll action when moving to target.
             Default is 600 ms for W3C spec.
         """
-        try:
-            return self.driver.scroll(self._present_element, target._present_element, duration)
-        except ElementReferenceException:
-            return self.driver.scroll(self.present_element, target.present_element, duration)
+        return self.driver.scroll(self.present_element, target.present_element, duration)
 
     def is_viewable(self, timeout: int | float | None = None) -> bool:
         """
@@ -865,10 +776,7 @@ class Element:
         - timeout: Maximum time in seconds to wait for the element to become present.
         """
         element = self.wait_present(timeout, False)
-        if element and element.is_displayed():
-            self._visible_element = element
-            return True
-        return False
+        return True if element and element.is_displayed() else False
 
     def swipe_by(
         self,
@@ -879,7 +787,7 @@ class Element:
         max_adjust: int = 2,
         min_distance: int = 100,
         duration: int = 1000
-    ) -> Element:
+    ) -> Element_:
         """
         Appium API.
         For native iOS and Android apps,
@@ -977,7 +885,7 @@ class Element:
         max_adjust: int = 2,
         min_distance: int = 100,
         duration: int = 1000
-    ) -> Element:
+    ) -> Element_:
         """
         Appium API.
         For native iOS and Android apps,
@@ -1228,7 +1136,7 @@ class Element:
 
             self.driver.swipe(start_x, start_y, end_x, end_y, duration)
 
-    def clear(self) -> Element:
+    def clear(self) -> Element_:
         """
         Clear the text of the field type element.
 
@@ -1239,13 +1147,10 @@ class Element:
             my_page.my_element.click().clear().send_keys('my_text')
 
         """
-        try:
-            self._clickable_element.clear()
-        except ElementReferenceException:
-            self.clickable_element.clear()
+        self.clickable_element.clear()
         return self
 
-    def send_keys(self, *value) -> Element:
+    def send_keys(self, *value) -> Element_:
         """
         Simulates typing into the element.
 
@@ -1259,10 +1164,7 @@ class Element:
             my_page.my_element.click().clear().send_keys('my_text')
 
         """
-        try:
-            self._clickable_element.send_keys(*value)
-        except ElementReferenceException:
-            self.clickable_element.send_keys(*value)
+        self.clickable_element.send_keys(*value)
         return self
 
     def get_attribute(self, name: Any | str) -> Any | str | dict | None:
@@ -1290,10 +1192,7 @@ class Element:
             is_active = "active" in target_element.get_attribute("class")
 
         """
-        try:
-            return self._present_element.get_attribute(name)
-        except ElementReferenceException:
-            return self.present_element.get_attribute(name)
+        return self.present_element.get_attribute(name)
 
     def get_property(self, name: Any) -> str | bool | WebElement | dict:
         """
@@ -1307,20 +1206,14 @@ class Element:
             text_length = target_element.get_property("text_length")
 
         """
-        try:
-            return self._present_element.get_property(name)
-        except ElementReferenceException:
-            return self.present_element.get_property(name)
+        return self.present_element.get_property(name)
 
     def submit(self) -> None:
         """
         Selenium API.
         Submits a form.
         """
-        try:
-            self._clickable_element.submit()
-        except ElementReferenceException:
-            self.clickable_element.submit()
+        self.clickable_element.submit()
 
     @property
     def tag_name(self) -> str:
@@ -1328,30 +1221,21 @@ class Element:
         Selenium API.
         This element's `tagName` property.
         """
-        try:
-            return self._present_element.tag_name
-        except ElementReferenceException:
-            return self.present_element.tag_name
+        return self.present_element.tag_name
 
     def value_of_css_property(self, property_name: Any) -> str:
         """
         Selenium API.
         The value of a CSS property.
         """
-        try:
-            return self._present_element.value_of_css_property(property_name)
-        except ElementReferenceException:
-            return self.present_element.value_of_css_property(property_name)
+        return self.present_element.value_of_css_property(property_name)
 
     def visible_value_of_css_property(self, property_name: Any) -> str:
         """
         Selenium API.
         The visible value of a CSS property.
         """
-        try:
-            return self._visible_element.value_of_css_property(property_name)
-        except ElementReferenceException:
-            return self.visible_element.value_of_css_property(property_name)
+        return self.visible_element.value_of_css_property(property_name)
 
     def switch_to_frame(
         self,
@@ -1416,7 +1300,7 @@ class Element:
         """
         self._action.reset_actions()
 
-    def action_click(self) -> Element:
+    def action_click(self) -> Element_:
         """
         Selenium ActionChains API.
         Clicks an element.
@@ -1435,13 +1319,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.click(self._present_element)
-        except ElementReferenceException:
-            self._action.click(self.present_element)
+        self._action.click(self.present_element)
         return self
 
-    def click_and_hold(self) -> Element:
+    def click_and_hold(self) -> Element_:
         """
         Selenium ActionChains API.
         Holds down the left mouse button on an element.
@@ -1460,13 +1341,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.click_and_hold(self._present_element)
-        except ElementReferenceException:
-            self._action.click_and_hold(self.present_element)
+        self._action.click_and_hold(self.present_element)
         return self
 
-    def context_click(self) -> Element:
+    def context_click(self) -> Element_:
         """
         Selenium ActionChains API.
         Performs a context-click (right click) on an element.
@@ -1485,13 +1363,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.context_click(self._present_element)
-        except ElementReferenceException:
-            self._action.context_click(self.present_element)
+        self._action.context_click(self.present_element)
         return self
 
-    def double_click(self) -> Element:
+    def double_click(self) -> Element_:
         """
         Selenium ActionChains API.
         Double-clicks an element.
@@ -1510,13 +1385,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.double_click(self._present_element)
-        except ElementReferenceException:
-            self._action.double_click(self.present_element)
+        self._action.double_click(self.present_element)
         return self
 
-    def drag_and_drop(self, target: Element) -> Element:
+    def drag_and_drop(self, target: Element_) -> Element_:
         """
         Selenium ActionChains API.
         Holds down the left mouse button on the source element,
@@ -1539,13 +1411,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.drag_and_drop(self._present_element, target._present_element)
-        except ElementReferenceException:
-            self._action.drag_and_drop(self.present_element, target.present_element)
+        self._action.drag_and_drop(self.present_element, target.present_element)
         return self
 
-    def drag_and_drop_by_offset(self, xoffset: int, yoffset: int) -> Element:
+    def drag_and_drop_by_offset(self, xoffset: int, yoffset: int) -> Element_:
         """
         Selenium ActionChains API.
         Holds down the left mouse button on the source element,
@@ -1569,13 +1438,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.drag_and_drop_by_offset(self._present_element, xoffset, yoffset)
-        except ElementReferenceException:
-            self._action.drag_and_drop_by_offset(self.present_element, xoffset, yoffset)
+        self._action.drag_and_drop_by_offset(self.present_element, xoffset, yoffset)
         return self
 
-    def hotkey(self, *value: str) -> Element:
+    def hotkey(self, *value: str) -> Element_:
         """
         Selenium ActionChains API.
         Sends hotkey to target element.
@@ -1593,10 +1459,7 @@ class Element:
 
         """
         # key_down, first to focus target element.
-        try:
-            self._action.key_down(value[0], self._present_element)
-        except ElementReferenceException:
-            self._action.key_down(value[0], self.present_element)
+        self._action.key_down(value[0], self.present_element)
         for key in value[1:-1]:
             self._action.key_down(key)
         # send_keys
@@ -1606,7 +1469,7 @@ class Element:
             self._action.key_up(key)
         return self
 
-    def key_down(self, value: str, focus: bool = True) -> Element:
+    def key_down(self, value: str, focus: bool = True) -> Element_:
         """
         Selenium ActionChains API.
         Sends a key press only, without releasing it.
@@ -1625,15 +1488,12 @@ class Element:
 
         """
         if focus:
-            try:
-                self._action.key_down(value, self._present_element)
-            except ElementReferenceException:
-                self._action.key_down(value, self.present_element)
+            self._action.key_down(value, self.present_element)
         else:
             self._action.key_down(value)
         return self
 
-    def key_up(self, value: str, focus: bool = False) -> Element:
+    def key_up(self, value: str, focus: bool = False) -> Element_:
         """
         Selenium ActionChains API.
         Releases a modifier key.
@@ -1654,15 +1514,12 @@ class Element:
 
         """
         if focus:
-            try:
-                self._action.key_up(value, self._present_element)
-            except ElementReferenceException:
-                self._action.key_up(value, self.present_element)
+            self._action.key_up(value, self.present_element)
         else:
             self._action.key_up(value)
         return self
 
-    def action_send_keys(self, *keys_to_send: str) -> Element:
+    def action_send_keys(self, *keys_to_send: str) -> Element_:
         """
         Selenium ActionChains API.
         Sends keys to current focused element.
@@ -1685,7 +1542,7 @@ class Element:
         self._action.send_keys(*keys_to_send)
         return self
 
-    def send_keys_to_element(self, *keys_to_send: str) -> Element:
+    def send_keys_to_element(self, *keys_to_send: str) -> Element_:
         """
         Selenium ActionChains API.
         Sends keys to an element.
@@ -1707,13 +1564,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.send_keys_to_element(self._present_element, *keys_to_send)
-        except ElementReferenceException:
-            self._action.send_keys_to_element(self.present_element, *keys_to_send)
+        self._action.send_keys_to_element(self.present_element, *keys_to_send)
         return self
 
-    def move_to_element(self) -> Element:
+    def move_to_element(self) -> Element_:
         """
         Selenium ActionChains API.
         Moving the mouse to the middle of an element.
@@ -1732,17 +1586,14 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.move_to_element(self._present_element)
-        except ElementReferenceException:
-            self._action.move_to_element(self.present_element)
+        self._action.move_to_element(self.present_element)
         return self
 
     def move_to_element_with_offset(
         self,
         xoffset: int,
         yoffset: int,
-    ) -> Element:
+    ) -> Element_:
         """
         Selenium ActionChains API.
         Move the mouse by an offset of the specified element.
@@ -1766,13 +1617,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.move_to_element_with_offset(self._present_element, xoffset, yoffset)
-        except ElementReferenceException:
-            self._action.move_to_element_with_offset(self.present_element, xoffset, yoffset)
+        self._action.move_to_element_with_offset(self.present_element, xoffset, yoffset)
         return self
 
-    def release(self) -> Element:
+    def release(self) -> Element_:
         """
         Selenium ActionChains API.
         Releasing a held mouse button on an element.
@@ -1791,13 +1639,10 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.release(self._present_element)
-        except ElementReferenceException:
-            self._action.release(self.present_element)
+        self._action.release(self.present_element)
         return self
 
-    def pause(self, seconds: int | float) -> Element:
+    def pause(self, seconds: int | float) -> Element_:
         """
         Selenium ActionChains API.
         Pause all inputs for the specified duration in seconds.
@@ -1805,7 +1650,7 @@ class Element:
         self._action.pause(seconds)
         return self
 
-    def scroll_to_element(self) -> Element:
+    def scroll_to_element(self) -> Element_:
         """
         Selenium ActionChains API.
         If the element is outside the viewport,
@@ -1825,10 +1670,7 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            self._action.scroll_to_element(self._present_element)
-        except ElementReferenceException:
-            self._action.scroll_to_element(self.present_element)
+        self._action.scroll_to_element(self.present_element)
         return self
 
     def scroll_from_element(
@@ -1837,7 +1679,7 @@ class Element:
         y_offset: int = 0,
         delta_x: int = 0,
         delta_y: int = 0
-    ) -> Element:
+    ) -> Element_:
         """
         Selenium ActionChains API.
         Set the origin to the center of the element with an offset,
@@ -1867,12 +1709,8 @@ class Element:
             my_page.perform()
 
         """
-        try:
-            scroll_origin = ScrollOrigin.from_element(self._present_element, x_offset, y_offset)
-            self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
-        except ElementReferenceException:
-            scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
-            self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
+        scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
+        self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
     @property
@@ -1881,31 +1719,7 @@ class Element:
         Selenium Select API.
         Returns a list of all options belonging to this select tag.
         """
-        # All Select-related methods must be encapsulated using this structure
-        # to ensure no unnecessary steps are taken.
-        # The reason is that if "self._select.method" raises a
-        # StaleElementReferenceException or InvalidSessionIdException,
-        # we can directly rebuild with "self._select = Select(self.present_element)",
-        # without needing to check "self._select = Select(self._present_element)" again.
-        # Once part of the try-except block is encapsulated into a function,
-        # there will inevitably be redundant checks for "self._select = Select(self._present_element)".
-
-        try:
-            try:
-                # The main process.
-                return self._select.options
-            except AttributeError:
-                # Handle the first AttributeError:
-                # If there is no available select attribute, create it using the "_present_element" first.
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            # Handle ElementReferenceException by creating a new select object.
-            # This exception can be triggered in two scenarios:
-            # 1. The main process triggers a stale or invalid session exception.
-            # 2. During the first AttributeError handling, if there is no "_present_element" attribute,
-            #       or it triggers a stale or invalid session exception when initializing.
-            self._select = Select(self.present_element)
-        return self._select.options
+        return Select(self.present_element).options
 
     @property
     def all_selected_options(self) -> list[SeleniumWebElement]:
@@ -1913,14 +1727,7 @@ class Element:
         Selenium Select API.
         Returns a list of all selected options belonging to this select tag.
         """
-        try:
-            try:
-                return self._select.all_selected_options
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.all_selected_options
+        return Select(self.present_element).all_selected_options
 
     @property
     def first_selected_option(self) -> SeleniumWebElement:
@@ -1929,14 +1736,7 @@ class Element:
         The first selected option in this select tag,
         or the currently selected option in a normal select.
         """
-        try:
-            try:
-                return self._select.first_selected_option
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.first_selected_option
+        return Select(self.present_element).first_selected_option
 
     def select_by_value(self, value: str) -> None:
         """
@@ -1949,14 +1749,7 @@ class Element:
         Args:
         - value: The value to match against
         """
-        try:
-            try:
-                return self._select.select_by_value(value)
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.select_by_value(value)
+        return Select(self.present_element).select_by_value(value)
 
     def select_by_index(self, index: int) -> None:
         """
@@ -1969,14 +1762,7 @@ class Element:
         - index: The option at this index will be selected
             throws NoSuchElementException If there is no option with specified index in SELECT
         """
-        try:
-            try:
-                return self._select.select_by_index(index)
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.select_by_index(index)
+        return Select(self.present_element).select_by_index(index)
 
     def select_by_visible_text(self, text: str) -> None:
         """
@@ -1990,14 +1776,7 @@ class Element:
         - text: The visible text to match against
             throws NoSuchElementException If there is no option with specified text in SELECT
         """
-        try:
-            try:
-                return self._select.select_by_visible_text(text)
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.select_by_visible_text(text)
+        return Select(self.present_element).select_by_visible_text(text)
 
     def deselect_all(self) -> None:
         """
@@ -2005,14 +1784,7 @@ class Element:
         Clear all selected entries.
         This is only valid when the SELECT supports multiple selections.
         """
-        try:
-            try:
-                return self._select.deselect_all()
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.deselect_all()
+        return Select(self.present_element).deselect_all()
 
     def deselect_by_value(self, value: str) -> None:
         """
@@ -2024,14 +1796,7 @@ class Element:
         Args:
         - value: The value to match against
         """
-        try:
-            try:
-                return self._select.deselect_by_value(value)
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.deselect_by_value(value)
+        return Select(self.present_element).deselect_by_value(value)
 
     def deselect_by_index(self, index: int) -> None:
         """
@@ -2043,14 +1808,7 @@ class Element:
         Args:
         - index: The option at this index will be deselected
         """
-        try:
-            try:
-                return self._select.deselect_by_index(index)
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.deselect_by_index(index)
+        return Select(self.present_element).deselect_by_index(index)
 
     def deselect_by_visible_text(self, text: str) -> None:
         """
@@ -2062,14 +1820,7 @@ class Element:
         Args:
         - text: The visible text to match against
         """
-        try:
-            try:
-                return self._select.deselect_by_visible_text(text)
-            except AttributeError:
-                self._select = Select(self._present_element)
-        except ElementReferenceException:
-            self._select = Select(self.present_element)
-        return self._select.deselect_by_visible_text(text)
+        return Select(self.present_element).deselect_by_visible_text(text)
 
     @property
     def location_in_view(self) -> dict[str, int]:
@@ -2080,12 +1831,9 @@ class Element:
         Return is the same as official:
         {'x': int, 'y': int}
         """
-        try:
-            return self._present_element.location_in_view
-        except ElementReferenceException:
-            return self.present_element.location_in_view
+        return self.present_element.location_in_view
 
-    def input(self, text: str = '') -> Element:
+    def input(self, text: str = '') -> Element_:
         """
         Selenium API
         Input text to the element.
@@ -2099,13 +1847,10 @@ class Element:
             my_page.my_element.input('123').space().input('456')
 
         """
-        try:
-            self._present_element.send_keys(text)
-        except ElementReferenceException:
-            self.present_element.send_keys(text)
+        self.present_element.send_keys(text)
         return self
 
-    def enter(self) -> Element:
+    def enter(self) -> Element_:
         """
         Selenium API
         Send keys ENTER to the element.
@@ -2115,13 +1860,10 @@ class Element:
             my_page.my_element.input('123 456').enter()
 
         """
-        try:
-            self._present_element.send_keys(Keys.ENTER)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.ENTER)
+        self.present_element.send_keys(Keys.ENTER)
         return self
 
-    def select_all(self) -> Element:
+    def select_all(self) -> Element_:
         """
         Selenium API, this is NOT Select relative function.
         Send keys "COMMAND/CONTROL + A" to the element.
@@ -2132,13 +1874,10 @@ class Element:
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
-        try:
-            self._present_element.send_keys(first, 'a')
-        except ElementReferenceException:
-            self.present_element.send_keys(first, 'a')
+        self.present_element.send_keys(first, 'a')
         return self
 
-    def cut(self) -> Element:
+    def cut(self) -> Element_:
         """
         Selenium API
         Send keys "COMMAND/CONTROL + X" to the element.
@@ -2150,13 +1889,10 @@ class Element:
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
-        try:
-            self._present_element.send_keys(first, 'x')
-        except ElementReferenceException:
-            self.present_element.send_keys(first, 'x')
+        self.present_element.send_keys(first, 'x')
         return self
 
-    def copy(self) -> Element:
+    def copy(self) -> Element_:
         """
         Selenium API
         Send keys "COMMAND/CONTROL + C" to the element.
@@ -2168,13 +1904,10 @@ class Element:
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
-        try:
-            self._present_element.send_keys(first, 'c')
-        except ElementReferenceException:
-            self.present_element.send_keys(first, 'c')
+        self.present_element.send_keys(first, 'c')
         return self
 
-    def paste(self) -> Element:
+    def paste(self) -> Element_:
         """
         Selenium API
         Send keys "COMMAND/CONTROL + V" to the element.
@@ -2186,13 +1919,10 @@ class Element:
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
-        try:
-            self._present_element.send_keys(first, 'v')
-        except ElementReferenceException:
-            self.present_element.send_keys(first, 'v')
+        self.present_element.send_keys(first, 'v')
         return self
 
-    def arrow_left(self, times: int = 1) -> Element:
+    def arrow_left(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys "ARROW_LEFT" to the element.
@@ -2205,13 +1935,10 @@ class Element:
             my_page.my_element.arrow_left(3)
 
         """
-        try:
-            self._present_element.send_keys(Keys.ARROW_LEFT * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.ARROW_LEFT * times)
+        self.present_element.send_keys(Keys.ARROW_LEFT * times)
         return self
 
-    def arrow_right(self, times: int = 1) -> Element:
+    def arrow_right(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys "ARROW_RIGHT" to the element.
@@ -2224,13 +1951,10 @@ class Element:
             my_page.my_element.arrow_right(3)
 
         """
-        try:
-            self._present_element.send_keys(Keys.ARROW_RIGHT * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.ARROW_RIGHT * times)
+        self.present_element.send_keys(Keys.ARROW_RIGHT * times)
         return self
 
-    def arrow_up(self, times: int = 1) -> Element:
+    def arrow_up(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys "ARROW_UP" to the element.
@@ -2243,13 +1967,10 @@ class Element:
             my_page.my_element.arrow_up(3)
 
         """
-        try:
-            self._present_element.send_keys(Keys.ARROW_UP * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.ARROW_UP * times)
+        self.present_element.send_keys(Keys.ARROW_UP * times)
         return self
 
-    def arrow_down(self, times: int = 1) -> Element:
+    def arrow_down(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys "ARROW_DOWN" to the element.
@@ -2262,13 +1983,10 @@ class Element:
             my_page.my_element.arrow_down(3)
 
         """
-        try:
-            self._present_element.send_keys(Keys.ARROW_DOWN * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.ARROW_DOWN * times)
+        self.present_element.send_keys(Keys.ARROW_DOWN * times)
         return self
 
-    def backspace(self, times: int = 1) -> Element:
+    def backspace(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys BACKSPACE to the element.
@@ -2281,13 +1999,10 @@ class Element:
             my_page.my_element.backspace(3).input('123456').enter()
 
         """
-        try:
-            self._present_element.send_keys(Keys.BACKSPACE * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.BACKSPACE * times)
+        self.present_element.send_keys(Keys.BACKSPACE * times)
         return self
 
-    def delete(self, times: int = 1) -> Element:
+    def delete(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys DELETE to the element.
@@ -2300,13 +2015,10 @@ class Element:
             my_page.my_element.delete(3)
 
         """
-        try:
-            self._present_element.send_keys(Keys.DELETE * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.DELETE * times)
+        self.present_element.send_keys(Keys.DELETE * times)
         return self
 
-    def tab(self, times: int = 1) -> Element:
+    def tab(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys TAB to the element.
@@ -2319,13 +2031,10 @@ class Element:
             my_page.my_element.tab(2)
 
         """
-        try:
-            self._present_element.send_keys(Keys.TAB * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.TAB * times)
+        self.present_element.send_keys(Keys.TAB * times)
         return self
 
-    def space(self, times: int = 1) -> Element:
+    def space(self, times: int = 1) -> Element_:
         """
         Selenium API
         Send keys SPACE to the element.
@@ -2338,10 +2047,7 @@ class Element:
             my_page.my_element.space(4)
 
         """
-        try:
-            self._present_element.send_keys(Keys.SPACE * times)
-        except ElementReferenceException:
-            self.present_element.send_keys(Keys.SPACE * times)
+        self.present_element.send_keys(Keys.SPACE * times)
         return self
 
     def swipe_into_view(
@@ -2356,7 +2062,7 @@ class Element:
         max_adjust: int = 2,
         min_distance: int = 100,
         duration: int = 1000
-    ) -> Element:
+    ) -> Element_:
         """
         DEPRECATED.
         Please use "swipe_by" or "flick_by" instead.
