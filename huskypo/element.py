@@ -823,8 +823,7 @@ class Element:
         Args:
         - duration: length of time to tap, in ms
         """
-        center = tuple(self.center.values())
-        self.driver.tap([center], duration)
+        self.driver.tap([tuple(self.center.values())], duration)
         return self
 
     def app_drag_and_drop(self, target: Element) -> AppiumWebDriver:
