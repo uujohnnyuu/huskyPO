@@ -119,10 +119,6 @@ class Element_:
         # (by, value, index, timeout, remark)
         self._remark = remark
 
-        # Record the page instance and determine
-        # whether to delete the WebElement object to avoid an InvalidSessionIdException.
-        self._page = None
-
     def __get__(self, instance: P, owner: Type[P] | None = None) -> Element_:
         """
         Internal use.
@@ -130,8 +126,6 @@ class Element_:
         Dynamically create and record instance attributes related to Page,
         allowing Element to interact with Page-related attributes or methods.
         """
-        # When a new Page instance is detected, it indicates that the driver may have changed.
-        # Delete the WebElement object to avoid an InvalidSessionIdException.
         self._page = instance
         return self
 
@@ -141,7 +135,6 @@ class Element_:
         Dynamically set element attribute values at runtime,
         typically used for configuring dynamic elements.
         """
-        # Avoid referencing an old WebElement for dynamic element.
         if isinstance(value, tuple):
             self.__init__(*value)
         elif isinstance(value, dict):
