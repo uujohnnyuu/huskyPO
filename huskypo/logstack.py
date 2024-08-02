@@ -216,4 +216,4 @@ def _exception(message: str = '') -> None:
 
 def _critical(message: str = '') -> None:
     if Log.RECORD:
-        critical(message)
+        critical(message, stack_adjust=1)
