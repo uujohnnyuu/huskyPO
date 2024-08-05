@@ -26,90 +26,204 @@ def debug(
     message: object,
     starts_with: str = 'test',
     stack_adjust: int = 0,
+    exc_info: bool | tuple | None = None,
     stack_info: bool = False,
     stack_level: int | None = None,
     extra: Mapping[str, object] | None = None
 ) -> None:
     """
-    Calling logging.debug method, and finding stacklevel starts with specific function name.
+    Calling `logging.debug` method, and finding stacklevel starts with specific function name.
+
+    - message: The message format string, or an object to be logged.
+        If it is an object, it is converted to a string using str().
+    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
+        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+        If the target is not found, it defaults to the first caller of this `logstack`.
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+        `stack_adjust = 2` means the search starts from three layers down by default.
+    - exc_info: If True, exception information is added to the logging message.
+        If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
+        Default is None, which means no exception information is added.
+    - stack_info: If True, stack information is added to the logging message.
+    - stack_level: If provided, specifies which stack frame to use when logging the call.
+        Default is 1, which means the immediate caller's frame.
+    - extra: A dictionary of extra context to be added to the logging message.
+        This can be used to pass additional information that can be used by the logging handlers.
+        For example: extra={'user': 'Johnnny'}
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.debug(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
+    logging.debug(message, exc_info=exc_info, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
 def info(
     message: str,
     starts_with: str = 'test',
     stack_adjust: int = 0,
+    exc_info: bool | tuple | None = None,
     stack_info: bool = False,
     stack_level: int | None = None,
     extra: Mapping[str, object] | None = None
 ) -> None:
     """
     Calling logging.info method, and finding stacklevel starts with specific function name.
+
+    - message: The message format string, or an object to be logged.
+        If it is an object, it is converted to a string using str().
+    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
+        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+        If the target is not found, it defaults to the first caller of this `logstack`.
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+        `stack_adjust = 2` means the search starts from three layers down by default.
+    - exc_info: If True, exception information is added to the logging message.
+        If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
+        Default is None, which means no exception information is added.
+    - stack_info: If True, stack information is added to the logging message.
+    - stack_level: If provided, specifies which stack frame to use when logging the call.
+        Default is 1, which means the immediate caller's frame.
+    - extra: A dictionary of extra context to be added to the logging message.
+        This can be used to pass additional information that can be used by the logging handlers.
+        For example: extra={'user': 'Johnnny'}
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.info(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
+    logging.info(message, exc_info=exc_info, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
 def warning(
     message: str,
     starts_with: str = 'test',
     stack_adjust: int = 0,
+    exc_info: bool | tuple | None = None,
     stack_info: bool = False,
     stack_level: int | None = None,
     extra: Mapping[str, object] | None = None
 ) -> None:
     """
     Calling logging.warning method, and finding stacklevel starts with specific function name.
+
+    - message: The message format string, or an object to be logged.
+        If it is an object, it is converted to a string using str().
+    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
+        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+        If the target is not found, it defaults to the first caller of this `logstack`.
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+        `stack_adjust = 2` means the search starts from three layers down by default.
+    - exc_info: If True, exception information is added to the logging message.
+        If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
+        Default is None, which means no exception information is added.
+    - stack_info: If True, stack information is added to the logging message.
+    - stack_level: If provided, specifies which stack frame to use when logging the call.
+        Default is 1, which means the immediate caller's frame.
+    - extra: A dictionary of extra context to be added to the logging message.
+        This can be used to pass additional information that can be used by the logging handlers.
+        For example: extra={'user': 'Johnnny'}
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.warning(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
+    logging.warning(message, exc_info=exc_info, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
 def error(
     message: str,
     starts_with: str = 'test',
     stack_adjust: int = 0,
+    exc_info: bool | tuple | None = None,
     stack_info: bool = False,
     stack_level: int | None = None,
     extra: Mapping[str, object] | None = None
 ) -> None:
     """
     Calling logging.error method, and finding stacklevel starts with specific function name.
+
+    - message: The message format string, or an object to be logged.
+        If it is an object, it is converted to a string using str().
+    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
+        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+        If the target is not found, it defaults to the first caller of this `logstack`.
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+        `stack_adjust = 2` means the search starts from three layers down by default.
+    - exc_info: If True, exception information is added to the logging message.
+        If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
+        Default is None, which means no exception information is added.
+    - stack_info: If True, stack information is added to the logging message.
+    - stack_level: If provided, specifies which stack frame to use when logging the call.
+        Default is 1, which means the immediate caller's frame.
+    - extra: A dictionary of extra context to be added to the logging message.
+        This can be used to pass additional information that can be used by the logging handlers.
+        For example: extra={'user': 'Johnnny'}
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.error(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
+    logging.error(message, exc_info=exc_info, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
 def exception(
     message: str,
     starts_with: str = 'test',
     stack_adjust: int = 0,
+    exc_info: bool | tuple | None = True,
     stack_info: bool = False,
     stack_level: int | None = None,
     extra: Mapping[str, object] | None = None
 ) -> None:
     """
     Calling logging.exception method, and finding stacklevel starts with specific function name.
+
+    - message: The message format string, or an object to be logged.
+        If it is an object, it is converted to a string using str().
+    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
+        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+        If the target is not found, it defaults to the first caller of this `logstack`.
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+        `stack_adjust = 2` means the search starts from three layers down by default.
+    - exc_info: Default is `True`, exception information is added to the logging message.
+        If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
+        If it is None, which means no exception information is added.
+    - stack_info: If True, stack information is added to the logging message.
+    - stack_level: If provided, specifies which stack frame to use when logging the call.
+        Default is 1, which means the immediate caller's frame.
+    - extra: A dictionary of extra context to be added to the logging message.
+        This can be used to pass additional information that can be used by the logging handlers.
+        For example: extra={'user': 'Johnnny'}
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.exception(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
+    logging.exception(message, exc_info=exc_info, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
 def critical(
     message: str,
     starts_with: str = 'test',
     stack_adjust: int = 0,
+    exc_info: bool | tuple | None = None,
     stack_info: bool = False,
     stack_level: int | None = None,
     extra: Mapping[str, object] | None = None
 ) -> None:
     """
     Calling logging.critical method, and finding stacklevel starts with specific function name.
+
+    - message: The message format string, or an object to be logged.
+        If it is an object, it is converted to a string using str().
+    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
+        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+        If the target is not found, it defaults to the first caller of this `logstack`.
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+        `stack_adjust = 2` means the search starts from three layers down by default.
+    - exc_info: If True, exception information is added to the logging message.
+        If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
+        Default is None, which means no exception information is added.
+    - stack_info: If True, stack information is added to the logging message.
+    - stack_level: If provided, specifies which stack frame to use when logging the call.
+        Default is 1, which means the immediate caller's frame.
+    - extra: A dictionary of extra context to be added to the logging message.
+        This can be used to pass additional information that can be used by the logging handlers.
+        For example: extra={'user': 'Johnnny'}
     """
     target_level = get_stack_level(starts_with, stack_adjust + 1) if stack_level is None else stack_level + 1
-    logging.critical(message, stack_info=stack_info, stacklevel=target_level, extra=extra)
+    logging.critical(message, exc_info=exc_info, stack_info=stack_info, stacklevel=target_level, extra=extra)
 
 
 def get_stack_level(starts_with: str = 'test', stack_adjust: int = 0) -> int:
