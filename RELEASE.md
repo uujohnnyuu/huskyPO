@@ -1,3 +1,20 @@
+# Release Note for v1.3.0
+
+## Overview
+This release focuses on new features and improvements.
+
+## New Features
+
+## Improvements
+- **logstack**: exc_info.
+
+## Installation or Upgrade Instructions
+To install or upgrade to this version, run the following command:
+```sh
+pip install huskypo==1.3.0
+```
+
+
 # Release Note for v1.2.0
 
 ## Overview
