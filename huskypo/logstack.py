@@ -36,8 +36,9 @@ def debug(
 
     - message: The message format string, or an object to be logged.
         If it is an object, it is converted to a string using str().
-    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
-        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+    - starts_with: Records the log information in the function or module name that starts with the starts_with keyword.
+        For example, `'test'` means the log will be displayed in the function `test_xxx()` or the module `test_xxx.py`.
+        If both a module and a function have the same prefix, the function takes precedence.
         If the target is not found, it defaults to the first caller of this `logstack`.
     - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
         For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
@@ -70,8 +71,9 @@ def info(
 
     - message: The message format string, or an object to be logged.
         If it is an object, it is converted to a string using str().
-    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
-        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+    - starts_with: Records the log information in the function or module name that starts with the starts_with keyword.
+        For example, `'test'` means the log will be displayed in the function `test_xxx()` or the module `test_xxx.py`.
+        If both a module and a function have the same prefix, the function takes precedence.
         If the target is not found, it defaults to the first caller of this `logstack`.
     - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
         For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
@@ -104,8 +106,9 @@ def warning(
 
     - message: The message format string, or an object to be logged.
         If it is an object, it is converted to a string using str().
-    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
-        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+    - starts_with: Records the log information in the function or module name that starts with the starts_with keyword.
+        For example, `'test'` means the log will be displayed in the function `test_xxx()` or the module `test_xxx.py`.
+        If both a module and a function have the same prefix, the function takes precedence.
         If the target is not found, it defaults to the first caller of this `logstack`.
     - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
         For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
@@ -138,8 +141,9 @@ def error(
 
     - message: The message format string, or an object to be logged.
         If it is an object, it is converted to a string using str().
-    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
-        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+    - starts_with: Records the log information in the function or module name that starts with the starts_with keyword.
+        For example, `'test'` means the log will be displayed in the function `test_xxx()` or the module `test_xxx.py`.
+        If both a module and a function have the same prefix, the function takes precedence.
         If the target is not found, it defaults to the first caller of this `logstack`.
     - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
         For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
@@ -172,8 +176,9 @@ def exception(
 
     - message: The message format string, or an object to be logged.
         If it is an object, it is converted to a string using str().
-    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
-        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+    - starts_with: Records the log information in the function or module name that starts with the starts_with keyword.
+        For example, `'test'` means the log will be displayed in the function `test_xxx()` or the module `test_xxx.py`.
+        If both a module and a function have the same prefix, the function takes precedence.
         If the target is not found, it defaults to the first caller of this `logstack`.
     - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
         For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
@@ -206,8 +211,9 @@ def critical(
 
     - message: The message format string, or an object to be logged.
         If it is an object, it is converted to a string using str().
-    - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
-        For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
+    - starts_with: Records the log information in the function or module name that starts with the starts_with keyword.
+        For example, `'test'` means the log will be displayed in the function `test_xxx()` or the module `test_xxx.py`.
+        If both a module and a function have the same prefix, the function takes precedence.
         If the target is not found, it defaults to the first caller of this `logstack`.
     - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
         For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
