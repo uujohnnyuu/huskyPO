@@ -39,8 +39,8 @@ def debug(
     - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
         For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
         If the target is not found, it defaults to the first caller of this `logstack`.
-    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
-        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
         `stack_adjust = 2` means the search starts from three layers down by default.
     - exc_info: If True, exception information is added to the logging message.
         If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
@@ -73,8 +73,8 @@ def info(
     - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
         For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
         If the target is not found, it defaults to the first caller of this `logstack`.
-    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
-        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
         `stack_adjust = 2` means the search starts from three layers down by default.
     - exc_info: If True, exception information is added to the logging message.
         If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
@@ -107,8 +107,8 @@ def warning(
     - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
         For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
         If the target is not found, it defaults to the first caller of this `logstack`.
-    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
-        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
         `stack_adjust = 2` means the search starts from three layers down by default.
     - exc_info: If True, exception information is added to the logging message.
         If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
@@ -141,8 +141,8 @@ def error(
     - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
         For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
         If the target is not found, it defaults to the first caller of this `logstack`.
-    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
-        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
         `stack_adjust = 2` means the search starts from three layers down by default.
     - exc_info: If True, exception information is added to the logging message.
         If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
@@ -175,8 +175,8 @@ def exception(
     - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
         For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
         If the target is not found, it defaults to the first caller of this `logstack`.
-    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
-        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
         `stack_adjust = 2` means the search starts from three layers down by default.
     - exc_info: Default is `True`, exception information is added to the logging message.
         If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
@@ -209,8 +209,8 @@ def critical(
     - starts_with: Displays the log at the frame where the first occurrence of the specified module name or function name is found.
         For example, `'test'` means the log will be displayed in the module `test_xxx.py` or the function `test_xxx()`.
         If the target is not found, it defaults to the first caller of this `logstack`.
-    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries. 
-        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default; 
+    - stack_adjust: Adjusts the base frame to reduce unnecessary frame queries.
+        For instance, `stack_adjust = 0` means no adjustment is made, and the search starts from the next layer by default;
         `stack_adjust = 2` means the search starts from three layers down by default.
     - exc_info: If True, exception information is added to the logging message.
         If an exception tuple (in the format returned by sys.exc_info()) is provided, it is used.
