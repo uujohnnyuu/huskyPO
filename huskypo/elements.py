@@ -702,15 +702,3 @@ class Elements:
         Gets locations relative to the view of any visible elements.
         """
         return [element.location_in_view for element in self.any_visible_elements]
-
-    def wait_all_not_present(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> bool:
-        """
-        DEPRECATED.
-        Please use `wait_all_absent` instead.
-        """
-        warnings.warn('Please use "wait_all_absent" instead.', DeprecationWarning, stacklevel=2)
-        return self.wait_all_absent(timeout, reraise)

@@ -31,24 +31,3 @@ class ByAttribute:
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]
     VALUES = [getattr(By, attr) for attr in NAMES]
     VALUES_WITH_NONE = VALUES + [None]
-
-
-class SwipeAction:
-    """
-    DEPRECATED.
-
-    This method, including the corresponding
-    page.swipe_ratio() and element.swipe_into_view(),
-    will be `deprecated` in the future.
-    Please use the new swipe parameters `Offset` and `Area` (from huskypo import Offset, Area)
-    for the new swipe methods:
-    1. page.swipe_by()
-    2. page.flick_by()
-    3. element.swipe_by()
-    4. element.flick_by()
-    """
-
-    V = 'v'
-    H = 'h'
-    VA = 'va'
-    HA = 'ha'

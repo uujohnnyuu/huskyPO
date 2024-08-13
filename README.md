@@ -125,6 +125,5 @@ class TestMyPage:
 6. All the element finding processes rely on explicit waiting methods, the core mainly being the official WebDriverWait and expected_conditions, this package extends the commonly used conditions of present, visible, clickable, selected in the Element(s) class and the driver methods and other page-related operations are encapsulated in the Page class.
 
 ## TODO
-- Continuously monitor new features in Selenium 4.0 / Appium 2.0.
-- Keep an eye on potential bugs and performance issues.
-- Continue to optimize compatibility with exception handling and type hints.
+- Continuously monitor new features in Selenium 4.0 and Appium 2.0.
+- Other optimizations.

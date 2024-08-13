@@ -10,6 +10,3 @@ from .element_ import Element_
 from .elements import Elements
 from .by import By
 from .decorator import dynamic
-
-# NOTE DEPRECATED
-from .by import SwipeAction as SA

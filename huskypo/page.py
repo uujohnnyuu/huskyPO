@@ -29,9 +29,6 @@ from .config import Timeout, Offset, Area
 from .types import AppiumWebDriver
 from .types import WebDriver, WebElement, WebDriverTuple
 
-# NOTE DEPRECATED.
-from .by import SwipeAction as SA
-
 
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
@@ -1382,44 +1379,3 @@ class Page:
 
         """
         self.driver.set_page_load_timeout(time_to_wait)
-
-    def swipe_ratio(
-        self,
-        direction: str = SA.V,
-        start: int = 75,
-        end: int = 25,
-        fix: int = None,
-        ratio: bool = False,
-        duration: int = 1000
-    ) -> None:
-        """
-        DEPRECATED.
-        Please use "swipe_by" or "flick_by" instead.
-        """
-        warnings.warn('Please use "swipe_by" or "flick_by" instead.', DeprecationWarning, stacklevel=2)
-
-        vertical = 'v'
-        horizontal = 'h'
-
-        width, height = self.get_window_size().values()
-        if direction.lower() in vertical:
-            sx = ex = int(width / 2)
-            sy = int(height * start / 100)
-            ey = int(height * end / 100)
-            if fix:
-                if ratio:
-                    sx = ex = int(width * fix / 100)
-                else:
-                    sx = ex = fix
-        elif direction.lower() in horizontal:
-            sy = ey = int(height / 2)
-            sx = int(width * start / 100)
-            ex = int(width * end / 100)
-            if fix:
-                if ratio:
-                    sy = ey = int(height * fix / 100)
-                else:
-                    sy = ey = fix
-        else:
-            raise ValueError('Only accept dirtype: "v", "h"')
-        self.driver.swipe(sx, sy, ex, ey, duration)
