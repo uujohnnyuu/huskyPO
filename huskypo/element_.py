@@ -10,7 +10,6 @@
 
 from __future__ import annotations
 
-import warnings
 import math
 import platform
 from typing import Type, TypeVar, Literal, Any
@@ -1844,7 +1843,7 @@ class Element_:
         """
         return self.present_element.location_in_view
 
-    def input(self, text: str = '') -> Element_:
+    def input(self, text: str = '', times: int = 1) -> Element_:
         """
         Selenium API
         Input text to the element.
@@ -1856,9 +1855,10 @@ class Element_:
 
             my_page.my_element.input('123 456')
             my_page.my_element.input('123').space().input('456')
+            my_page.my_element.input('6789', 4)
 
         """
-        self.present_element.send_keys(text)
+        self.present_element.send_keys(text * times)
         return self
 
     def enter(self) -> Element_:

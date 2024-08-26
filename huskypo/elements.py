@@ -15,7 +15,6 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import Type, TypeVar, Literal
 
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
