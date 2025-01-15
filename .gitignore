@@ -1,0 +1,17 @@
+.vscode/
+__pycache__/
+.DS_Store
+log.log
+try.py
+
+huskytc/
+run.py
+pytest.ini
+
+build/
+dist/
+huskium.egg-info/
+
+make.bat
+Makefile
+source/
