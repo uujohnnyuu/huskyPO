@@ -7,9 +7,9 @@
 # you must understand the following points; otherwise, unexpected errors may occur.
 
 # 1. We must ensure that the stack level of "get_stack_info" and "logging" are consistent
-#       in order to use the level found by get_stack_info for logging.
+#    in order to use the level found by get_stack_info for logging.
 # 2. This is why we do not encapsulate the calculation of target_level
-#       into a function in each logging function.
+#    into a function in each logging function.
 
 
 from __future__ import annotations
@@ -17,9 +17,55 @@ from __future__ import annotations
 import inspect
 import logging
 import os
+from io import TextIOWrapper
 from typing import Mapping
 
 from .config import Log
+
+
+_FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'
+_DATEFMT = '%Y-%m-%d %H:%M:%S'
+
+
+def config(
+    filename: str | None = './log.log',
+    *,
+    filemode: str = 'w',
+    format: str = _FORMAT,
+    datefmt: str = _DATEFMT,
+    style: str = '%',
+    level: int = logging.INFO,
+    stream: TextIOWrapper | None = None,
+    handlers: list[logging.Handler] | None = None,
+    force: bool = False,
+    encoding: str | None = None,
+    errors: str | None = None
+) -> None:
+    """
+    Simply set `logging.basicConfig()`.
+
+    Usage::
+
+        from huskium import logstack
+        logstack.config('./xxx.log')
+
+    """
+    abspath = os.path.abspath(filename)
+    dirname = os.path.dirname(abspath)
+    os.makedirs(dirname, exist_ok=True)
+    logging.basicConfig(
+        filename=abspath,
+        filemode=filemode,
+        format=format,
+        datefmt=datefmt,
+        style=style,
+        level=level,
+        stream=stream,
+        handlers=handlers,
+        force=force,
+        encoding=encoding,
+        errors=errors
+    )
 
 
 def debug(
