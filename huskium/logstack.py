@@ -17,8 +17,7 @@ from __future__ import annotations
 import inspect
 import logging
 import os
-from io import TextIOWrapper
-from typing import Mapping
+from typing import Mapping, TextIO
 
 from .config import Log
 
@@ -28,7 +27,7 @@ _DATEFMT = '%Y-%m-%d %H:%M:%S'
 
 
 def config(
-    output: str | TextIOWrapper | list[logging.Handler] | None = './log.log',
+    output: str | TextIO | list[logging.Handler] | None = './log.log',
     *,
     filemode: str = 'w',
     format: str = _FORMAT,
@@ -53,7 +52,7 @@ def config(
         if output is not None:
             abspath = os.path.abspath(output)
             dirname = os.path.dirname(abspath)
-        os.makedirs(dirname, exist_ok=True)
+            os.makedirs(dirname, exist_ok=True)
     elif isinstance(output, list):
         outputkv = {"handlers": output}
     else:
