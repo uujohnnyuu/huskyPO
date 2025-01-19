@@ -13,20 +13,17 @@
 
 from __future__ import annotations
 
-from typing import Literal, Self, Type, TypeVar
+from typing import Literal, Self, Type
 
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
+from selenium.webdriver.support.ui import WebDriverWait
 
 from . import ec_extension as ecex
-from .config import Timeout
 from .by import ByAttribute
+from .config import Timeout
 from .page import Page
 from .types import WebDriver, WebElement
-
-
-P = TypeVar('P', bound=Page)
 
 
 class Elements:
@@ -57,29 +54,10 @@ class Elements:
                     `(by="{by}", value="{value}")`.
                 - str: Custom remark for identification or logging.
         """
-        if by not in ByAttribute.VALUES_WITH_NONE:
-            raise ValueError(f'The locator strategy "{by}" is undefined.')
-        if not isinstance(value, (str, type(None))):
-            raise TypeError(
-                'The locator value type should be "str", '
-                f'not "{type(value).__name__}".'
-            )
-        if not isinstance(timeout, (int, float, type(None))):
-            raise TypeError(
-                'The timeout type should be "int" or "float", '
-                f'not "{timeout.__name__}".'
-            )
-        if not isinstance(remark, (str, type(None))):
-            raise TypeError(
-                'The remark type should be "str", '
-                f'not "{remark.__name__}".'
-            )
-        self._by = by
-        self._value = value
-        self._timeout = timeout
-        self._remark = remark
+        self._verify_data(by, value, timeout, remark)
+        self._set_data(by, value, timeout, remark)
 
-    def __get__(self, instance: P, owner: Type[P] | None = None) -> Self:
+    def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
         Make "Elements" a descriptor of "Page".
         """
@@ -88,17 +66,15 @@ class Elements:
         self._page = instance
         return self
 
-    def __set__(self, instance: P, value: Elements):
+    def __set__(self, instance: Page, value: Elements) -> None:
         """
         Set dynamic element by `self.elements = Elements(...)` pattern.
         """
+        if not isinstance(value, Elements):
+            raise TypeError('Only "Elements" objects are allowed to be assigned.')
         # NOTE Avoid using self.__init__() here, as it may reset the descriptor.
-        self.dynamic(
-            value.by,
-            value.value,
-            timeout=value.timeout,
-            remark=value.remark
-        )
+        # NOTE It’s better not to call dynamic, as it will duplicate the verification.
+        self._set_data(value.by, value.value, value.timeout, value.remark)
 
     def dynamic(
         self,
@@ -138,9 +114,17 @@ class Elements:
 
         """
         # NOTE Avoid using self.__init__() here, as it will reset the descriptor.
-        if by not in ByAttribute.VALUES:  # Cannot be None in dynamic.
+        self._verify_data(by, value, timeout, remark)
+        self._set_data(by, value, timeout, remark)
+        return self
+
+    def _verify_data(self, by, value, timeout, remark) -> None:
+        """
+        Verify basic attributes.
+        """
+        if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The locator strategy "{by}" is undefined.')
-        if not isinstance(value, str):  # Cannot be None in dynamic.
+        if not isinstance(value, (str, type(None))):
             raise TypeError(
                 'The locator value type should be "str", '
                 f'not "{type(value).__name__}".'
@@ -148,18 +132,22 @@ class Elements:
         if not isinstance(timeout, (int, float, type(None))):
             raise TypeError(
                 'The timeout type should be "int" or "float", '
-                f'not "{timeout.__name__}".'
+                f'not "{type(timeout).__name__}".'
             )
         if not isinstance(remark, (str, type(None))):
             raise TypeError(
                 'The remark type should be "str", '
-                f'not "{remark.__name__}".'
+                f'not "{type(remark).__name__}".'
             )
+
+    def _set_data(self, by, value, timeout, remark) -> None:
+        """
+        Set basic attributes.
+        """
         self._by = by
         self._value = value
         self._timeout = timeout
         self._remark = remark
-        return self
 
     @property
     def by(self) -> str | None:
@@ -182,14 +170,14 @@ class Elements:
         )
 
     @property
-    def timeout(self):
+    def timeout(self) -> int | float:
         """
         If initial timeout is None, return `Timeout.DEFAULT`.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
 
     @property
-    def remark(self):
+    def remark(self) -> str:
         """
         If initial remark is None, return (by="{by}", value="{value}").
         """
@@ -234,7 +222,7 @@ class Elements:
         )
 
     @property
-    def wait_timeout(self):
+    def wait_timeout(self) -> int | float | None:
         """
         Get the final waiting timeout of the element.
         If no element action has been executed yet,

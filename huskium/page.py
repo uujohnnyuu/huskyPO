@@ -9,25 +9,25 @@ from __future__ import annotations
 from typing import Any, Literal, Self
 
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.alert import Alert
+from selenium.types import WaitExcTypes
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
-from selenium.webdriver.common.print_page_options import PrintOptions
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.fedcm.dialog import Dialog
+from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.remote.fedcm import FedCM
 from selenium.webdriver.remote.mobile import Mobile
 from selenium.webdriver.remote.script_key import ScriptKey
-from selenium.types import WaitExcTypes
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 
-from . import logstack
 from . import ec_extension as ecex
-from .config import Timeout, Offset, Area
-from .types import WebDriver, WebElement, WebDriverTuple
+from . import logstack
+from .config import Area, Offset, Timeout
+from .types import WebDriver, WebDriverTuple, WebElement
 
 
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
@@ -649,7 +649,7 @@ class Page:
         """
         return self.driver.get_pinned_scripts()
 
-    def execute_script(self, script, *args) -> Any:
+    def execute_script(self, script: str, *args) -> Any:
         """
         Synchronously Executes JavaScript in the current window or frame.
 

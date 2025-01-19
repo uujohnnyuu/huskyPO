@@ -23,8 +23,8 @@ class ByAttribute:
     to check which methods are available in their current version.
 
     Class Attributes:
-        - NAMES (list): All attribute names (class attribute variable names) as strings.
-        - VALUES (list): All actual attribute values (class attribute variable values).
+        - NAMES (list): All `By` attribute names as strings.
+        - VALUES (list): All `By` attribute values.
         - VALUES_WITH_NONE (list): VALUES including None.
     """
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]

@@ -6,8 +6,8 @@
 
 from __future__ import annotations
 
-import os
 import logging
+import os
 
 
 _FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'

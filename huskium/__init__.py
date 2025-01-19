@@ -4,7 +4,7 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-from .config import Log, Cache, Timeout, Appium, Offset, Area
+from .config import Appium, Area, Cache, Log, Offset, Timeout
 from .page import Page
 from .element import Element
 from .elements import Elements

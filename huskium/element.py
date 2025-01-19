@@ -9,29 +9,27 @@ from __future__ import annotations
 import math
 import platform
 import time
-from typing import Any, Literal, Self, Type, TypeVar
+from typing import Any, Literal, Self, Type
 
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.types import WaitExcTypes
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.select import Select
-from selenium.types import WaitExcTypes
+from selenium.webdriver.support.ui import WebDriverWait
 
-from . import logstack
 from . import ec_extension as ecex
-from .config import Cache, Timeout, Offset, Area
+from . import logstack
 from .by import ByAttribute
-from .page import Page, Coordinate
-from .types import WebDriver, WebElement, SeleniumWebElement
+from .config import Area, Cache, Offset, Timeout
+from .page import Coordinate, Page
+from .types import SeleniumWebElement, WebDriver, WebElement
 
 
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
-
-P = TypeVar('P', bound=Page)
 
 
 class Element:
@@ -73,65 +71,34 @@ class Element:
                 - True: Cache the located WebElement for reuse.
                 - False: Do not cache and locate the element every time.
         """
-        if by not in ByAttribute.VALUES_WITH_NONE:
-            raise ValueError(f'The locator strategy "{by}" is undefined.')
-        if not isinstance(value, (str, type(None))):
-            raise TypeError(
-                'The locator value type should be "str", '
-                f'not "{type(value).__name__}".'
-            )
-        if not isinstance(index, (int, type(None))):
-            raise TypeError(
-                'The index type should be "int", '
-                f'not "{type(index).__name__}".'
-            )
-        if not isinstance(timeout, (int, float, type(None))):
-            raise TypeError(
-                'The timeout type should be "int" or "float", '
-                f'not "{timeout.__name__}".'
-            )
-        if not isinstance(remark, (str, type(None))):
-            raise TypeError(
-                'The remark type should be "str", '
-                f'not "{remark.__name__}".'
-            )
-        if not isinstance(cache, (bool, type(None))):
-            raise TypeError(
-                'The cache type should be "bool", '
-                f'not "{remark.__name__}".'
-            )
-        self._by = by
-        self._value = value
-        self._index = index
-        self._timeout = timeout
-        self._remark = remark
-        self._cache = cache
-        self._page = None
+        self._verify_data(by, value, index, timeout, remark, cache)
+        self._set_data(by, value, index, timeout, remark, cache)
+        self._page = None  # Force __get__ to assign a new value on the first call.
 
-    def __get__(self, instance: P, owner: Type[P] | None = None) -> Self:
+    def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
         Make "Element" a descriptor of "Page".
         """
         if not isinstance(instance, Page):
             raise TypeError(f'"{self.__class__.__name__}" must be used with a "Page" instance.')
+        # If the stored _page differs from the current value,
+        # it indicates the driver has been updated.
+        # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
         if self._page != instance:
             self._page = instance
             self._if_clear_caches()
         return self
 
-    def __set__(self, instance: P, value: Element):
+    def __set__(self, instance: Page, value: Element) -> None:
         """
         Set dynamic element by `self.element = Element(...)` pattern.
         """
-        # NOTE Avoid using self.__init__() here, as it may reset the descriptor.
-        self.dynamic(
-            value.by,
-            value.value,
-            value.index,
-            timeout=value.timeout,
-            remark=value.remark,
-            cache=value.cache
-        )
+        if not isinstance(value, Element):
+            raise TypeError('Only "Element" objects are allowed to be assigned.')
+        # Avoid using self.__init__() here, as it may reset the descriptor.
+        # It’s better not to call dynamic, as it will duplicate the verification.
+        self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
+        self._if_clear_caches()  # dynamic element should clear caches.
 
     def dynamic(
         self,
@@ -173,9 +140,18 @@ class Element:
 
         """
         # NOTE Avoid using self.__init__() here, as it will reset the descriptor.
-        if by not in ByAttribute.VALUES:  # Cannot be None in dynamic.
+        self._verify_data(by, value, index, timeout, remark, cache)
+        self._set_data(by, value, index, timeout, remark, cache)
+        self._if_clear_caches()  # dynamic element should clear caches.
+        return self
+
+    def _verify_data(self, by, value, index, timeout, remark, cache) -> None:
+        """
+        Verify basic attributes.
+        """
+        if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The locator strategy "{by}" is undefined.')
-        if not isinstance(value, str):  # Cannot be None in dynamic.
+        if not isinstance(value, (str, type(None))):
             raise TypeError(
                 'The locator value type should be "str", '
                 f'not "{type(value).__name__}".'
@@ -188,28 +164,34 @@ class Element:
         if not isinstance(timeout, (int, float, type(None))):
             raise TypeError(
                 'The timeout type should be "int" or "float", '
-                f'not "{timeout.__name__}".'
+                f'not "{type(timeout).__name__}".'
             )
         if not isinstance(remark, (str, type(None))):
             raise TypeError(
                 'The remark type should be "str", '
-                f'not "{remark.__name__}".'
+                f'not "{type(remark).__name__}".'
             )
         if not isinstance(cache, (bool, type(None))):
             raise TypeError(
                 'The cache type should be "bool", '
-                f'not "{cache.__name__}".'
+                f'not "{type(cache).__name__}".'
             )
+
+    def _set_data(self, by, value, index, timeout, remark, cache) -> None:
+        """
+        Set basic attributes.
+        """
         self._by = by
         self._value = value
         self._index = index
         self._timeout = timeout
         self._remark = remark
         self._cache = cache
-        self._if_clear_caches()  # dynamic element should clear caches.
-        return self
 
     def _if_clear_caches(self) -> None:
+        """
+        If cache is True, clear all caches.
+        """
         if self.cache:
             for cache in Element._CACHES:
                 if hasattr(self, cache):
@@ -217,8 +199,7 @@ class Element:
 
     def _if_force_relocate(self) -> None:
         """
-        If caching is disabled,
-        raise a `StaleElementReferenceException` and relocate the element directly.
+        If cache is False, raise `StaleElementReferenceException` and force relocate the element.
         """
         if not self.cache:
             raise StaleElementReferenceException
@@ -942,7 +923,7 @@ class Element:
         except ElementReferenceException:
             self.clickable.click()
 
-    def delayed_click(self, sleep: int | float = 0.5):
+    def delayed_click(self, sleep: int | float = 0.5) -> None:
         """
         Waits until the element is clickable, then delays for a specified time before clicking.
 
@@ -2084,7 +2065,7 @@ class Element:
         # The reason is that if "self._select.method()" raises a
         # StaleElementReferenceException or InvalidSessionIdException,
         # we can directly rebuild with "self._select = Select(self.present_element)",
-        # without needing to check "self._select = Select(self._present_element)" again.
+        # without needing to check "self._select = Select(self._present_cache)" again.
         try:
             try:
                 # The main process.
@@ -2093,14 +2074,14 @@ class Element:
             except AttributeError:
                 # Handle the first AttributeError:
                 # If there is no available select attribute,
-                # create it using the "_present_element" first.
+                # create it using the "_present_cache" first.
                 self._select = Select(self._present_cache)
         except ElementReferenceException:
             # Handle ElementReferenceException by creating a new select object.
             # This exception can be triggered in two scenarios:
             # 1. The main process triggers a stale or invalid session exception.
             # 2. During the first AttributeError handling,
-            #    if there is no "_present_element" attribute,
+            #    if there is no "_present_cache" attribute,
             #    or it triggers a stale or invalid session exception when initializing.
             self._select = Select(self.present)
         return self._select.options
