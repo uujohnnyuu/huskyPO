@@ -28,14 +28,13 @@ _DATEFMT = '%Y-%m-%d %H:%M:%S'
 
 
 def config(
-    file: str | TextIOWrapper | None = './log.log',
+    output: str | TextIOWrapper | list[logging.Handler] | None = './log.log',
     *,
     filemode: str = 'w',
     format: str = _FORMAT,
     datefmt: str = _DATEFMT,
     style: str = '%',
     level: int = logging.INFO,
-    handlers: list[logging.Handler] | None = None,
     force: bool = False,
     encoding: str | None = None,
     errors: str | None = None
@@ -49,21 +48,23 @@ def config(
         logstack.config('./xxx.log')
 
     """
-    if isinstance(file, (str, type(None))):
-        filekv = {"filename": file}
-        abspath = os.path.abspath(file)
-        dirname = os.path.dirname(abspath)
+    if isinstance(output, (str, type(None))):
+        outputkv = {"filename": output}
+        if output is not None:
+            abspath = os.path.abspath(output)
+            dirname = os.path.dirname(abspath)
         os.makedirs(dirname, exist_ok=True)
+    elif isinstance(output, list):
+        outputkv = {"handlers": output}
     else:
-        filekv = {"stream": file}
+        outputkv = {"stream": output}
     logging.basicConfig(
-        **filekv,
+        **outputkv,
         filemode=filemode,
         format=format,
         datefmt=datefmt,
         style=style,
         level=level,
-        handlers=handlers,
         force=force,
         encoding=encoding,
         errors=errors
