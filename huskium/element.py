@@ -139,7 +139,7 @@ class Element:
                 my_page.my_static_element.click()
 
         """
-        # NOTE Avoid using self.__init__() here, as it will reset the descriptor.
+        # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
         self._if_clear_caches()  # dynamic element should clear caches.

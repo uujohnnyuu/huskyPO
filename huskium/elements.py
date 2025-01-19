@@ -72,8 +72,8 @@ class Elements:
         """
         if not isinstance(value, Elements):
             raise TypeError('Only "Elements" objects are allowed to be assigned.')
-        # NOTE Avoid using self.__init__() here, as it may reset the descriptor.
-        # NOTE It’s better not to call dynamic, as it will duplicate the verification.
+        # Avoid using self.__init__() here, as it may reset the descriptor.
+        # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
 
     def dynamic(
@@ -113,7 +113,7 @@ class Elements:
                 my_page.my_static_elements.locations
 
         """
-        # NOTE Avoid using self.__init__() here, as it will reset the descriptor.
+        # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
         return self
