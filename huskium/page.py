@@ -1077,7 +1077,7 @@ class Page:
         if not isinstance(coordinate, (dict, tuple)):
             raise TypeError(f'"{name}" should be dict or tuple.')
         if isinstance(coordinate, dict):
-            coordinate = tuple(coordinate.values())
+            coordinate: TupleCoordinate = tuple(coordinate.values())
 
         # Check all values in coordinate should be int or float.
         all_int = all(isinstance(c, int) for c in coordinate)
@@ -1106,12 +1106,12 @@ class Page:
 
         if isinstance(area_x, float):
             window_x, window_y, window_width, window_height = self.get_window_rect().values()
-            area_x = window_x + int(window_width * area_x)
-            area_y = window_y + int(window_height * area_y)
+            area_x = int(window_x + window_width * area_x)
+            area_y = int(window_y + window_height * area_y)
             area_width = int(window_width * area_width)
             area_height = int(window_height * area_height)
 
-        area = (area_x, area_y, area_width, area_height)
+        area: tuple[int, int, int, int] = (area_x, area_y, area_width, area_height)
         logstack._info(f'area: {area}')
         return area
 
@@ -1125,24 +1125,14 @@ class Page:
 
         if isinstance(start_x, float):
             area_x, area_y, area_width, area_height = area
-            start_x = area_x + int(area_width * start_x)
-            start_y = area_y + int(area_height * start_y)
-            end_x = area_x + int(area_width * end_x)
-            end_y = area_y + int(area_height * end_y)
+            start_x = int(area_x + area_width * start_x)
+            start_y = int(area_y + area_height * start_y)
+            end_x = int(area_x + area_width * end_x)
+            end_y = int(area_y + area_height * end_y)
 
-        offset = (start_x, start_y, end_x, end_y)
+        offset: tuple[int, int, int, int] = (start_x, start_y, end_x, end_y)
         logstack._info(f'offset: {offset}')
         return offset
-
-    def js_mobile_scroll_direction(self, direction: str = 'down') -> Any:
-        """
-        java script::
-
-            # direction can be 'up', 'down', 'left', 'right'
-            driver.execute_script('mobile: scroll', {'direction': direction})
-
-        """
-        return self.driver.execute_script('mobile: scroll', {'direction': direction})
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:
         """
