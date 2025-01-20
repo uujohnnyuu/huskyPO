@@ -3,13 +3,15 @@
 # PyPI: https://pypi.org/project/huskium/
 # GitHub: https://github.com/uujohnnyuu/huskium
 
-# If you want to reference this logstack method to construct your own model or extend it,
-# you must understand the following points; otherwise, unexpected errors may occur.
 
-# 1. We must ensure that the stack level of "get_stack_info" and "logging" are consistent
-#    in order to use the level found by get_stack_info for logging.
-# 2. This is why we do not encapsulate the calculation of target_level
-#    into a function in each logging function.
+"""
+This is the logstack module for extending logging functionality, 
+designed to record frame information with a specified prefix name.
+If you want to reference this logstack method to build your own model or extend it,
+make sure that `get_stackinfo()` and `get_stacklevel()` are 
+encapsulated within the same function layer as `logging.method()`. 
+Otherwise, discrepancies in stack levels may occur.
+"""
 
 
 from __future__ import annotations
