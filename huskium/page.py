@@ -156,14 +156,14 @@ class Page:
         """
         Returns whether the browser supports FedCM capabilities.
         """
-        self.driver.supports_fedcm
+        return self.driver.supports_fedcm
 
     @property
     def dialog(self) -> Dialog:
         """
         Returns the FedCM dialog object for interaction.
         """
-        self.driver.dialog
+        return self.driver.dialog
 
     def fedcm_dialog(
         self,
@@ -476,9 +476,8 @@ class Page:
 
         """
         if x is None and y is None and width is None and height is None:
-            self.driver.maximize_window()
-        else:
-            return self.driver.set_window_rect(x, y, width, height)
+            return self.driver.maximize_window()
+        return self.driver.set_window_rect(x, y, width, height)
 
     def get_window_rect(self) -> dict:
         """
