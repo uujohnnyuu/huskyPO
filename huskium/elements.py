@@ -573,11 +573,11 @@ class Elements:
             for element in self.all_present
             for rect in [element.rect]
         ]
-    
+
     def get_dom_attributes(self, name: str) -> list[str]:
         """
         Selenium and Appium API.
-        Gets the given attributes of all present elements. 
+        Gets the given attributes of all present elements.
         Unlike `selenium.webdriver.remote.BaseWebElement.get_attribute`,
         this method only returns attributes declared in the element's HTML markup.
 
@@ -626,7 +626,7 @@ class Elements:
             - NoSuchShadowRoot: If no shadow root was attached to element.
         """
         return [element.shadow_root for element in self.all_present]
-        
+
     @property
     def aria_roles(self) -> list[str]:
         """
@@ -640,5 +640,3 @@ class Elements:
         Returns the ARIA Levels of the current webelement.
         """
         return [element.accessible_name for element in self.all_present]
-        
-    
