@@ -5,11 +5,11 @@
 
 
 """
-This is the logstack module for extending logging functionality, 
+This is the logstack module for extending logging functionality,
 designed to record frame information with a specified prefix name.
 If you want to reference this logstack method to build your own model or extend it,
-make sure that `get_stackinfo()` and `get_stacklevel()` are 
-encapsulated within the same function layer as `logging.method()`. 
+make sure that `get_stackinfo()` and `get_stacklevel()` are
+encapsulated within the same function layer as `logging.method()`.
 Otherwise, discrepancies in stack levels may occur.
 """
 
