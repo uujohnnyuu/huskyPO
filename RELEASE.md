@@ -1,14 +1,21 @@
 # huskium v1.0.1
 
 ## Overview
-- Enhancements and bug fixes based on version 1.0.0.
+- New features, enhancements, and bug fixes based on version 1.0.0.
+
+## New Features
+- Elements: Added methods to retrieve multiple elements' 
+`get_dom_attributes`, `shadow_roots`, `aria_roles`, and `accessible_names` in a single operation.
 
 ## Enhancements
-- Eliminated redundant validation when assigning dynamic elements with data descriptors.
-- Removed `logconfig` and merged its functionality into `logstack`.
+- Elements: Removed unnecessary methods like `all_visible_xxx` and `any_visible_xxx`, 
+leaving users to extend them as needed.
+- Dynamic Element(s): Eliminated redundant validation 
+when assigning dynamic elements with data descriptors.
+- Log: Removed `logconfig` and merged its functionality into `logstack`.
 
 ## Bug Fixes
-- Fixed error messages in validation to correctly display the expected type name.
+- Error Message: Fixed error messages in validation to correctly display the expected type name.
 
 ## Installation
 To install or upgrade to this version, run:
