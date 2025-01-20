@@ -4,4 +4,4 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-VERSION = '1.0.1'
+VERSION = '1.0.2'
