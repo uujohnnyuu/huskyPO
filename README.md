@@ -297,11 +297,12 @@ allowing you to capture information for specific frames,
 such as those starting with a designated prefix (e.g., test), 
 without tracing all frames manually.
 ```python
-from huskium import logstack, logconfig
-import logging  # Optional: You can also use logging for basic configuration.
+from huskium import logstack
 
-# Configure logging using either logging.basicConfig() or logconfig.basic()
-logconfig.basic(file="./log.log")  # Simplified configuration with common settings
+# Configure logging using either logging.basicConfig() or logstack.config().
+# logstack.config() simplifies the default settings. You can use it as shown below
+# to output the log file to "./log.log".
+logstack.config()
 
 # Use logstack in your code to log specific frames
 def some_func():

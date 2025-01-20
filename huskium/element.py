@@ -52,7 +52,7 @@ class Element:
         Args:
             - by:
                 - None (default): Initialize an empty descriptor.
-                - str: Use `from huskypo import By` for Selenium and Appium locators.
+                - str: Use `from huskium import By` for Selenium and Appium locators.
             - value:
                 - None (default): Initialize an empty descriptor.
                 - str: The locator value.
@@ -1094,7 +1094,7 @@ class Element:
         Usage::
 
             # Swipe parameters. Refer to the Class notes for details.
-            from huskypo import Offset, Area
+            from huskium import Offset, Area
 
             # Swipe down.
             my_page.target_element.swipe_by(Offset.DOWN)
@@ -1184,7 +1184,7 @@ class Element:
         Usage::
 
             # Swipe parameters. Refer to the Class notes for details.
-            from huskypo import Offset, Area
+            from huskium import Offset, Area
 
             # Flick down.
             my_page.target_element.flick_by(Offset.DOWN)
@@ -2064,7 +2064,7 @@ class Element:
         # to ensure no unnecessary steps are taken.
         # The reason is that if "self._select.method()" raises a
         # StaleElementReferenceException or InvalidSessionIdException,
-        # we can directly rebuild with "self._select = Select(self.present_element)",
+        # we can directly rebuild with "self._select = Select(self.present)",
         # without needing to check "self._select = Select(self._present_cache)" again.
         try:
             try:

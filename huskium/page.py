@@ -927,7 +927,7 @@ class Page:
         Usage::
 
             # Swipe parameters. Refer to the Class notes for details.
-            from huskypo import Offset, Area
+            from huskium import Offset, Area
 
             # Swipe down.
             my_page.swipe_by(Offset.DOWN)
@@ -1019,7 +1019,7 @@ class Page:
         Usage::
 
             # Swipe parameters. Refer to the Class notes for details.
-            from huskypo import Offset, Area
+            from huskium import Offset, Area
 
             # Flick down.
             my_page.flick_by(Offset.DOWN)

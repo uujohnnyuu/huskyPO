@@ -42,7 +42,7 @@ class Elements:
         Args:
             - by:
                 - None (default): Initialize an empty descriptor.
-                - str: Use `from huskypo import By` for Selenium and Appium locators.
+                - str: Use `from huskium import By` for Selenium and Appium locators.
             - value:
                 - None (default): Initialize an empty descriptor.
                 - str: The locator value.

@@ -18,7 +18,7 @@ def dynamic(func):
 
     Usage::
 
-        from huskypo import dynamic
+        from huskium import dynamic
 
         @dynamic
         def my_element(self, par):
