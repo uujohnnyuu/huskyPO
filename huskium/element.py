@@ -1354,10 +1354,10 @@ class Element:
                 )
                 return False
 
-            # Within the maximum adjustment attempts, 
+            # Within the maximum adjustment attempts,
             # keep adjusting if the element is not fully visible within the area.
             self.driver.swipe(start_x, start_y, end_x, end_y, duration)
-        
+
         raise RuntimeError("Unexpected end of function. All paths should return.")
 
     def clear(self) -> Self:
