@@ -19,7 +19,8 @@ from __future__ import annotations
 import inspect
 import logging
 import os
-from typing import Mapping
+from types import FrameType
+from typing import cast, Mapping
 
 from .config import Log
 
@@ -290,11 +291,15 @@ def get_stacklevel(prefix: str = 'test', start: int = 1) -> int:
     """
     # Get the current frame.
     frame = inspect.currentframe()
+    if frame is None:
+        raise RuntimeError("Cannot obtain the current frame.")
 
     # level = 0 represents the current frame.
     level = start
     for _ in range(level):
         frame = frame.f_back
+        if frame is None:
+            break
 
     # Start searching through the subsequent frames.
     # Once a module or function matches the prefix, return it's stack level.
