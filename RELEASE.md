@@ -1,3 +1,21 @@
+# huskium v1.0.2
+
+## Overview
+- **Enhancements** and **Bug Fixes** based on version 1.0.1.
+
+## Enhancements
+- **Type Hint**: Resolved mypy issues with `[return]` and `[return-value]`.
+
+## Bug Fixes
+- **Page**: Fixed missing return values in `supports_fedcm()` and `dialog()`.
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.0.2
+```
+---
+
 # huskium v1.0.1
 
 ## Overview
