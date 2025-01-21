@@ -1,14 +1,16 @@
-.vscode/
-__pycache__/
 .DS_Store
-log.log
+.vscode/
+
+__pycache__/
+.mypy_cache
+
+pytest.ini
 mypy_report.txt
+run.py
+log.log
 try.py
 
 huskytc/
-run.py
-pytest.ini
-
 build/
 dist/
 huskium.egg-info/
