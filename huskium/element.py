@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 import platform
 import time
-from typing import Any, Literal, Self, Type
+from typing import Any, cast, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
@@ -321,21 +321,21 @@ class Element:
         """
         The same as `element.wait_present(reraise=True)`.
         """
-        return self.wait_present(reraise=True)
+        return cast(WebElement, self.wait_present(reraise=True))
 
     @property
     def visible(self) -> WebElement:
         """
         The same as element.wait_visible(reraise=True).
         """
-        return self.wait_visible(reraise=True)
+        return cast(WebElement, self.wait_visible(reraise=True))
 
     @property
     def clickable(self) -> WebElement:
         """
         The same as element.wait_clickable(reraise=True).
         """
-        return self.wait_clickable(reraise=True)
+        return cast(WebElement, self.wait_clickable(reraise=True))
 
     @property
     def present_cache(self) -> WebElement | None:
