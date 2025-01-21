@@ -254,14 +254,14 @@ class Element:
         """
         Get driver from Page-related instance.
         """
-        return self._page._driver
+        return self._page._driver  # type: ignore[attr-defined]
 
     @property
     def action(self) -> ActionChains:
         """
         Get ActionChains object from Page-related instance.
         """
-        return self._page._action
+        return self._page._action  # type: ignore[attr-defined]
 
     def find_element(self) -> WebElement:
         """
@@ -1009,7 +1009,7 @@ class Element:
         Args:
             - duration: Length of time to tap, in ms.
         """
-        self.driver.tap([tuple(self.center.values())], duration)
+        self.driver.tap([tuple(self.center.values())], duration)  # type: ignore[attr-defined]
         return self
 
     def app_drag_and_drop(
@@ -1027,9 +1027,9 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            self.driver.drag_and_drop(self._present_cache, target._present_cache, pause)
+            self.driver.drag_and_drop(self._present_cache, target._present_cache, pause)  # type: ignore[attr-defined]
         except ElementReferenceException:
-            self.driver.drag_and_drop(self.present, target.present, pause)
+            self.driver.drag_and_drop(self.present, target.present, pause)  # type: ignore[attr-defined]
         return self
 
     def app_scroll(self, target: Element, duration: int | None = None) -> Self:
@@ -1044,9 +1044,9 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            self.driver.scroll(self._present_cache, target._present_cache, duration)
+            self.driver.scroll(self._present_cache, target._present_cache, duration)  # type: ignore[attr-defined]
         except ElementReferenceException:
-            self.driver.scroll(self.present, target.present, duration)
+            self.driver.scroll(self.present, target.present, duration)  # type: ignore[attr-defined]
         return self
 
     def is_viewable(self, timeout: int | float | None = None) -> bool:
@@ -1148,8 +1148,8 @@ class Element:
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
-        area = self._page._get_area(area)
-        offset = self._page._get_offset(offset, area)
+        area = self._page._get_area(area)  # type: ignore[attr-defined]
+        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined]
         self._start_swiping_by(offset, duration, timeout, max_swipe)
         self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
@@ -1238,8 +1238,8 @@ class Element:
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
-        area = self._page._get_area(area)
-        offset = self._page._get_offset(offset, area)
+        area = self._page._get_area(area)  # type: ignore[attr-defined]
+        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined]
         self._start_flicking_by(offset, timeout, max_flick)
         self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
@@ -1260,7 +1260,7 @@ class Element:
                     f'as the maximum swipe count of {max_swipe} has been reached.'
                 )
                 return False
-            self.driver.swipe(*offset, duration)
+            self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
             count += 1
         logstack._info(f'End swiping as the element {self.remark} is now viewable.')
         return count
@@ -1280,7 +1280,7 @@ class Element:
                     f'as the maximum flick count of {max_swipe} has been reached.'
                 )
                 return False
-            self.driver.flick(*offset)
+            self.driver.flick(*offset)  # type: ignore[attr-defined]
             count += 1
         logstack._info(f'End flicking as the element {self.remark} is now viewable.')
         return count
@@ -1356,7 +1356,7 @@ class Element:
 
             # Within the maximum adjustment attempts,
             # keep adjusting if the element is not fully visible within the area.
-            self.driver.swipe(start_x, start_y, end_x, end_y, duration)
+            self.driver.swipe(start_x, start_y, end_x, end_y, duration)  # type: ignore[attr-defined]
 
         raise RuntimeError("Unexpected end of function. All paths should return.")
 
@@ -2280,9 +2280,9 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            return self._present_cache.location_in_view
+            return self._present_cache.location_in_view  # type: ignore[attr-defined]
         except ElementReferenceException:
-            return self.present.location_in_view
+            return self.present.location_in_view  # type: ignore[attr-defined]
 
     def input(self, text: str = '', times: int = 1) -> Self:
         """
