@@ -13,7 +13,7 @@
 
 from __future__ import annotations
 
-from typing import Literal, Self, Type
+from typing import cast, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
@@ -283,21 +283,21 @@ class Elements:
         """
         The same as `elements.wait_all_present(reraise=True)`.
         """
-        return self.wait_all_present(reraise=True)
+        return cast(list[WebElement], self.wait_all_present(reraise=True))
 
     @property
     def all_visible(self) -> list[WebElement]:
         """
         The same as `elements.wait_all_visible(reraise=True)`.
         """
-        return self.wait_all_visible(reraise=True)
+        return cast(list[WebElement], self.wait_all_visible(reraise=True))
 
     @property
     def any_visible(self) -> list[WebElement]:
         """
         The same as elements.wait_any_visible(reraise=True).
         """
-        return self.wait_any_visible(reraise=True)
+        return cast(list[WebElement], self.wait_any_visible(reraise=True))
 
     def wait_all_present(
         self,
