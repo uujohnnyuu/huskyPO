@@ -19,26 +19,24 @@ from __future__ import annotations
 import inspect
 import logging
 import os
-from typing import Mapping, TextIO
+from typing import Mapping
 
 from .config import Log
 
 
-_FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'
-_DATEFMT = '%Y-%m-%d %H:%M:%S'
-
-
 def config(
-    output: str | TextIO | list[logging.Handler] | None = './log.log',
+    filename='./log.log',
     *,
-    filemode: str = 'w',
-    format: str = _FORMAT,
-    datefmt: str = _DATEFMT,
-    style: str = '%',
-    level: int = logging.INFO,
-    force: bool = False,
-    encoding: str | None = None,
-    errors: str | None = None
+    filemode='w',
+    format='%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    style='%',
+    level=logging.INFO,
+    stream=None,
+    handlers=None,
+    force=None,
+    encoding=None,
+    errors=None
 ) -> None:
     """
     Simply set `logging.basicConfig()`.
@@ -49,16 +47,16 @@ def config(
         logstack.config('./xxx.log')
 
     """
-    if isinstance(output, (str, type(None))):
-        outputkv = {"filename": output}
-        if output is not None:
-            abspath = os.path.abspath(output)
+    if filename:
+        outputkv = {"filename": filename}
+        if filename is not None:
+            abspath = os.path.abspath(filename)
             dirname = os.path.dirname(abspath)
             os.makedirs(dirname, exist_ok=True)
-    elif isinstance(output, list):
-        outputkv = {"handlers": output}
-    else:
-        outputkv = {"stream": output}
+    if stream:
+        outputkv = {"stream": stream}
+    if handlers:
+        outputkv = {"handlers": handlers}
     logging.basicConfig(
         **outputkv,
         filemode=filemode,
