@@ -331,29 +331,33 @@ def get_stackinfo(
         - to_dict is True: {'filename': 'xxx.py', 'lineno': '19', 'funcname': 'my_func'}
         - to_dict is False: '|xxx.py:19|my_func|'
     """
-    # Get the current frame.
     frame = inspect.currentframe()
+    if frame is None:
+        raise RuntimeError("Cannot obtain the current frame.")
 
-    # level = 0 represents the current frame.
+    # Navigate to the desired stack level
     for _ in range(start):
         frame = frame.f_back
+        if frame is None:
+            raise RuntimeError("Reached the top of the stack without finding the desired frame.")
 
-    # record the current starting frame and search for the one that matches the condition.
-    # If no matching frame is found, use the default frame_target.
+    # Search for a frame that matches the condition
     frame_target = frame
     while frame:
-        if frame.f_code.co_name.startswith(prefix) or \
-           os.path.basename(frame.f_code.co_filename).startswith(prefix):
+        if (
+            frame.f_code.co_name.startswith(prefix) or
+            os.path.basename(frame.f_code.co_filename).startswith(prefix)
+        ):
             frame_target = frame
             break
         frame = frame.f_back
 
-    # After obtaining the final frame, return the filename, lineno, and funcname information.
+    # Extract frame information
     filename = os.path.basename(frame_target.f_code.co_filename)
     lineno = str(frame_target.f_lineno)
     funcname = frame_target.f_code.co_name
 
-    # Let the user decide the format of the returned content.
+    # Return the result in the desired format
     if to_dict:
         return {'filename': filename, 'lineno': lineno, 'funcname': funcname}
     return f'|{filename}:{lineno}|{funcname}|'
