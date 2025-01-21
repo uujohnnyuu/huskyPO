@@ -73,7 +73,7 @@ class Element:
         """
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._page = None  # Force __get__ to assign a new value on the first call.
+        self._page: Page | None = None  # Force __get__ to assign a new value on the first call.
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -254,14 +254,14 @@ class Element:
         """
         Get driver from Page-related instance.
         """
-        return self._page._driver  # type: ignore[attr-defined]
+        return self._page._driver  # type: ignore[attr-defined, union-attr]
 
     @property
     def action(self) -> ActionChains:
         """
         Get ActionChains object from Page-related instance.
         """
-        return self._page._action  # type: ignore[attr-defined]
+        return self._page._action  # type: ignore[attr-defined, union-attr]
 
     def find_element(self) -> WebElement:
         """
@@ -521,14 +521,17 @@ class Element:
                 )
             )
         except ElementReferenceException:
-            self._present_cache = self.wait(
+            result: WebElement | Literal[True] = self.wait(
                 timeout,
                 EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.invisibility_of_element_located(self.locator, self._index, present),
                 self._timeout_message('invisible', present)
             )
-            return self._present_cache
+            if isinstance(result, WebElement):
+                self._present_cache = result
+                return self._present_cache
+            return result
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -618,14 +621,17 @@ class Element:
                 )
             )
         except ElementReferenceException:
-            self._present_cache = self.wait(
+            result: WebElement | Literal[True] = self.wait(
                 timeout,
                 EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.element_located_to_be_unclickable(self.locator, self._index, present),
                 self._timeout_message('unclickable', present)
             )
-            return self._present_cache
+            if isinstance(result, WebElement):
+                self._present_cache = result
+                return self._present_cache
+            return result
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -1060,7 +1066,8 @@ class Element:
         """
         element = self.wait_present(timeout, False)
         if element and element.is_displayed():
-            self._visible_cache = element
+            if self.cache:
+                self._visible_cache = element
             return True
         return False
 
@@ -1148,8 +1155,8 @@ class Element:
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
-        area = self._page._get_area(area)  # type: ignore[attr-defined]
-        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined]
+        area = self._page._get_area(area)  # type: ignore[attr-defined, union-attr]
+        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined, union-attr]
         self._start_swiping_by(offset, duration, timeout, max_swipe)
         self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
@@ -1238,8 +1245,8 @@ class Element:
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
-        area = self._page._get_area(area)  # type: ignore[attr-defined]
-        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined]
+        area = self._page._get_area(area)  # type: ignore[attr-defined, union-attr]
+        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined, union-attr]
         self._start_flicking_by(offset, timeout, max_flick)
         self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
@@ -2060,7 +2067,7 @@ class Element:
         Get the Select cache.
         """
         try:
-            return self._select
+            return self._select  # type: ignore[has-type]
         except AttributeError:
             return None
 
@@ -2080,7 +2087,7 @@ class Element:
             try:
                 # The main process.
                 self._if_force_relocate()
-                return self._select.options
+                return self._select.options  # type: ignore[has-type]
             except AttributeError:
                 # Handle the first AttributeError:
                 # If there is no available select attribute,
