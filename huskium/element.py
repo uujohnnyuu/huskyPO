@@ -513,9 +513,12 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            return self.wait(timeout).until(
-                ecex.invisibility_of_element(self._present_cache, present),
-                self._timeout_message('invisible')
+            return cast(
+                WebElement | Literal[True],
+                self.wait(timeout).until(
+                    ecex.invisibility_of_element(self._present_cache, present),
+                    self._timeout_message('invisible')
+                )
             )
         except ElementReferenceException:
             self._present_cache = self.wait(
@@ -607,9 +610,12 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            return self.wait(timeout).until(
-                ecex.element_to_be_unclickable(self._present_cache, present),
-                self._timeout_message('unclickable')
+            return cast(
+                WebElement | Literal[True],
+                self.wait(timeout).until(
+                    ecex.element_to_be_unclickable(self._present_cache, present),
+                    self._timeout_message('unclickable')
+                )
             )
         except ElementReferenceException:
             self._present_cache = self.wait(
