@@ -7,7 +7,7 @@
 - **Type Hint**: Resolved mypy issues with `[return]` and `[return-value]`.
 
 ## Bug Fixes
-- **Page**: Fixed missing return values in `supports_fedcm()` and `dialog()`.
+- **Page**: Fixed missing return values in `supports_fedcm` and `dialog`.
 
 ## Installation
 To install or upgrade to this version, run:
