@@ -19,8 +19,7 @@ from __future__ import annotations
 import inspect
 import logging
 import os
-from types import FrameType
-from typing import cast, Mapping
+from typing import Mapping
 
 from .config import Log
 
