@@ -1294,9 +1294,9 @@ class Element:
         duration: int
     ) -> int | Literal[False]:
 
-        def delta(area, element):
-            d = area - element
-            return int(math.copysign(min_distance, d)) if abs(d) < min_distance else d
+        def delta(area: int, element: int) -> int:
+            diff = int(area - element)
+            return int(math.copysign(min_distance, diff)) if abs(diff) < min_distance else diff
 
         logstack._info(f'Start adjusting to element {self.remark}')
 
@@ -1346,7 +1346,7 @@ class Element:
                 logstack._info(f'End adjusting as the element {self.remark} is in area.')
                 return i
 
-            # max
+            # Check if the maximum number of adjustments has been reached.
             if i == max_adjust + 1:
                 logstack._warning(
                     f'End adjusting to the element {self.remark} '
@@ -1354,7 +1354,11 @@ class Element:
                 )
                 return False
 
+            # Within the maximum adjustment attempts, 
+            # keep adjusting if the element is not fully visible within the area.
             self.driver.swipe(start_x, start_y, end_x, end_y, duration)
+        
+        raise RuntimeError("Unexpected end of function. All paths should return.")
 
     def clear(self) -> Self:
         """
