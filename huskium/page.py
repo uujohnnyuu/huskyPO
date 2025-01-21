@@ -1079,7 +1079,7 @@ class Page:
         if not isinstance(coordinate, (dict, tuple)):
             raise TypeError(f'"{name}" should be dict or tuple.')
         if isinstance(coordinate, dict):
-            coordinate = tuple(coordinate.values())
+            coordinate = cast(TupleCoordinate, tuple(coordinate.values()))
 
         # Check all values in coordinate should be int or float.
         all_int = all(isinstance(c, int) for c in coordinate)
@@ -1100,7 +1100,7 @@ class Page:
                 'and should be between "0.0" and "1.0".'
             )
 
-        return cast(TupleCoordinate, coordinate)
+        return coordinate
 
     def _get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
 

@@ -24,7 +24,7 @@ from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Timeout
 from .page import Page
-from .types import WebDriver, WebElement
+from .types import EXTENDED_IGNORED_EXCEPTIONS, WebDriver, WebElement
 
 
 class Elements:
@@ -268,14 +268,9 @@ class Elements:
             - False: No any element is present.
         """
         elements = self.wait_all_present(timeout, reraise)
-        if index is not None:
-            try:
-                return elements[index]
-            except TypeError:
-                # TypeError: Raised when False[index] is accessed with reraise set to False,
-                #   resulting in a reraised TimeoutException.
-                # IndexError: Raised when elements exist, but no index is specified.
-                raise TimeoutException(self._timeout_message('all present'))
+        if isinstance(elements, list) and index is not None:
+            # Raise an IndexError directly if the index has no corresponding element.
+            return elements[index]
         return elements
 
     @property
@@ -396,7 +391,7 @@ class Elements:
                 the elements did not reach the expected state within the timeout.
         """
         try:
-            return self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_all_elements_located(self.locator),
                 self._timeout_message('all elements are visible')
             )
@@ -431,7 +426,7 @@ class Elements:
                 the elements did not reach the expected state within the timeout.
         """
         try:
-            return self.wait(timeout, StaleElementReferenceException).until(
+            return self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_any_elements_located(self.locator),
                 self._timeout_message('any elements are visible')
             )
@@ -611,7 +606,7 @@ class Elements:
         Appium API.
         Gets locations relative to the view of all present elements.
         """
-        return [element.location_in_view for element in self.all_present]
+        return [element.location_in_view for element in self.all_present]  # type: ignore[union-attr]
 
     @property
     def shadow_roots(self) -> list[ShadowRoot]:

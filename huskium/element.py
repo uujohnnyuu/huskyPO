@@ -26,7 +26,7 @@ from . import logstack
 from .by import ByAttribute
 from .config import Area, Cache, Offset, Timeout
 from .page import Coordinate, Page
-from .types import SeleniumWebElement, WebDriver, WebElement
+from .types import EXTENDED_IGNORED_EXCEPTIONS, SeleniumWebElement, WebDriver, WebElement
 
 
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
@@ -470,7 +470,7 @@ class Element:
         except ElementReferenceException:
             self._present_cache = self._visible_cache = self.wait(
                 timeout,
-                StaleElementReferenceException
+                EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.visibility_of_element_located(self.locator, self._index),
                 self._timeout_message('visible')
@@ -523,7 +523,7 @@ class Element:
         except ElementReferenceException:
             self._present_cache = self.wait(
                 timeout,
-                StaleElementReferenceException
+                EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.invisibility_of_element_located(self.locator, self._index, present),
                 self._timeout_message('invisible', present)
@@ -567,7 +567,7 @@ class Element:
         except ElementReferenceException:
             self._present_cache = self._visible_cache = self._clickable_cache = self.wait(
                 timeout,
-                StaleElementReferenceException
+                EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.element_located_to_be_clickable(self.locator, self._index),
                 self._timeout_message('clickable')
@@ -620,7 +620,7 @@ class Element:
         except ElementReferenceException:
             self._present_cache = self.wait(
                 timeout,
-                StaleElementReferenceException
+                EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.element_located_to_be_unclickable(self.locator, self._index, present),
                 self._timeout_message('unclickable', present)
@@ -663,7 +663,7 @@ class Element:
         except ElementReferenceException:
             self._present_cache = self.wait(
                 timeout,
-                StaleElementReferenceException
+                EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.element_located_to_be_selected(self.locator, self._index),
                 self._timeout_message('selected')
@@ -712,7 +712,7 @@ class Element:
         except ElementReferenceException:
             self._present_cache = self.wait(
                 timeout,
-                StaleElementReferenceException
+                EXTENDED_IGNORED_EXCEPTIONS
             ).until(
                 ecex.element_located_to_be_unselected(self.locator, self._index),
                 self._timeout_message('unselected')
