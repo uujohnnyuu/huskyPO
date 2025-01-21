@@ -475,9 +475,11 @@ class Page:
             page.set_window_rect(x=10, y=10, width=100, height=200)
 
         """
-        if x is None and y is None and width is None and height is None:
-            return self.driver.maximize_window()
-        return self.driver.set_window_rect(x, y, width, height)
+        if all(v is None for v in (x, y, width, height)):
+            self.driver.maximize_window()
+            return None
+        else:
+            return self.driver.set_window_rect(x, y, width, height)
 
     def get_window_rect(self) -> dict:
         """
@@ -863,7 +865,7 @@ class Page:
             page.tap([(100, 20), (100, 60), (100, 100)], 500)
 
         """
-        self.driver.tap(positions, duration)
+        self.driver.tap(positions, duration)  # type: ignore[attr-defined]
         return self
 
     def tap_window_center(self, duration: int | None = None) -> Self:
@@ -874,7 +876,7 @@ class Page:
             - duration: length of time to tap, in ms. Default value is 100 ms.
         """
         window_center = [tuple(self.get_window_center().values())]
-        self.driver.tap(window_center, duration)
+        self.driver.tap(window_center, duration)  # type: ignore[attr-defined]
         return self
 
     def swipe(
@@ -902,7 +904,7 @@ class Page:
             page.swipe(100, 100, 100, 400)
 
         """
-        self.driver.swipe(start_x, start_y, end_x, end_y, duration)
+        self.driver.swipe(start_x, start_y, end_x, end_y, duration)  # type: ignore[attr-defined]
         return self
 
     def swipe_by(
@@ -973,7 +975,7 @@ class Page:
         area = self._get_area(area)
         offset = self._get_offset(offset, area)
         for _ in range(times):
-            self.driver.swipe(*offset, duration)
+            self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
         return self
 
     def flick(
@@ -998,7 +1000,7 @@ class Page:
             page.flick(100, 100, 100, 400)
 
         """
-        self.driver.flick(start_x, start_y, end_x, end_y)
+        self.driver.flick(start_x, start_y, end_x, end_y)  # type: ignore[attr-defined]
         return self
 
     def flick_by(
@@ -1064,7 +1066,7 @@ class Page:
         area = self._get_area(area)
         offset = self._get_offset(offset, area)
         for _ in range(times):
-            self.driver.flick(*offset)
+            self.driver.flick(*offset)  # type: ignore[attr-defined]
         return self
 
     def _get_coordinate(
@@ -1284,7 +1286,7 @@ class Page:
             page.get_status()
 
         """
-        return self.driver.get_status()
+        return self.driver.get_status()  # type: ignore[attr-defined]
 
     @property
     def contexts(self) -> Any | list[str]:
@@ -1292,14 +1294,14 @@ class Page:
         appium API.
         Get current all contexts.
         """
-        return self.driver.contexts
+        return self.driver.contexts  # type: ignore[attr-defined]
 
     def switch_to_context(self, context) -> Self:
         """
         appium API.
         Switch to NATIVE_APP or WEBVIEW.
         """
-        self.driver.switch_to.context(context)
+        self.driver.switch_to.context(context)  # type: ignore[attr-defined]
         return self
 
     def switch_to_webview(
@@ -1341,9 +1343,9 @@ class Page:
 
         Return: current context after judging whether to switch.
         """
-        if self.driver.current_context != 'NATIVE_APP':
-            self.driver.switch_to.context('NATIVE_APP')
-        return self.driver.current_context
+        if self.driver.current_context != 'NATIVE_APP':  # type: ignore[attr-defined]
+            self.driver.switch_to.context('NATIVE_APP')  # type: ignore[attr-defined]
+        return self.driver.current_context  # type: ignore[attr-defined]
 
     def terminate_app(self, app_id: str, **options: Any) -> bool:
         """
@@ -1360,7 +1362,7 @@ class Page:
         Returns:
             - True if the app has been successfully terminated.
         """
-        return self.driver.terminate_app(app_id, **options)
+        return self.driver.terminate_app(app_id, **options)  # type: ignore[attr-defined]
 
     def activate_app(self, app_id: str) -> Self:
         """
@@ -1371,7 +1373,7 @@ class Page:
         Args:
             - app_id: The application id to be activated.
         """
-        self.driver.activate_app(app_id)
+        self.driver.activate_app(app_id)  # type: ignore[attr-defined]
         return self
 
     def save_screenshot(self, filename: Any) -> bool:
@@ -1484,8 +1486,8 @@ class Page:
         appium API.
         Switch to flutter app.
         """
-        if self.driver.current_context != "FLUTTER":
-            self.driver.switch_to.context('FLUTTER')
+        if self.driver.current_context != "FLUTTER":  # type: ignore[attr-defined]
+            self.driver.switch_to.context('FLUTTER')  # type: ignore[attr-defined]
         return self
 
     def accept_alert(self) -> None:
