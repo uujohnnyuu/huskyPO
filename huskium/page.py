@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, Self
+from typing import Any, cast, Literal, Self
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -1077,7 +1077,7 @@ class Page:
         if not isinstance(coordinate, (dict, tuple)):
             raise TypeError(f'"{name}" should be dict or tuple.')
         if isinstance(coordinate, dict):
-            coordinate: TupleCoordinate = tuple(coordinate.values())
+            coordinate = tuple(coordinate.values())
 
         # Check all values in coordinate should be int or float.
         all_int = all(isinstance(c, int) for c in coordinate)
@@ -1098,7 +1098,7 @@ class Page:
                 'and should be between "0.0" and "1.0".'
             )
 
-        return coordinate
+        return cast(TupleCoordinate, coordinate)
 
     def _get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
 
@@ -1111,9 +1111,9 @@ class Page:
             area_width = int(window_width * area_width)
             area_height = int(window_height * area_height)
 
-        area: tuple[int, int, int, int] = (area_x, area_y, area_width, area_height)
+        area = (area_x, area_y, area_width, area_height)
         logstack._info(f'area: {area}')
-        return area
+        return cast(tuple[int, int, int, int], area)
 
     def _get_offset(
         self,
@@ -1130,9 +1130,9 @@ class Page:
             end_x = int(area_x + area_width * end_x)
             end_y = int(area_y + area_height * end_y)
 
-        offset: tuple[int, int, int, int] = (start_x, start_y, end_x, end_y)
+        offset = (start_x, start_y, end_x, end_y)
         logstack._info(f'offset: {offset}')
-        return offset
+        return cast(tuple[int, int, int, int], offset)
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:
         """
