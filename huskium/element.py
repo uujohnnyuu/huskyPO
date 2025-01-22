@@ -331,6 +331,19 @@ class Element:
             f'for element "{self.remark}" to be "{status}".'
         )
 
+    def _timeout_process(
+        self,
+        status: str,
+        present: bool = True,
+        reraise: bool | None = None
+    ) -> Literal[False]:
+        """
+        Handling a TimeoutException after it occurs.
+        """
+        if Timeout.reraise(reraise):
+            raise TimeoutException(self._timeout_message(status, present)) from None
+        return False
+
     def wait_present(
         self,
         timeout: int | float | None = None,
@@ -362,9 +375,7 @@ class Element:
                 self._present_cache = cache
             return cache
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise TimeoutException(self._timeout_message('present')) from None
-            return False
+            return self._timeout_process('present', True, reraise)
 
     def wait_absent(
         self,
@@ -394,9 +405,7 @@ class Element:
                 ecex.absence_of_element_located(self.locator, self.index)
             )
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise TimeoutException(self._timeout_message('absent')) from None
-            return False
+            return self._timeout_process('absent', True, reraise)
 
     def wait_visible(
         self,
@@ -422,24 +431,21 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._if_force_relocate()
-            self._visible_cache = self.wait(timeout).until(
-                ecex.visibility_of_element(self._present_cache),
-                self._timeout_message('visible')
-            )
-            return self._visible_cache
-        except ElementReferenceException:
-            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.visibility_of_element_located(self.locator, self.index),
-                self._timeout_message('visible')
-            )
-            if self.cache:
-                self._visible_cache = self._present_cache = cache
-            return cache
+            try:
+                self._if_force_relocate()
+                self._visible_cache = self.wait(timeout).until(
+                    ecex.visibility_of_element(self._present_cache)
+                )
+                return self._visible_cache
+            except ElementReferenceException:
+                cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                    ecex.visibility_of_element_located(self.locator, self.index)
+                )
+                if self.cache:
+                    self._visible_cache = self._present_cache = cache
+                return cache
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+            return self._timeout_process('visible', True, reraise)
 
     def wait_invisible(
         self,
@@ -472,26 +478,23 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._if_force_relocate()
-            return cast(
-                WebElement | Literal[True],
-                self.wait(timeout).until(
-                    ecex.invisibility_of_element(self._present_cache, present),
-                    self._timeout_message('invisible')
+            try:
+                self._if_force_relocate()
+                return cast(
+                    WebElement | Literal[True],
+                    self.wait(timeout).until(
+                        ecex.invisibility_of_element(self._present_cache, present)
+                    )
                 )
-            )
-        except ElementReferenceException:
-            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.invisibility_of_element_located(self.locator, self.index, present),
-                self._timeout_message('invisible', present)
-            )
-            if self.cache and isinstance(result, WebElementTuple):
-                self._present_cache = result
-            return result
+            except ElementReferenceException:
+                result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                    ecex.invisibility_of_element_located(self.locator, self.index, present)
+                )
+                if self.cache and isinstance(result, WebElementTuple):
+                    self._present_cache = result
+                return result
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+            return self._timeout_process('invisible', present, reraise)
 
     def wait_clickable(
         self,
@@ -517,24 +520,21 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._if_force_relocate()
-            self._clickable_cache = self._visible_cache = self.wait(timeout).until(
-                ecex.element_to_be_clickable(self._present_cache),
-                self._timeout_message('clickable')
-            )
-            return self._clickable_cache
-        except ElementReferenceException:
-            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_clickable(self.locator, self.index),
-                self._timeout_message('clickable')
-            )
-            if self.cache:
-                self._clickable_cache = self._visible_cache = self._present_cache = cache
-            return cache
+            try:
+                self._if_force_relocate()
+                self._clickable_cache = self._visible_cache = self.wait(timeout).until(
+                    ecex.element_to_be_clickable(self._present_cache)
+                )
+                return self._clickable_cache
+            except ElementReferenceException:
+                cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                    ecex.element_located_to_be_clickable(self.locator, self.index)
+                )
+                if self.cache:
+                    self._clickable_cache = self._visible_cache = self._present_cache = cache
+                return cache
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+            return self._timeout_process('clickable', True, reraise)
 
     def wait_unclickable(
         self,
@@ -567,26 +567,23 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._if_force_relocate()
-            return cast(
-                WebElement | Literal[True],
-                self.wait(timeout).until(
-                    ecex.element_to_be_unclickable(self._present_cache, present),
-                    self._timeout_message('unclickable')
+            try:
+                self._if_force_relocate()
+                return cast(
+                    WebElement | Literal[True],
+                    self.wait(timeout).until(
+                        ecex.element_to_be_unclickable(self._present_cache, present)
+                    )
                 )
-            )
-        except ElementReferenceException:
-            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_unclickable(self.locator, self.index, present),
-                self._timeout_message('unclickable', present)
-            )
-            if self.cache and isinstance(result, WebElementTuple):
-                self._present_cache = result
-            return result
+            except ElementReferenceException:
+                result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                    ecex.element_located_to_be_unclickable(self.locator, self.index, present)
+                )
+                if self.cache and isinstance(result, WebElementTuple):
+                    self._present_cache = result
+                return result
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+            return self._timeout_process('unclickable', present, reraise)
 
     def wait_selected(
         self,
@@ -612,23 +609,20 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._if_force_relocate()
-            return self.wait(timeout).until(
-                ecex.element_to_be_selected(self._present_cache),
-                self._timeout_message('selected')
-            )
-        except ElementReferenceException:
-            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_selected(self.locator, self.index),
-                self._timeout_message('selected')
-            )
-            if self.cache:
-                self._present_cache = cache
-            return cache
+            try:
+                self._if_force_relocate()
+                return self.wait(timeout).until(
+                    ecex.element_to_be_selected(self._present_cache)
+                )
+            except ElementReferenceException:
+                cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                    ecex.element_located_to_be_selected(self.locator, self.index)
+                )
+                if self.cache:
+                    self._present_cache = cache
+                return cache
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+            return self._timeout_process('selected', True, reraise)
 
     def wait_unselected(
         self,
@@ -660,23 +654,20 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._if_force_relocate()
-            return self.wait(timeout).until(
-                ecex.element_to_be_unselected(self._present_cache),
-                self._timeout_message('unselected')
-            )
-        except ElementReferenceException:
-            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_unselected(self.locator, self.index),
-                self._timeout_message('unselected')
-            )
-            if self.cache:
-                self._present_cache = cache
-            return cache
+            try:
+                self._if_force_relocate()
+                return self.wait(timeout).until(
+                    ecex.element_to_be_unselected(self._present_cache)
+                )
+            except ElementReferenceException:
+                cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                    ecex.element_located_to_be_unselected(self.locator, self.index)
+                )
+                if self.cache:
+                    self._present_cache = cache
+                return cache
         except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+            return self._timeout_process('unselected', True, reraise)
 
     @property
     def present(self) -> WebElement:
