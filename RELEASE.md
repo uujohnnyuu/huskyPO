@@ -1,3 +1,19 @@
+# huskium v1.0.3
+
+## Overview
+- **Enhancements** based on version 1.0.2.
+
+## Enhancements
+- **Type Hint**: Resolve all mypy errors except those requiring `--strict`.
+- **Cache Flow**: Improved the stability of cache-related data flow.
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.0.3
+```
+---
+
 # huskium v1.0.2
 
 ## Overview
