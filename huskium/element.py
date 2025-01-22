@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 import platform
 import time
-from typing import Any, cast, Literal, Self, Type
+from typing import TYPE_CHECKING, Any, cast, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
@@ -39,6 +39,13 @@ ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 
 class Element:
+
+    if TYPE_CHECKING:
+        _wait_timeout: int | float
+        _present_cache: WebElement
+        _visible_cache: WebElement
+        _clickable_cache: WebElement
+        _select: Select
 
     _CACHES = ['_present_cache', '_visible_cache', '_clickable_cache', '_select']
 
@@ -2061,7 +2068,7 @@ class Element:
         Get the Select cache.
         """
         try:
-            return self._select  # type: ignore[has-type]
+            return self._select
         except AttributeError:
             return None
 
@@ -2081,7 +2088,7 @@ class Element:
             try:
                 # The main process.
                 self._if_force_relocate()
-                return self._select.options  # type: ignore[has-type]
+                return self._select.options
             except AttributeError:
                 # Handle the first AttributeError:
                 # If there is no available select attribute,

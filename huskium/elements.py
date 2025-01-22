@@ -13,7 +13,7 @@
 
 from __future__ import annotations
 
-from typing import cast, Literal, Self, Type
+from typing import TYPE_CHECKING, cast, Literal, Self, Type
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -28,6 +28,10 @@ from .types import EXTENDED_IGNORED_EXCEPTIONS, WebDriver, WebElement
 
 
 class Elements:
+
+    if TYPE_CHECKING:
+        _page: Page
+        _wait_timeout: int | float
 
     def __init__(
         self,
