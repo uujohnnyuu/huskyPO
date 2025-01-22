@@ -25,7 +25,7 @@ from .config import Log
 
 
 def config(
-    filename='./log.log',
+    filename: str | None = './log.log',
     *,
     filemode='w',
     format='%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s',
@@ -47,7 +47,7 @@ def config(
         logstack.config('./xxx.log')
 
     """
-    if filename:
+    if isinstance(filename, (str, type(None))):
         outputkv = {"filename": filename}
         if filename is not None:
             abspath = os.path.abspath(filename)
