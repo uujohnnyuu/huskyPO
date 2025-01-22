@@ -58,7 +58,7 @@ def config(
     if handlers:
         outputkv = {"handlers": handlers}
     logging.basicConfig(
-        **outputkv,
+        **outputkv,  # type: ignore[arg-type]
         filemode=filemode,
         format=format,
         datefmt=datefmt,
