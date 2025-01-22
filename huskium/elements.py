@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import cast, Literal, Self, Type
 
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.support.ui import WebDriverWait
