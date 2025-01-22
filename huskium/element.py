@@ -333,6 +333,7 @@ class Element:
 
     def _timeout_process(
         self,
+        exc: TimeoutException,
         status: str,
         present: bool = True,
         reraise: bool | None = None
@@ -341,7 +342,8 @@ class Element:
         Handling a TimeoutException after it occurs.
         """
         if Timeout.reraise(reraise):
-            raise TimeoutException(self._timeout_message(status, present)) from None
+            exc.msg = self._timeout_message(status, present)
+            raise exc from None
         return False
 
     def wait_present(
@@ -374,8 +376,8 @@ class Element:
             if self.cache:
                 self._present_cache = cache
             return cache
-        except TimeoutException:
-            return self._timeout_process('present', True, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'present', True, reraise)
 
     def wait_absent(
         self,
@@ -404,8 +406,8 @@ class Element:
             return self.wait(timeout).until(
                 ecex.absence_of_element_located(self.locator, self.index)
             )
-        except TimeoutException:
-            return self._timeout_process('absent', True, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'absent', True, reraise)
 
     def wait_visible(
         self,
@@ -444,8 +446,8 @@ class Element:
                 if self.cache:
                     self._visible_cache = self._present_cache = cache
                 return cache
-        except TimeoutException:
-            return self._timeout_process('visible', True, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'visible', True, reraise)
 
     def wait_invisible(
         self,
@@ -493,8 +495,8 @@ class Element:
                 if self.cache and isinstance(result, WebElementTuple):
                     self._present_cache = result
                 return result
-        except TimeoutException:
-            return self._timeout_process('invisible', present, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'invisible', present, reraise)
 
     def wait_clickable(
         self,
@@ -533,8 +535,8 @@ class Element:
                 if self.cache:
                     self._clickable_cache = self._visible_cache = self._present_cache = cache
                 return cache
-        except TimeoutException:
-            return self._timeout_process('clickable', True, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'clickable', True, reraise)
 
     def wait_unclickable(
         self,
@@ -582,8 +584,8 @@ class Element:
                 if self.cache and isinstance(result, WebElementTuple):
                     self._present_cache = result
                 return result
-        except TimeoutException:
-            return self._timeout_process('unclickable', present, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'unclickable', present, reraise)
 
     def wait_selected(
         self,
@@ -621,8 +623,8 @@ class Element:
                 if self.cache:
                     self._present_cache = cache
                 return cache
-        except TimeoutException:
-            return self._timeout_process('selected', True, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'selected', True, reraise)
 
     def wait_unselected(
         self,
@@ -666,8 +668,8 @@ class Element:
                 if self.cache:
                     self._present_cache = cache
                 return cache
-        except TimeoutException:
-            return self._timeout_process('unselected', True, reraise)
+        except TimeoutException as exc:
+            return self._timeout_process(exc, 'unselected', True, reraise)
 
     @property
     def present(self) -> WebElement:
