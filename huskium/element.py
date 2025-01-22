@@ -27,9 +27,9 @@ from .by import ByAttribute
 from .config import Area, Cache, Offset, Timeout
 from .page import Coordinate, Page
 from .types import (
-    EXTENDED_IGNORED_EXCEPTIONS, 
-    SeleniumWebElement, 
-    WebDriver, 
+    EXTENDED_IGNORED_EXCEPTIONS,
+    SeleniumWebElement,
+    WebDriver,
     WebElement,
     WebElementTuple
 )
