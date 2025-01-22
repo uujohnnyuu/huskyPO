@@ -678,7 +678,7 @@ class Element:
             if Timeout.reraise(reraise):
                 raise
             return False
-        
+
     @property
     def present(self) -> WebElement:
         """

@@ -205,7 +205,7 @@ class Elements:
         if isinstance(index, int):
             return self.driver.find_elements(*self.locator)[index]
         return self.driver.find_elements(*self.locator)
-    
+
     def find(
         self,
         index: int | None = None,
@@ -420,7 +420,7 @@ class Elements:
             if Timeout.reraise(reraise):
                 raise
             return False
-        
+
     @property
     def all_present(self) -> list[WebElement]:
         """
