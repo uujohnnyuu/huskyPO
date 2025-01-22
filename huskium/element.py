@@ -279,7 +279,7 @@ class Element:
     def find_element(self) -> WebElement:
         """
         Using the traditional `find_element()` or
-        `find_elements()[index]` (if index is not None) to locate element.
+        `find_elements()[index]` (if there is index) to locate element.
         It is recommended for use in situations where no waiting is required,
         such as the Android UiScrollable locator method.
         """

@@ -197,7 +197,8 @@ class Elements:
 
     def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:
         """
-        Using the traditional `find_elements()` to locate elements.
+        Using the traditional `find_elements()` or 
+        `find_elements()[index]` (if there is index) to locate elements.
         Note that if there are no any element found,
         it will return empty list `[]`.
         """
