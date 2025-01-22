@@ -195,12 +195,14 @@ class Elements:
         """
         return self._page._driver
 
-    def find_elements(self) -> list[WebElement]:
+    def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:
         """
         Using the traditional `find_elements()` to locate elements.
         Note that if there are no any element found,
         it will return empty list `[]`.
         """
+        if isinstance(index, int):
+            return self.driver.find_elements(*self.locator)[index]
         return self.driver.find_elements(*self.locator)
 
     def wait(
