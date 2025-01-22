@@ -356,11 +356,13 @@ class Element:
                 the element did not reach the expected state within the timeout.
         """
         try:
-            self._present_cache = self.wait(timeout).until(
+            cache = self.wait(timeout).until(
                 ecex.presence_of_element_located(self.locator, self.index),
                 self._timeout_message('present')
             )
-            return self._present_cache
+            if self.cache:
+                self._present_cache = cache
+            return cache
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -430,13 +432,13 @@ class Element:
             )
             return self._visible_cache
         except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_element_located(self.locator, self.index),
                 self._timeout_message('visible')
             )
             if self.cache:
-                self._visible_cache = self._present_cache = result
-            return result
+                self._visible_cache = self._present_cache = cache
+            return cache
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -519,19 +521,19 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            self._visible_cache = self._clickable_cache = self.wait(timeout).until(
+            self._clickable_cache = self._visible_cache = self.wait(timeout).until(
                 ecex.element_to_be_clickable(self._present_cache),
                 self._timeout_message('clickable')
             )
             return self._clickable_cache
         except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_clickable(self.locator, self.index),
                 self._timeout_message('clickable')
             )
             if self.cache:
-                self._clickable_cache = self._visible_cache = self._present_cache = result
-            return result
+                self._clickable_cache = self._visible_cache = self._present_cache = cache
+            return cache
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -619,13 +621,13 @@ class Element:
                 self._timeout_message('selected')
             )
         except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_selected(self.locator, self.index),
                 self._timeout_message('selected')
             )
             if self.cache:
-                self._present_cache = result
-            return result
+                self._present_cache = cache
+            return cache
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -667,13 +669,13 @@ class Element:
                 self._timeout_message('unselected')
             )
         except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_unselected(self.locator, self.index),
                 self._timeout_message('unselected')
             )
             if self.cache:
-                self._present_cache = result
-            return result
+                self._present_cache = cache
+            return cache
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -756,7 +758,7 @@ class Element:
             result = self._present_cache.is_displayed()
         except ElementReferenceException:
             result = self.present.is_displayed()
-        if result:
+        if self.cache and result:
             self._visible_cache = self._present_cache
         return result
 
@@ -780,7 +782,7 @@ class Element:
         except ElementReferenceException:
             element = self.present
             result = element.is_displayed() and element.is_enabled()
-        if result:
+        if self.cache and result:
             self._clickable_cache = self._visible_cache = self._present_cache
         return result
 
