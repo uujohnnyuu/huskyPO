@@ -205,6 +205,35 @@ class Elements:
         if isinstance(index, int):
             return self.driver.find_elements(*self.locator)[index]
         return self.driver.find_elements(*self.locator)
+    
+    def find(
+        self,
+        index: int | None = None,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> list[WebElement] | WebElement | Literal[False]:
+        """
+        Selenium and Appium API.
+        Wait for the element or elements to be `present`.
+
+        Args:
+            - index:
+                - int: It will returns an element by list index of elements.
+                - None: It will returns all elements.
+            - timeout: Maximum time in seconds to wait for
+                the element or elements to become present.
+            - reraise: True means reraising TimeoutException; vice versa.
+
+        Returns:
+            - list[WebElement]: All elements when index is None.
+            - WebElement: Element by list index of elements when index is int.
+            - False: No any element is present.
+        """
+        elements = self.wait_all_present(timeout, reraise)
+        if isinstance(elements, list) and index is not None:
+            # Raise an IndexError directly if the index has no corresponding element.
+            return elements[index]
+        return elements
 
     def wait(
         self,
@@ -250,56 +279,6 @@ class Elements:
             f'Waiting for elements "{self.remark}" to become "{status}" timed out '
             f'after {self._wait_timeout} seconds.'
         )
-
-    def find(
-        self,
-        index: int | None = None,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> list[WebElement] | WebElement | Literal[False]:
-        """
-        Selenium and Appium API.
-        Wait for the element or elements to be `present`.
-
-        Args:
-            - index:
-                - int: It will returns an element by list index of elements.
-                - None: It will returns all elements.
-            - timeout: Maximum time in seconds to wait for
-                the element or elements to become present.
-            - reraise: True means reraising TimeoutException; vice versa.
-
-        Returns:
-            - list[WebElement]: All elements when index is None.
-            - WebElement: Element by list index of elements when index is int.
-            - False: No any element is present.
-        """
-        elements = self.wait_all_present(timeout, reraise)
-        if isinstance(elements, list) and index is not None:
-            # Raise an IndexError directly if the index has no corresponding element.
-            return elements[index]
-        return elements
-
-    @property
-    def all_present(self) -> list[WebElement]:
-        """
-        The same as `elements.wait_all_present(reraise=True)`.
-        """
-        return cast(list[WebElement], self.wait_all_present(reraise=True))
-
-    @property
-    def all_visible(self) -> list[WebElement]:
-        """
-        The same as `elements.wait_all_visible(reraise=True)`.
-        """
-        return cast(list[WebElement], self.wait_all_visible(reraise=True))
-
-    @property
-    def any_visible(self) -> list[WebElement]:
-        """
-        The same as elements.wait_any_visible(reraise=True).
-        """
-        return cast(list[WebElement], self.wait_any_visible(reraise=True))
 
     def wait_all_present(
         self,
@@ -441,6 +420,27 @@ class Elements:
             if Timeout.reraise(reraise):
                 raise
             return False
+        
+    @property
+    def all_present(self) -> list[WebElement]:
+        """
+        The same as `elements.wait_all_present(reraise=True)`.
+        """
+        return cast(list[WebElement], self.wait_all_present(reraise=True))
+
+    @property
+    def all_visible(self) -> list[WebElement]:
+        """
+        The same as `elements.wait_all_visible(reraise=True)`.
+        """
+        return cast(list[WebElement], self.wait_all_visible(reraise=True))
+
+    @property
+    def any_visible(self) -> list[WebElement]:
+        """
+        The same as elements.wait_any_visible(reraise=True).
+        """
+        return cast(list[WebElement], self.wait_any_visible(reraise=True))
 
     def are_all_present(self, timeout: int | float | None = None) -> bool:
         """

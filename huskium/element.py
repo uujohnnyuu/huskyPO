@@ -283,8 +283,8 @@ class Element:
         It is recommended for use in situations where no waiting is required,
         such as the Android UiScrollable locator method.
         """
-        if isinstance(self._index, int):
-            return self.driver.find_elements(*self.locator)[self._index]
+        if isinstance(self.index, int):
+            return self.driver.find_elements(*self.locator)[self.index]
         return self.driver.find_element(*self.locator)
 
     def wait(
@@ -332,6 +332,353 @@ class Element:
             f'after {self._wait_timeout} seconds.'
         )
 
+    def wait_present(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> WebElement | Literal[False]:
+        """
+        Wait for the element to become present.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - reraise: Determines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - False: The element failed to reach the expected state if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._present_cache = self.wait(timeout).until(
+                ecex.presence_of_element_located(self.locator, self.index),
+                self._timeout_message('present')
+            )
+            return self._present_cache
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_absent(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> bool:
+        """
+        Wait for the element to become absent.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - reraise: Determines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - False: The element failed to reach the expected state if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            return self.wait(timeout).until(
+                ecex.absence_of_element_located(self.locator, self.index),
+                self._timeout_message('absent')
+            )
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_visible(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> WebElement | Literal[False]:
+        """
+        Wait for the element to become visible.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - reraise: Determines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - False: The element failed to reach the expected state if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._if_force_relocate()
+            self._visible_cache = self.wait(timeout).until(
+                ecex.visibility_of_element(self._present_cache),
+                self._timeout_message('visible')
+            )
+            return self._visible_cache
+        except ElementReferenceException:
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                ecex.visibility_of_element_located(self.locator, self.index),
+                self._timeout_message('visible')
+            )
+            if self.cache:
+                self._visible_cache = self._present_cache = result
+            return result
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_invisible(
+        self,
+        timeout: int | float | None = None,
+        present: bool = True,
+        reraise: bool | None = None
+    ) -> WebElement | bool:
+        """
+        Wait for the element to become invisible.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - present: Specifies whether the element should be present:
+                - True: The element must be present in the expected state.
+                - False: The element can be present in the expected state or absent.
+            - reraise: Defines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`, a boolean that defaults to True.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - True: The element is absent within the timeout,
+                and `present` is False, allowing absence.
+            - False: The element failed to reach the expected state
+                within the timeout if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._if_force_relocate()
+            return cast(
+                WebElement | Literal[True],
+                self.wait(timeout).until(
+                    ecex.invisibility_of_element(self._present_cache, present),
+                    self._timeout_message('invisible')
+                )
+            )
+        except ElementReferenceException:
+            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                ecex.invisibility_of_element_located(self.locator, self.index, present),
+                self._timeout_message('invisible', present)
+            )
+            if self.cache and isinstance(result, WebElementTuple):
+                self._present_cache = result
+            return result
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_clickable(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> WebElement | Literal[False]:
+        """
+        Wait for the element to become clickable.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - reraise: Determines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - False: The element failed to reach the expected state if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._if_force_relocate()
+            self._visible_cache = self._clickable_cache = self.wait(timeout).until(
+                ecex.element_to_be_clickable(self._present_cache),
+                self._timeout_message('clickable')
+            )
+            return self._clickable_cache
+        except ElementReferenceException:
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                ecex.element_located_to_be_clickable(self.locator, self.index),
+                self._timeout_message('clickable')
+            )
+            if self.cache:
+                self._clickable_cache = self._visible_cache = self._present_cache = result
+            return result
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_unclickable(
+        self,
+        timeout: int | float | None = None,
+        present: bool = True,
+        reraise: bool | None = None
+    ) -> WebElement | bool:
+        """
+        Wait for the element to become unclickable.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - present: Specifies whether the element should be present:
+                - True: The element must be present in the expected state.
+                - False: The element can be present in the expected state or absent.
+            - reraise: Defines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`, a boolean that defaults to True.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - True: The element is absent within the timeout,
+                and `present` is False, allowing absence.
+            - False: The element failed to reach the expected state
+                within the timeout if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._if_force_relocate()
+            return cast(
+                WebElement | Literal[True],
+                self.wait(timeout).until(
+                    ecex.element_to_be_unclickable(self._present_cache, present),
+                    self._timeout_message('unclickable')
+                )
+            )
+        except ElementReferenceException:
+            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                ecex.element_located_to_be_unclickable(self.locator, self.index, present),
+                self._timeout_message('unclickable', present)
+            )
+            if self.cache and isinstance(result, WebElementTuple):
+                self._present_cache = result
+            return result
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_selected(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> WebElement | Literal[False]:
+        """
+        Wait for the element to become selected.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - reraise: Determines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - False: The element failed to reach the expected state if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._if_force_relocate()
+            return self.wait(timeout).until(
+                ecex.element_to_be_selected(self._present_cache),
+                self._timeout_message('selected')
+            )
+        except ElementReferenceException:
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                ecex.element_located_to_be_selected(self.locator, self.index),
+                self._timeout_message('selected')
+            )
+            if self.cache:
+                self._present_cache = result
+            return result
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+
+    def wait_unselected(
+        self,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> WebElement | Literal[False]:
+        """
+        Waiting for the element to become unselected.
+
+        Note:
+            - The behavior of "unselected" differs from "invisible" and "unclickable."
+            - The selection state is primarily influenced by user actions,
+                so the element must be present.
+            - As a result, absence is not considered an expected outcome.
+
+        Args:
+            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
+                Defaults to the element's timeout value if None.
+            - reraise: Determines behavior when the element state is not as expected:
+                - bool: True to raise a TimeoutException; False to return False.
+                - None: Follows `Timeout.RERAISE`.
+
+        Returns:
+            - WebElement: The element reached the expected state within the timeout.
+            - False: The element failed to reach the expected state if `reraise` is False.
+
+        Exception:
+            - TimeoutException: Raised if `reraise` is True and
+                the element did not reach the expected state within the timeout.
+        """
+        try:
+            self._if_force_relocate()
+            return self.wait(timeout).until(
+                ecex.element_to_be_unselected(self._present_cache),
+                self._timeout_message('unselected')
+            )
+        except ElementReferenceException:
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                ecex.element_located_to_be_unselected(self.locator, self.index),
+                self._timeout_message('unselected')
+            )
+            if self.cache:
+                self._present_cache = result
+            return result
+        except TimeoutException:
+            if Timeout.reraise(reraise):
+                raise
+            return False
+        
     @property
     def present(self) -> WebElement:
         """
@@ -385,353 +732,6 @@ class Element:
             return self._clickable_cache
         except AttributeError:
             return None
-
-    def wait_present(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
-        """
-        Wait for the element to become present.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._present_cache = self.wait(timeout).until(
-                ecex.presence_of_element_located(self.locator, self._index),
-                self._timeout_message('present')
-            )
-            return self._present_cache
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_absent(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> bool:
-        """
-        Wait for the element to become absent.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            return self.wait(timeout).until(
-                ecex.absence_of_element_located(self.locator, self._index),
-                self._timeout_message('absent')
-            )
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_visible(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
-        """
-        Wait for the element to become visible.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._if_force_relocate()
-            self._visible_cache = self.wait(timeout).until(
-                ecex.visibility_of_element(self._present_cache),
-                self._timeout_message('visible')
-            )
-            return self._visible_cache
-        except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.visibility_of_element_located(self.locator, self._index),
-                self._timeout_message('visible')
-            )
-            if self.cache:
-                self._visible_cache = self._present_cache = result
-            return result
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_invisible(
-        self,
-        timeout: int | float | None = None,
-        present: bool = True,
-        reraise: bool | None = None
-    ) -> WebElement | bool:
-        """
-        Wait for the element to become invisible.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - present: Specifies whether the element should be present:
-                - True: The element must be present in the expected state.
-                - False: The element can be present in the expected state or absent.
-            - reraise: Defines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`, a boolean that defaults to True.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - True: The element is absent within the timeout,
-                and `present` is False, allowing absence.
-            - False: The element failed to reach the expected state
-                within the timeout if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._if_force_relocate()
-            return cast(
-                WebElement | Literal[True],
-                self.wait(timeout).until(
-                    ecex.invisibility_of_element(self._present_cache, present),
-                    self._timeout_message('invisible')
-                )
-            )
-        except ElementReferenceException:
-            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.invisibility_of_element_located(self.locator, self._index, present),
-                self._timeout_message('invisible', present)
-            )
-            if self.cache and isinstance(result, WebElementTuple):
-                self._present_cache = result
-            return result
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_clickable(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
-        """
-        Wait for the element to become clickable.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._if_force_relocate()
-            self._visible_cache = self._clickable_cache = self.wait(timeout).until(
-                ecex.element_to_be_clickable(self._present_cache),
-                self._timeout_message('clickable')
-            )
-            return self._clickable_cache
-        except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_clickable(self.locator, self._index),
-                self._timeout_message('clickable')
-            )
-            if self.cache:
-                self._clickable_cache = self._visible_cache = self._present_cache = result
-            return result
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_unclickable(
-        self,
-        timeout: int | float | None = None,
-        present: bool = True,
-        reraise: bool | None = None
-    ) -> WebElement | bool:
-        """
-        Wait for the element to become unclickable.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - present: Specifies whether the element should be present:
-                - True: The element must be present in the expected state.
-                - False: The element can be present in the expected state or absent.
-            - reraise: Defines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`, a boolean that defaults to True.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - True: The element is absent within the timeout,
-                and `present` is False, allowing absence.
-            - False: The element failed to reach the expected state
-                within the timeout if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._if_force_relocate()
-            return cast(
-                WebElement | Literal[True],
-                self.wait(timeout).until(
-                    ecex.element_to_be_unclickable(self._present_cache, present),
-                    self._timeout_message('unclickable')
-                )
-            )
-        except ElementReferenceException:
-            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_unclickable(self.locator, self._index, present),
-                self._timeout_message('unclickable', present)
-            )
-            if self.cache and isinstance(result, WebElementTuple):
-                self._present_cache = result
-            return result
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_selected(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
-        """
-        Wait for the element to become selected.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._if_force_relocate()
-            return self.wait(timeout).until(
-                ecex.element_to_be_selected(self._present_cache),
-                self._timeout_message('selected')
-            )
-        except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_selected(self.locator, self._index),
-                self._timeout_message('selected')
-            )
-            if self.cache:
-                self._present_cache = result
-            return result
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
-
-    def wait_unselected(
-        self,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
-        """
-        Waiting for the element to become unselected.
-
-        Note:
-            - The behavior of "unselected" differs from "invisible" and "unclickable."
-            - The selection state is primarily influenced by user actions,
-                so the element must be present.
-            - As a result, absence is not considered an expected outcome.
-
-        Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
-
-        Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
-
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
-        """
-        try:
-            self._if_force_relocate()
-            return self.wait(timeout).until(
-                ecex.element_to_be_unselected(self._present_cache),
-                self._timeout_message('unselected')
-            )
-        except ElementReferenceException:
-            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.element_located_to_be_unselected(self.locator, self._index),
-                self._timeout_message('unselected')
-            )
-            if self.cache:
-                self._present_cache = result
-            return result
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
 
     def is_present(self, timeout: int | float | None = None) -> bool:
         """
