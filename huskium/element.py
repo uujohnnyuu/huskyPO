@@ -321,15 +321,14 @@ class Element:
 
     def _timeout_message(self, status: str, present: bool = True) -> str:
         """
-        Waiting for element "{self.remark}" to become "{status}" timed out
-        after {self._wait_timeout} seconds.
-        if not present: status + ' or absent'
+        Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".
+        if not present: status += ' or absent'
         """
         if not present:
             status += ' or absent'
         return (
-            f'Waiting for element "{self.remark}" to become "{status}" timed out '
-            f'after {self._wait_timeout} seconds.'
+            f'Timed out waiting {self._wait_timeout} seconds '
+            f'for element "{self.remark}" to be "{status}".'
         )
 
     def wait_present(
@@ -357,15 +356,14 @@ class Element:
         """
         try:
             cache = self.wait(timeout).until(
-                ecex.presence_of_element_located(self.locator, self.index),
-                self._timeout_message('present')
+                ecex.presence_of_element_located(self.locator, self.index)
             )
             if self.cache:
                 self._present_cache = cache
             return cache
         except TimeoutException:
             if Timeout.reraise(reraise):
-                raise
+                raise TimeoutException(self._timeout_message('present')) from None
             return False
 
     def wait_absent(
@@ -393,12 +391,11 @@ class Element:
         """
         try:
             return self.wait(timeout).until(
-                ecex.absence_of_element_located(self.locator, self.index),
-                self._timeout_message('absent')
+                ecex.absence_of_element_located(self.locator, self.index)
             )
         except TimeoutException:
             if Timeout.reraise(reraise):
-                raise
+                raise TimeoutException(self._timeout_message('absent')) from None
             return False
 
     def wait_visible(
