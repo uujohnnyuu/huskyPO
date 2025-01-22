@@ -26,7 +26,13 @@ from . import logstack
 from .by import ByAttribute
 from .config import Area, Cache, Offset, Timeout
 from .page import Coordinate, Page
-from .types import EXTENDED_IGNORED_EXCEPTIONS, SeleniumWebElement, WebDriver, WebElement
+from .types import (
+    EXTENDED_IGNORED_EXCEPTIONS, 
+    SeleniumWebElement, 
+    WebDriver, 
+    WebElement,
+    WebElementTuple
+)
 
 
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
@@ -528,7 +534,7 @@ class Element:
                 ecex.invisibility_of_element_located(self.locator, self._index, present),
                 self._timeout_message('invisible', present)
             )
-            if isinstance(result, WebElement):
+            if isinstance(result, WebElementTuple):
                 self._present_cache = result
                 return self._present_cache
             return result
@@ -628,7 +634,7 @@ class Element:
                 ecex.element_located_to_be_unclickable(self.locator, self._index, present),
                 self._timeout_message('unclickable', present)
             )
-            if isinstance(result, WebElement):
+            if isinstance(result, WebElementTuple):
                 self._present_cache = result
                 return self._present_cache
             return result
