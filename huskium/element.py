@@ -474,14 +474,13 @@ class Element:
             )
             return self._visible_cache
         except ElementReferenceException:
-            self._present_cache = self._visible_cache = self.wait(
-                timeout,
-                EXTENDED_IGNORED_EXCEPTIONS
-            ).until(
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_element_located(self.locator, self._index),
                 self._timeout_message('visible')
             )
-            return self._visible_cache
+            if self.cache:
+                self._visible_cache = self._present_cache = result
+            return result
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -527,16 +526,12 @@ class Element:
                 )
             )
         except ElementReferenceException:
-            result: WebElement | Literal[True] = self.wait(
-                timeout,
-                EXTENDED_IGNORED_EXCEPTIONS
-            ).until(
+            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.invisibility_of_element_located(self.locator, self._index, present),
                 self._timeout_message('invisible', present)
             )
-            if isinstance(result, WebElementTuple):
+            if self.cache and isinstance(result, WebElementTuple):
                 self._present_cache = result
-                return self._present_cache
             return result
         except TimeoutException:
             if Timeout.reraise(reraise):
@@ -574,14 +569,13 @@ class Element:
             )
             return self._clickable_cache
         except ElementReferenceException:
-            self._present_cache = self._visible_cache = self._clickable_cache = self.wait(
-                timeout,
-                EXTENDED_IGNORED_EXCEPTIONS
-            ).until(
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_clickable(self.locator, self._index),
                 self._timeout_message('clickable')
             )
-            return self._clickable_cache
+            if self.cache:
+                self._clickable_cache = self._visible_cache = self._present_cache = result
+            return result
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -627,16 +621,12 @@ class Element:
                 )
             )
         except ElementReferenceException:
-            result: WebElement | Literal[True] = self.wait(
-                timeout,
-                EXTENDED_IGNORED_EXCEPTIONS
-            ).until(
+            result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_unclickable(self.locator, self._index, present),
                 self._timeout_message('unclickable', present)
             )
-            if isinstance(result, WebElementTuple):
+            if self.cache and isinstance(result, WebElementTuple):
                 self._present_cache = result
-                return self._present_cache
             return result
         except TimeoutException:
             if Timeout.reraise(reraise):
@@ -673,14 +663,13 @@ class Element:
                 self._timeout_message('selected')
             )
         except ElementReferenceException:
-            self._present_cache = self.wait(
-                timeout,
-                EXTENDED_IGNORED_EXCEPTIONS
-            ).until(
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_selected(self.locator, self._index),
                 self._timeout_message('selected')
             )
-            return self._present_cache
+            if self.cache:
+                self._present_cache = result
+            return result
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
@@ -722,14 +711,13 @@ class Element:
                 self._timeout_message('unselected')
             )
         except ElementReferenceException:
-            self._present_cache = self.wait(
-                timeout,
-                EXTENDED_IGNORED_EXCEPTIONS
-            ).until(
+            result = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.element_located_to_be_unselected(self.locator, self._index),
                 self._timeout_message('unselected')
             )
-            return self._present_cache
+            if self.cache:
+                self._present_cache = result
+            return result
         except TimeoutException:
             if Timeout.reraise(reraise):
                 raise
