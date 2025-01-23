@@ -276,9 +276,23 @@ class Elements:
         after {self._wait_timeout} seconds.
         """
         return (
-            f'Waiting for elements "{self.remark}" to become "{status}" timed out '
-            f'after {self._wait_timeout} seconds.'
+            f'Timed out waiting {self._wait_timeout} seconds '
+            f'for elements "{self.remark}" to be "{status}".'
         )
+    
+    def _timeout_process(
+        self,
+        status: str,
+        exc: TimeoutException,
+        reraise: bool | None = None
+    ) -> Literal[False]:
+        """
+        Handling a TimeoutException after it occurs.
+        """
+        if Timeout.reraise(reraise):
+            exc.msg = self._timeout_message(status)
+            raise exc from None
+        return False
 
     def wait_all_present(
         self,
@@ -309,13 +323,10 @@ class Elements:
         """
         try:
             return self.wait(timeout).until(
-                ecex.presence_of_all_elements_located(self.locator),
-                self._timeout_message('any elements are present')
+                ecex.presence_of_all_elements_located(self.locator)
             )
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+        except TimeoutException as exc:
+            return self._timeout_process('all present', exc, reraise)
 
     def wait_all_absent(
         self,
@@ -343,13 +354,10 @@ class Elements:
         """
         try:
             return self.wait(timeout).until(
-                ecex.absence_of_all_elements_located(self.locator),
-                self._timeout_message('all elements are absent')
+                ecex.absence_of_all_elements_located(self.locator)
             )
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+        except TimeoutException as exc:
+            return self._timeout_process('all absent', exc, reraise)
 
     def wait_all_visible(
         self,
@@ -378,13 +386,10 @@ class Elements:
         """
         try:
             return self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.visibility_of_all_elements_located(self.locator),
-                self._timeout_message('all elements are visible')
+                ecex.visibility_of_all_elements_located(self.locator)
             )
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+        except TimeoutException as exc:
+            return self._timeout_process('all visible', exc, reraise)
 
     def wait_any_visible(
         self,
@@ -413,13 +418,10 @@ class Elements:
         """
         try:
             return self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
-                ecex.visibility_of_any_elements_located(self.locator),
-                self._timeout_message('any elements are visible')
+                ecex.visibility_of_any_elements_located(self.locator)
             )
-        except TimeoutException:
-            if Timeout.reraise(reraise):
-                raise
-            return False
+        except TimeoutException as exc:
+            return self._timeout_process('any visible', exc, reraise)
 
     @property
     def all_present(self) -> list[WebElement]:
