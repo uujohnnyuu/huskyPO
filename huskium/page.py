@@ -238,17 +238,15 @@ class Page:
         which must be an exact match returns True if the url matches, False otherwise.
         """
         try:
-            # We don't set the TimeoutException message in the until method
-            # because we want to catch the behavior that occurs after a timeout.
             return self.wait(timeout).until(ec.url_to_be(url))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url  # Get url after timeout.
-                message = (
-                    f'Wait for url to be {url} timed out after {timeout} seconds. '
+                current_url = self.driver.current_url
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for url to be {url}. '
                     f'The current url is {current_url}'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def url_contains(
@@ -264,17 +262,15 @@ class Page:
         returns True when the url matches, False otherwise.
         """
         try:
-            # We don't set the TimeoutException message in the until method
-            # because we want to catch the behavior that occurs after a timeout.
             return self.wait(timeout).until(ec.url_contains(url))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url  # Get url after timeout.
-                message = (
-                    f'Wait for url contains {url} timed out after {timeout} seconds. '
+                current_url = self.driver.current_url
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for url contains {url}. '
                     f'The current url is {current_url}'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def url_matches(
@@ -291,17 +287,15 @@ class Page:
         and as such does not require an exact full match.
         """
         try:
-            # We don't set the TimeoutException message in the until method
-            # because we want to catch the behavior that occurs after a timeout.
             return self.wait(timeout).until(ec.url_matches(pattern))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url  # Get url after timeout.
-                message = (
-                    f'Wait for url matches {pattern} timed out after {timeout} seconds. '
+                current_url = self.driver.current_url
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for url matches {pattern}. '
                     f'The current url is {current_url}'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def url_changes(
@@ -317,17 +311,15 @@ class Page:
         which must not be an exact match returns True if the url is different, false otherwise.
         """
         try:
-            # We don't set the TimeoutException message in the until method
-            # because we want to catch the behavior that occurs after a timeout.
             return self.wait(timeout).until(ec.url_changes(url))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url  # Get url after timeout.
-                message = (
-                    f'Wait for url changes to {url} timed out after {timeout} seconds. '
+                current_url = self.driver.current_url
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for url changes to {url}. '
                     f'The current url is {current_url}'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     @property
@@ -351,17 +343,15 @@ class Page:
         which must be an exact match returns True if the title matches, false otherwise.
         """
         try:
-            # We don't set the TimeoutException message in the until method
-            # because we want to catch the behavior that occurs after a timeout.
             return self.wait(timeout).until(ec.title_is(title))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                current_title = self.driver.title  # Get title after timeout.
-                message = (
-                    f'Wait for title to be {title} timed out after {timeout} seconds. '
+                current_title = self.driver.title
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for title to be {title}. '
                     f'The current title is {current_title}'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def title_contains(
@@ -376,17 +366,15 @@ class Page:
         title is the fragment of title expected returns True when the title matches, False otherwise
         """
         try:
-            # We don't set the TimeoutException message in the until method
-            # because we want to catch the behavior that occurs after a timeout.
             return self.wait(timeout).until(ec.title_contains(title))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                current_title = self.driver.title  # Get title after timeout.
-                message = (
-                    f'Wait for title contains {title} timed out after {timeout} seconds. '
+                current_title = self.driver.title
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for title contains {title}. '
                     f'The current title is {current_title}'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def refresh(self) -> None:
@@ -585,15 +573,14 @@ class Page:
         """
         try:
             return self.wait(timeout).until(ec.number_of_windows_to_be(num_windows))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
                 current_num_windows = len(self.driver.window_handles)
-                message = (
-                    f'Wait for number of windows to be {num_windows} timed out '
-                    f'after {timeout} seconds. '
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for number of windows to be {num_windows}. '
                     f'The current number of windows is {current_num_windows}.'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def new_window_is_opened(
@@ -607,14 +594,14 @@ class Page:
         """
         try:
             return self.wait(timeout).until(ec.new_window_is_opened(current_handles))
-        except TimeoutException:
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
                 current_num_windows = len(self.driver.window_handles)
-                message = (
-                    f'Wait for new window is opened timed out after {timeout} seconds. '
-                    f'The current number of windows is {current_num_windows}'
+                exc.msg = (
+                    f'Timed out waiting {timeout} seconds for new window is opened. '
+                    f'The current number of windows is {current_num_windows}.'
                 )
-                raise TimeoutException(message) from None
+                raise exc from None
             return False
 
     def print_page(self, print_options: PrintOptions | None = None) -> str:
@@ -1222,13 +1209,11 @@ class Page:
         Switch to alert.
         """
         try:
-            return self.wait(timeout).until(
-                ec.alert_is_present(),
-                f'Wait for alert to be present timed out after {timeout} seconds.'
-            )
-        except TimeoutException:
+            return self.wait(timeout).until(ec.alert_is_present())
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                raise
+                exc.msg = f'Timed out waiting {timeout} seconds for alert to be present.'
+                raise exc from None
             return False
 
     def switch_to_default_content(self) -> None:
@@ -1327,13 +1312,11 @@ class Page:
             - False: There is no any WEBVIEW in contexts.
         """
         try:
-            return self.wait(timeout).until(
-                ecex.webview_is_present(switch, index),
-                f'Wait for WEBVIEW to be present timed out after {timeout} seconds.'
-            )
-        except TimeoutException:
+            return self.wait(timeout).until(ecex.webview_is_present(switch, index))
+        except TimeoutException as exc:
             if Timeout.reraise(reraise):
-                raise
+                exc.msg = f'Timed out waiting {timeout} seconds for WEBVIEW to be present'
+                raise exc from None
             return False
 
     def switch_to_app(self) -> Any | str:
