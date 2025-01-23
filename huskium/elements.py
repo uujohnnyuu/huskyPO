@@ -279,7 +279,7 @@ class Elements:
             f'Timed out waiting {self._wait_timeout} seconds '
             f'for elements "{self.remark}" to be "{status}".'
         )
-    
+
     def _timeout_process(
         self,
         status: str,
