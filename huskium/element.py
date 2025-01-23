@@ -1530,7 +1530,7 @@ class Element:
                 ec.frame_to_be_available_and_switch_to_it(self.locator),
             )
         except TimeoutException as exc:
-            self._timeout_process('available frame', exc, reraise)
+            return self._timeout_process('available frame', exc, reraise)
 
     def perform(self) -> None:
         """
