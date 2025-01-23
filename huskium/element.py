@@ -489,12 +489,12 @@ class Element:
                     )
                 )
             except ElementReferenceException:
-                result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                cache: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                     ecex.invisibility_of_element_located(self.locator, self.index, present)
                 )
-                if self.cache and isinstance(result, WebElementTuple):
-                    self._present_cache = result
-                return result
+                if self.cache and isinstance(cache, WebElementTuple):
+                    self._present_cache = cache
+                return cache
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
 
@@ -578,12 +578,12 @@ class Element:
                     )
                 )
             except ElementReferenceException:
-                result: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                cache: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                     ecex.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
-                if self.cache and isinstance(result, WebElementTuple):
-                    self._present_cache = result
-                return result
+                if self.cache and isinstance(cache, WebElementTuple):
+                    self._present_cache = cache
+                return cache
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
 
