@@ -243,8 +243,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_url = self.driver.current_url
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for url to be {url}. '
-                    f'The current url is {current_url}'
+                    f'Timed out waiting {timeout} seconds for url to be "{url}". '
+                    f'The current url is "{current_url}"'
                 )
                 raise exc from None
             return False
@@ -267,8 +267,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_url = self.driver.current_url
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for url contains {url}. '
-                    f'The current url is {current_url}'
+                    f'Timed out waiting {timeout} seconds for url contains "{url}". '
+                    f'The current url is "{current_url}"'
                 )
                 raise exc from None
             return False
@@ -292,8 +292,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_url = self.driver.current_url
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for url matches {pattern}. '
-                    f'The current url is {current_url}'
+                    f'Timed out waiting {timeout} seconds for url matches pattern "{pattern}". '
+                    f'The current url is "{current_url}"'
                 )
                 raise exc from None
             return False
@@ -316,8 +316,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_url = self.driver.current_url
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for url changes to {url}. '
-                    f'The current url is {current_url}'
+                    f'Timed out waiting {timeout} seconds for url changes to "{url}". '
+                    f'The current url is "{current_url}"'
                 )
                 raise exc from None
             return False
@@ -348,8 +348,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_title = self.driver.title
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for title to be {title}. '
-                    f'The current title is {current_title}'
+                    f'Timed out waiting {timeout} seconds for title to be "{title}". '
+                    f'The current title is "{current_title}"'
                 )
                 raise exc from None
             return False
@@ -371,8 +371,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_title = self.driver.title
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for title contains {title}. '
-                    f'The current title is {current_title}'
+                    f'Timed out waiting {timeout} seconds for title contains "{title}". '
+                    f'The current title is "{current_title}"'
                 )
                 raise exc from None
             return False
@@ -577,8 +577,8 @@ class Page:
             if Timeout.reraise(reraise):
                 current_num_windows = len(self.driver.window_handles)
                 exc.msg = (
-                    f'Timed out waiting {timeout} seconds for number of windows to be {num_windows}. '
-                    f'The current number of windows is {current_num_windows}.'
+                    f'Timed out waiting {timeout} seconds for number of windows to be "{num_windows}". '
+                    f'The current number of windows is "{current_num_windows}".'
                 )
                 raise exc from None
             return False
@@ -599,7 +599,7 @@ class Page:
                 current_num_windows = len(self.driver.window_handles)
                 exc.msg = (
                     f'Timed out waiting {timeout} seconds for new window is opened. '
-                    f'The current number of windows is {current_num_windows}.'
+                    f'The current number of windows is "{current_num_windows}".'
                 )
                 raise exc from None
             return False
