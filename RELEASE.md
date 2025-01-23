@@ -1,3 +1,23 @@
+# huskium v1.0.4
+
+## Overview
+- **Enhancements** and **Bug Fixes** based on version 1.0.3.
+
+## Enhancements
+- **Exception**: Optimized exception chain info to display only essential error chains.
+
+## Bug Fixes
+- **Reraise**: Fixed an issue where 
+`wait_visible`, `wait_invisible`, `wait_clickable`, `wait_unclickable`, `wait_selected`, and `wait_unselected` 
+would still raise a `TimeoutException` even when `reraise=False`.
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.0.4
+```
+---
+
 # huskium v1.0.3
 
 ## Overview
