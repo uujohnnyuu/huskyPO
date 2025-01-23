@@ -2090,7 +2090,7 @@ class Element:
         except ElementReferenceException:
             # Handle ElementReferenceException by creating a new select object.
             # This exception can be triggered in two scenarios:
-            # 1. The main process triggers a stale or invalid session exception.
+            # 1. The main process triggers a stale exception.
             # 2. During the first AttributeError handling,
             #    if there is no "_present_cache" attribute,
             #    or it triggers a stale or invalid session exception when initializing.
