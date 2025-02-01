@@ -48,6 +48,8 @@ class Element:
         _clickable_cache: WebElement
         _select: Select
 
+    _CACHES = ['_present_cache', '_visible_cache', '_clickable_cache', '_select']
+
     def __init__(
         self,
         by: str | None = None,
@@ -204,9 +206,8 @@ class Element:
         If cache is True, clear all caches.
         """
         if self.cache:
-            for cache in ['_present_cache', '_visible_cache', '_clickable_cache', '_select']:
-                if hasattr(self, cache):
-                    delattr(self, cache)
+            for cache in Element._CACHES:
+                vars(self).pop(cache, None)
 
     def _if_force_relocate(self) -> None:
         """
