@@ -303,8 +303,10 @@ def get_stacklevel(prefix: str = 'test', start: int = 1) -> int:
     # Start searching through the subsequent frames.
     # Once a module or function matches the prefix, return it's stack level.
     while frame:
-        if frame.f_code.co_name.startswith(prefix) or \
-           os.path.basename(frame.f_code.co_filename).startswith(prefix):
+        if (
+            frame.f_code.co_name.startswith(prefix) or
+            os.path.basename(frame.f_code.co_filename).startswith(prefix)
+        ):
             return level
         frame = frame.f_back
         level += 1

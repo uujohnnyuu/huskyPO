@@ -41,13 +41,12 @@ ElementReferenceException = (AttributeError, StaleElementReferenceException)
 class Element:
 
     if TYPE_CHECKING:
+        _page: Page
         _wait_timeout: int | float
         _present_cache: WebElement
         _visible_cache: WebElement
         _clickable_cache: WebElement
         _select: Select
-
-    _CACHES = ['_present_cache', '_visible_cache', '_clickable_cache', '_select']
 
     def __init__(
         self,
@@ -86,7 +85,6 @@ class Element:
         """
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._page: Page | None = None  # Force __get__ to assign a new value on the first call.
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -97,7 +95,7 @@ class Element:
         # If the stored _page differs from the current value,
         # it indicates the driver has been updated.
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
-        if self._page != instance:
+        if getattr(self, '_page', None) != instance:
             self._page = instance
             self._if_clear_caches()
         return self
@@ -206,7 +204,7 @@ class Element:
         If cache is True, clear all caches.
         """
         if self.cache:
-            for cache in Element._CACHES:
+            for cache in ['_present_cache', '_visible_cache', '_clickable_cache', '_select']:
                 if hasattr(self, cache):
                     delattr(self, cache)
 
@@ -267,14 +265,14 @@ class Element:
         """
         Get driver from Page-related instance.
         """
-        return self._page._driver  # type: ignore[attr-defined, union-attr]
+        return self._page._driver
 
     @property
     def action(self) -> ActionChains:
         """
         Get ActionChains object from Page-related instance.
         """
-        return self._page._action  # type: ignore[attr-defined, union-attr]
+        return self._page._action
 
     def find_element(self) -> WebElement:
         """
@@ -314,10 +312,7 @@ class Element:
         Get the final waiting timeout of the element.
         If no element action has been executed yet, it will return None.
         """
-        try:
-            return self._wait_timeout
-        except AttributeError:
-            return None
+        return getattr(self, '_wait_timeout', None)
 
     def _timeout_message(self, status: str, present: bool = True) -> str:
         """
@@ -698,10 +693,7 @@ class Element:
         Retrieve the stored WebElement if it is present.
         If the element has not been searched for, return None.
         """
-        try:
-            return self._present_cache
-        except AttributeError:
-            return None
+        return getattr(self, '_present_cache', None)
 
     @property
     def visible_cache(self) -> WebElement | None:
@@ -709,10 +701,7 @@ class Element:
         Retrieve the stored WebElement if it is visible.
         If the element has not been searched for, return None.
         """
-        try:
-            return self._visible_cache
-        except AttributeError:
-            return None
+        return getattr(self, '_visible_cache', None)
 
     @property
     def clickable_cache(self) -> WebElement | None:
@@ -720,10 +709,7 @@ class Element:
         Retrieve the stored WebElement if it is clickable.
         If the element has not been searched for, return None.
         """
-        try:
-            return self._clickable_cache
-        except AttributeError:
-            return None
+        return getattr(self, '_clickable_cache', None)
 
     def is_present(self, timeout: int | float | None = None) -> bool:
         """
@@ -1151,8 +1137,8 @@ class Element:
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
-        area = self._page._get_area(area)  # type: ignore[attr-defined, union-attr]
-        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined, union-attr]
+        area = self._page._get_area(area)
+        offset = self._page._get_offset(offset, area)
         self._start_swiping_by(offset, duration, timeout, max_swipe)
         self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self
@@ -1241,8 +1227,8 @@ class Element:
             my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
-        area = self._page._get_area(area)  # type: ignore[attr-defined, union-attr]
-        offset = self._page._get_offset(offset, area)  # type: ignore[attr-defined, union-attr]
+        area = self._page._get_area(area)
+        offset = self._page._get_offset(offset, area)
         self._start_flicking_by(offset, timeout, max_flick)
         self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
         return self

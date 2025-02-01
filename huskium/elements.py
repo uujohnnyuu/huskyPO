@@ -230,7 +230,7 @@ class Elements:
             - False: No any element is present.
         """
         elements = self.wait_all_present(timeout, reraise)
-        if isinstance(elements, list) and index is not None:
+        if isinstance(elements, list) and isinstance(index, int):
             # Raise an IndexError directly if the index has no corresponding element.
             return elements[index]
         return elements
