@@ -35,6 +35,13 @@ from .types import (
 )
 
 
+_PAGE_NAME = '_page'
+_WAIT_TIMEOUT_NAME = '_wait_timeout'
+_PRESENT_CACHE_NAME = '_present_cache'
+_VISIBLE_CACHE_NAME = '_visible_cache'
+_CLICKABLE_CACHE_NAME = '_clickable_cache'
+_SELECT_NAME = '_select'
+_CACHE_NAMES = [_PRESENT_CACHE_NAME, _VISIBLE_CACHE_NAME, _CLICKABLE_CACHE_NAME, _SELECT_NAME]
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 
@@ -47,8 +54,6 @@ class Element:
         _visible_cache: WebElement
         _clickable_cache: WebElement
         _select: Select
-
-    _CACHES = ['_present_cache', '_visible_cache', '_clickable_cache', '_select']
 
     def __init__(
         self,
@@ -97,7 +102,7 @@ class Element:
         # If the stored _page differs from the current value,
         # it indicates the driver has been updated.
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
-        if getattr(self, '_page', None) != instance:
+        if getattr(self, _PAGE_NAME, None) != instance:
             self._page = instance
             self._if_clear_caches()
         return self
@@ -206,8 +211,8 @@ class Element:
         If cache is True, clear all caches.
         """
         if self.cache:
-            for cache in Element._CACHES:
-                vars(self).pop(cache, None)
+            for cache_name in _CACHE_NAMES:
+                vars(self).pop(cache_name, None)
 
     def _if_force_relocate(self) -> None:
         """
@@ -313,7 +318,7 @@ class Element:
         Get the final waiting timeout of the element.
         If no element action has been executed yet, it will return None.
         """
-        return getattr(self, '_wait_timeout', None)
+        return getattr(self, _WAIT_TIMEOUT_NAME, None)
 
     def _timeout_message(self, status: str, present: bool = True) -> str:
         """
@@ -694,7 +699,7 @@ class Element:
         Retrieve the stored WebElement if it is present.
         If the element has not been searched for, return None.
         """
-        return getattr(self, '_present_cache', None)
+        return getattr(self, _PRESENT_CACHE_NAME, None)
 
     @property
     def visible_cache(self) -> WebElement | None:
@@ -702,7 +707,7 @@ class Element:
         Retrieve the stored WebElement if it is visible.
         If the element has not been searched for, return None.
         """
-        return getattr(self, '_visible_cache', None)
+        return getattr(self, _VISIBLE_CACHE_NAME, None)
 
     @property
     def clickable_cache(self) -> WebElement | None:
@@ -710,7 +715,7 @@ class Element:
         Retrieve the stored WebElement if it is clickable.
         If the element has not been searched for, return None.
         """
-        return getattr(self, '_clickable_cache', None)
+        return getattr(self, _CLICKABLE_CACHE_NAME, None)
 
     def is_present(self, timeout: int | float | None = None) -> bool:
         """
@@ -2047,10 +2052,7 @@ class Element:
         """
         Get the Select cache.
         """
-        try:
-            return self._select
-        except AttributeError:
-            return None
+        return getattr(self, _SELECT_NAME, None)
 
     @property
     def options(self) -> list[SeleniumWebElement]:
