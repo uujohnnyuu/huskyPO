@@ -2051,11 +2051,37 @@ class Element:
         return self
 
     @property
-    def select(self) -> Select | None:
+    def select_cache(self) -> Select | None:
         """
         Get the Select cache.
         """
         return getattr(self, _Name._select_cache, None)
+
+    @property
+    def select(self) -> Select:
+        """
+        Get the Select cache.
+        """
+        # TODO check this structure.
+        try:
+            self._if_force_relocate()
+            self._select_cache = Select(self._present_cache)
+        except ElementReferenceException:
+            self._select_cache = Select(self.present)
+        return self._select_cache
+
+    @property
+    def _options(self) -> list[SeleniumWebElement]:
+        """
+        Selenium Select API.
+        Returns a list of all options belonging to this select tag.
+        """
+        # TODO check this structure.
+        try:
+            self._if_force_relocate()
+            self._select_cache.options
+        except ElementReferenceException:
+            self.select.options
 
     @property
     def options(self) -> list[SeleniumWebElement]:
