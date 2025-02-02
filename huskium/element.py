@@ -56,7 +56,7 @@ class Element:
         _present_cache: WebElement
         _visible_cache: WebElement
         _clickable_cache: WebElement
-        _select: Select
+        _select_cache: Select
 
     def __init__(
         self,
@@ -2065,20 +2065,20 @@ class Element:
         """
         # All Select-related methods must be encapsulated using this structure
         # to ensure no unnecessary steps are taken.
-        # The reason is that if "self._select.method()" raises a
+        # The reason is that if "self._select_cache.method()" raises a
         # StaleElementReferenceException or InvalidSessionIdException,
-        # we can directly rebuild with "self._select = Select(self.present)",
-        # without needing to check "self._select = Select(self._present_cache)" again.
+        # we can directly rebuild with "self._select_cache = Select(self.present)",
+        # without needing to check "self._select_cache = Select(self._present_cache)" again.
         try:
             try:
                 # The main process.
                 self._if_force_relocate()
-                return self._select.options
+                return self._select_cache.options
             except AttributeError:
                 # Handle the first AttributeError:
                 # If there is no available select attribute,
                 # create it using the "_present_cache" first.
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
             # Handle ElementReferenceException by creating a new select object.
             # This exception can be triggered in two scenarios:
@@ -2086,8 +2086,8 @@ class Element:
             # 2. During the first AttributeError handling,
             #    if there is no "_present_cache" attribute,
             #    or it triggers a stale or invalid session exception when initializing.
-            self._select = Select(self.present)
-        return self._select.options
+            self._select_cache = Select(self.present)
+        return self._select_cache.options
 
     @property
     def all_selected_options(self) -> list[SeleniumWebElement]:
@@ -2098,12 +2098,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.all_selected_options
+                return self._select_cache.all_selected_options
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.all_selected_options
+            self._select_cache = Select(self.present)
+        return self._select_cache.all_selected_options
 
     @property
     def first_selected_option(self) -> SeleniumWebElement:
@@ -2115,12 +2115,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.first_selected_option
+                return self._select_cache.first_selected_option
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.first_selected_option
+            self._select_cache = Select(self.present)
+        return self._select_cache.first_selected_option
 
     def select_by_value(self, value: str) -> None:
         """
@@ -2136,12 +2136,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.select_by_value(value)
+                return self._select_cache.select_by_value(value)
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.select_by_value(value)
+            self._select_cache = Select(self.present)
+        return self._select_cache.select_by_value(value)
 
     def select_by_index(self, index: int) -> None:
         """
@@ -2157,12 +2157,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.select_by_index(index)
+                return self._select_cache.select_by_index(index)
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.select_by_index(index)
+            self._select_cache = Select(self.present)
+        return self._select_cache.select_by_index(index)
 
     def select_by_visible_text(self, text: str) -> None:
         """
@@ -2179,12 +2179,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.select_by_visible_text(text)
+                return self._select_cache.select_by_visible_text(text)
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.select_by_visible_text(text)
+            self._select_cache = Select(self.present)
+        return self._select_cache.select_by_visible_text(text)
 
     def deselect_all(self) -> None:
         """
@@ -2195,12 +2195,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.deselect_all()
+                return self._select_cache.deselect_all()
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.deselect_all()
+            self._select_cache = Select(self.present)
+        return self._select_cache.deselect_all()
 
     def deselect_by_value(self, value: str) -> None:
         """
@@ -2215,12 +2215,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.deselect_by_value(value)
+                return self._select_cache.deselect_by_value(value)
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.deselect_by_value(value)
+            self._select_cache = Select(self.present)
+        return self._select_cache.deselect_by_value(value)
 
     def deselect_by_index(self, index: int) -> None:
         """
@@ -2235,12 +2235,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.deselect_by_index(index)
+                return self._select_cache.deselect_by_index(index)
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.deselect_by_index(index)
+            self._select_cache = Select(self.present)
+        return self._select_cache.deselect_by_index(index)
 
     def deselect_by_visible_text(self, text: str) -> None:
         """
@@ -2255,12 +2255,12 @@ class Element:
         try:
             try:
                 self._if_force_relocate()
-                return self._select.deselect_by_visible_text(text)
+                return self._select_cache.deselect_by_visible_text(text)
             except AttributeError:
-                self._select = Select(self._present_cache)
+                self._select_cache = Select(self._present_cache)
         except ElementReferenceException:
-            self._select = Select(self.present)
-        return self._select.deselect_by_visible_text(text)
+            self._select_cache = Select(self.present)
+        return self._select_cache.deselect_by_visible_text(text)
 
     @property
     def location_in_view(self) -> dict[str, int]:
