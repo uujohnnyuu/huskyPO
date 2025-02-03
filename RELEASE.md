@@ -1,7 +1,25 @@
+# huskium v1.0.5
+
+## Overview
+- **Stable version**.
+- **Enhancements** based on v1.0.4.
+
+## Enhancements
+- **Element data descriptor**: 簡化 `_page` 資料流。
+- **Dynamic Attributes**: 簡化所有動態屬性資料流。
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.0.5
+```
+---
+
 # huskium v1.0.4
 
 ## Overview
-- **Enhancements** and **Bug Fixes** based on version 1.0.3.
+- **Stable version**.
+- **Enhancements** and **Bug Fixes** based on v1.0.3.
 
 ## Enhancements
 - **Exception**: Optimized exception chain info to display only essential error chains.
