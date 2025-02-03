@@ -101,7 +101,7 @@ class Element:
         Make "Element" a descriptor of "Page".
         """
         if not isinstance(instance, Page):
-            raise TypeError(f'"{self.__class__.__name__}" must be used with a "Page" instance.')
+            raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
         # If the stored _page differs from the current value,
         # it indicates the driver has been updated.
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
@@ -2056,32 +2056,6 @@ class Element:
         Get the Select cache.
         """
         return getattr(self, _Name._select_cache, None)
-
-    @property
-    def select(self) -> Select:
-        """
-        Get the Select cache.
-        """
-        # TODO check this structure.
-        try:
-            self._if_force_relocate()
-            self._select_cache = Select(self._present_cache)
-        except ElementReferenceException:
-            self._select_cache = Select(self.present)
-        return self._select_cache
-
-    @property
-    def _options(self) -> list[SeleniumWebElement]:
-        """
-        Selenium Select API.
-        Returns a list of all options belonging to this select tag.
-        """
-        # TODO check this structure.
-        try:
-            self._if_force_relocate()
-            self._select_cache.options
-        except ElementReferenceException:
-            self.select.options
 
     @property
     def options(self) -> list[SeleniumWebElement]:
