@@ -222,7 +222,7 @@ class Elements:
                 - None: It will returns all elements.
             - timeout: Maximum time in seconds to wait for
                 the element or elements to become present.
-            - reraise: True means reraising TimeoutException; vice versa.
+            - reraise: True means reraising TimeoutException; False means returning False.
 
         Returns:
             - list[WebElement]: All elements when index is None.
