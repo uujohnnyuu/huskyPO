@@ -67,7 +67,7 @@ class Elements:
         Make "Elements" a descriptor of "Page".
         """
         if not isinstance(instance, Page):
-            raise TypeError(f'"{self.__class__.__name__}" must be used with a "Page" instance.')
+            raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
         self._page = instance
         return self
 
