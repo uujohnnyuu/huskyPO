@@ -5,8 +5,8 @@
 - **Enhancements** based on v1.0.4.
 
 ## Enhancements
-- **Element data descriptor**: 簡化 `_page` 資料流。
-- **Dynamic Attributes**: 簡化所有動態屬性資料流。
+- **Element Data Descriptor**: Simplified `_page` data flow.
+- **Dynamic Attributes**: Simplified data flow for all dynamic attributes.
 
 ## Installation
 To install or upgrade to this version, run:
