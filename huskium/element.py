@@ -122,10 +122,10 @@ class Element:
         self._if_clear_caches()  # dynamic element should clear caches.
 
     def _log_info(self, msg: str | None = None):
-        logstack._info(f'Element({self.remark}): {msg}')
+        logstack.info(f'Element({self.remark}): {msg}', stacklevel=2)
 
     def _log_warning(self, msg: str | None = None):
-        logstack._warning(f'Element({self.remark}): {msg}')
+        logstack.warning(f'Element({self.remark}): {msg}', stacklevel=2)
 
     def dynamic(
         self,
