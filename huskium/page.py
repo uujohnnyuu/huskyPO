@@ -27,7 +27,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from . import ec_extension as ecex
 from . import logstack
 from .config import Area, Offset, Timeout
-from .types import WebDriver, WebDriverTuple, WebElement
+from .types import WebDriver, WebElement
 
 
 TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
@@ -37,7 +37,7 @@ Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
 class Page:
 
     def __init__(self, driver: WebDriver) -> None:
-        if not isinstance(driver, WebDriverTuple):
+        if not isinstance(driver, WebDriver):
             raise TypeError(
                 'The driver type should be "WebDriver", '
                 f'not {type(driver).__name__}.'

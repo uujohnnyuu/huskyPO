@@ -30,8 +30,7 @@ from .types import (
     EXTENDED_IGNORED_EXCEPTIONS,
     SeleniumWebElement,
     WebDriver,
-    WebElement,
-    WebElementTuple
+    WebElement
 )
 
 
@@ -496,7 +495,7 @@ class Element:
                 cache: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                     ecex.invisibility_of_element_located(self.locator, self.index, present)
                 )
-                if self.cache and isinstance(cache, WebElementTuple):
+                if self.cache and isinstance(cache, WebElement):
                     self._present_cache = cache
                 return cache
         except TimeoutException as exc:
@@ -585,7 +584,7 @@ class Element:
                 cache: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                     ecex.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
-                if self.cache and isinstance(cache, WebElementTuple):
+                if self.cache and isinstance(cache, WebElement):
                     self._present_cache = cache
                 return cache
         except TimeoutException as exc:

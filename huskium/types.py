@@ -19,6 +19,3 @@ EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
 
 WebDriver: TypeAlias = SeleniumWebDriver | AppiumWebDriver
 WebElement: TypeAlias = SeleniumWebElement | AppiumWebElement
-
-WebDriverTuple = (SeleniumWebDriver, AppiumWebDriver)
-WebElementTuple = (SeleniumWebElement, AppiumWebElement)
