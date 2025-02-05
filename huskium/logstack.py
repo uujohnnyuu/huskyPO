@@ -334,7 +334,7 @@ def get_stacklevel(
     prefix = prefix or Log.PREFIX
     if prefix is None:
         return start
-    
+
     # Set lower.
     if lower is None:
         lower = Log.LOWER
