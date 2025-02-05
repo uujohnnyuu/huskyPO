@@ -307,7 +307,7 @@ def get_stacklevel(prefix: str | None = None, start: int = 1, outer: int = 1) ->
             # outer = 2 -> Search from the second wrapper, treating info() as logging.
             # stacklevel = start + outer = 3 -> get_stacklevel() starts from the first wrapper of info().
             get_stacklevel()
-        
+
     """
     # Adjust start to the first frame of the actual logging.
     start += outer
@@ -316,7 +316,7 @@ def get_stacklevel(prefix: str | None = None, start: int = 1, outer: int = 1) ->
     prefix = prefix or Log.PREFIX
     if prefix is None:
         return start
-        
+
     # Get the current frame.
     frame = inspect.currentframe()
     if frame is None:
