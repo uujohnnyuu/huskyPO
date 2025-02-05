@@ -72,7 +72,9 @@ def config(
 
 def debug(
     message: str,
+    *,
     prefix: str | None = None,
+    lower: bool = True,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -99,14 +101,16 @@ def debug(
         message,
         exc_info=excinfo,
         stack_info=stackinfo,
-        stacklevel=get_stacklevel(prefix, stacklevel),
+        stacklevel=get_stacklevel(prefix, lower, stacklevel),
         extra=extra
     )
 
 
 def info(
     message: str,
+    *,
     prefix: str | None = None,
+    lower: bool = True,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -133,14 +137,16 @@ def info(
         message,
         exc_info=excinfo,
         stack_info=stackinfo,
-        stacklevel=get_stacklevel(prefix, stacklevel),
+        stacklevel=get_stacklevel(prefix, lower, stacklevel),
         extra=extra
     )
 
 
 def warning(
     message: str,
+    *,
     prefix: str | None = None,
+    lower: bool = True,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -167,14 +173,16 @@ def warning(
         message,
         exc_info=excinfo,
         stack_info=stackinfo,
-        stacklevel=get_stacklevel(prefix, stacklevel),
+        stacklevel=get_stacklevel(prefix, lower, stacklevel),
         extra=extra
     )
 
 
 def error(
     message: str,
+    *,
     prefix: str | None = None,
+    lower: bool = True,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -201,14 +209,16 @@ def error(
         message,
         exc_info=excinfo,
         stack_info=stackinfo,
-        stacklevel=get_stacklevel(prefix, stacklevel),
+        stacklevel=get_stacklevel(prefix, lower, stacklevel),
         extra=extra
     )
 
 
 def exception(
     message: str,
+    *,
     prefix: str | None = None,
+    lower: bool = True,
     excinfo: bool | tuple | None = True,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -235,14 +245,16 @@ def exception(
         message,
         exc_info=excinfo,
         stack_info=stackinfo,
-        stacklevel=get_stacklevel(prefix, stacklevel),
+        stacklevel=get_stacklevel(prefix, lower, stacklevel),
         extra=extra
     )
 
 
 def critical(
     message: str,
+    *,
     prefix: str | None = None,
+    lower: bool = True,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -269,7 +281,7 @@ def critical(
         message,
         exc_info=excinfo,
         stack_info=stackinfo,
-        stacklevel=get_stacklevel(prefix, stacklevel),
+        stacklevel=get_stacklevel(prefix, lower, stacklevel),
         extra=extra
     )
 
@@ -277,7 +289,7 @@ def critical(
 def get_stacklevel(
     prefix: str | None = None,
     lower: bool = True,
-    start: int = 1, 
+    start: int = 1,
     outer: int = 1
 ) -> int:
     """
@@ -337,7 +349,7 @@ def get_stacklevel(
         if frame is None:
             break
 
-    # Return stack level if a module or function matches the prefix. 
+    # Return stack level if a module or function matches the prefix.
     while frame:
         funcname = frame.f_code.co_name
         filename = os.path.basename(frame.f_code.co_filename)
