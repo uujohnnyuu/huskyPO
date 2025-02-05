@@ -106,7 +106,7 @@ class Element:
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
-            self._log_info('Get new driver.')
+            self._log_debug('Get new driver.')
             self._if_clear_caches()
         return self
 
@@ -121,13 +121,9 @@ class Element:
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
         self._if_clear_caches()  # dynamic element should clear caches.
 
-    def _log_info(self, msg: str | None = None):
+    def _log_debug(self, msg: str | None = None):
         if Log.INNER:
-            logstack.info(f'Element({self.remark}): {msg}', stacklevel=2)
-
-    def _log_warning(self, msg: str | None = None):
-        if Log.INNER:
-            logstack.warning(f'Element({self.remark}): {msg}', stacklevel=2)
+            logstack.debug(f'Element({self.remark}): {msg}', stacklevel=2)
 
     def dynamic(
         self,
@@ -224,7 +220,7 @@ class Element:
         if self.cache:
             for cache_name in _Name._caches:
                 vars(self).pop(cache_name, None)
-            self._log_info('Clear all caches.')
+            self._log_debug('Clear all caches.')
 
     def _if_force_relocate(self) -> None:
         """
@@ -388,7 +384,7 @@ class Element:
             )
             if self.cache:
                 self._present_cache = cache
-                self._log_info('Store "_present_cache" via "locator".')
+                self._log_debug('Store "_present_cache" via "locator".')
             return cache
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
@@ -452,7 +448,7 @@ class Element:
                 self._visible_cache = self.wait(timeout).until(
                     ecex.visibility_of_element(self._present_cache)
                 )
-                self._log_info('Store "_visible_cache" via "_present_cache".')
+                self._log_debug('Store "_visible_cache" via "_present_cache".')
                 return self._visible_cache
             except ElementReferenceException:
                 cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -460,7 +456,7 @@ class Element:
                 )
                 if self.cache:
                     self._visible_cache = self._present_cache = cache
-                    self._log_info('Store "_visible_cache" and "_present_cache" via "locator".')
+                    self._log_debug('Store "_visible_cache" and "_present_cache" via "locator".')
                 return cache
         except TimeoutException as exc:
             return self._timeout_process('visible', exc, reraise)
@@ -510,7 +506,7 @@ class Element:
                 )
                 if self.cache and isinstance(cache, WebElement):
                     self._present_cache = cache
-                    self._log_info('Store "_present_cache" via "locator".')
+                    self._log_debug('Store "_present_cache" via "locator".')
                 return cache
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
@@ -544,7 +540,7 @@ class Element:
                 self._clickable_cache = self._visible_cache = self.wait(timeout).until(
                     ecex.element_to_be_clickable(self._present_cache)
                 )
-                self._log_info('Store "_clickable_cache" and "_visible_cache" via "_present_cache".')
+                self._log_debug('Store "_clickable_cache" and "_visible_cache" via "_present_cache".')
                 return self._clickable_cache
             except ElementReferenceException:
                 cache = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -552,7 +548,7 @@ class Element:
                 )
                 if self.cache:
                     self._clickable_cache = self._visible_cache = self._present_cache = cache
-                    self._log_info('Store "_clickable_cache", "_visible_cache" and "_present_cache" via "locator".')
+                    self._log_debug('Store "_clickable_cache", "_visible_cache" and "_present_cache" via "locator".')
                 return cache
         except TimeoutException as exc:
             return self._timeout_process('clickable', exc, reraise)
@@ -1264,15 +1260,15 @@ class Element:
         timeout: int | float,
         max_swipe: int
     ) -> int | Literal[False]:
-        self._log_info('Start swiping.')
+        self._log_debug('Start swiping.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
-                self._log_warning(f'Stop swiping after {max_swipe} swipes.')
+                self._log_debug(f'Stop swiping after {max_swipe} swipes.')
                 return False
             self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
             count += 1
-        self._log_info('End swiping as the element is now viewable.')
+        self._log_debug('End swiping as the element is now viewable.')
         return count
 
     def _start_flicking_by(
@@ -1281,15 +1277,15 @@ class Element:
         timeout: int | float,
         max_swipe: int
     ) -> int | Literal[False]:
-        self._log_info('Start flicking.')
+        self._log_debug('Start flicking.')
         count = 0
         while not self.is_viewable(timeout):
             if count == max_swipe:
-                self._log_warning(f'Stop flicking after {max_swipe} flicks.')
+                self._log_debug(f'Stop flicking after {max_swipe} flicks.')
                 return False
             self.driver.flick(*offset)  # type: ignore[attr-defined]
             count += 1
-        self._log_info('End flicking as the element is now viewable.')
+        self._log_debug('End flicking as the element is now viewable.')
         return count
 
     def _start_adjusting_by(
@@ -1305,7 +1301,7 @@ class Element:
             diff = int(area - element)
             return int(math.copysign(min_distance, diff)) if abs(diff) < min_distance else diff
 
-        self._log_info('Start adjusting.')
+        self._log_debug('Start adjusting.')
 
         for i in range(1, max_adjust + 2):
 
@@ -1345,17 +1341,17 @@ class Element:
 
             # Set the end point by adjust actions.
             if adjust in adjust_actions:
-                self._log_info(f'Adjust (left, right, top, bottom): {adjust}')
+                self._log_debug(f'Adjust (left, right, top, bottom): {adjust}')
                 delta_x, delta_y = adjust_actions[adjust]
                 end_x = start_x + delta_x
                 end_y = start_y + delta_y
             else:
-                self._log_info(f'End adjusting as the element is in area.')
+                self._log_debug(f'End adjusting as the element is in area.')
                 return i
 
             # Check if the maximum number of adjustments has been reached.
             if i == max_adjust + 1:
-                self._log_warning(f'End adjusting after {max_adjust} adjustments.')
+                self._log_debug(f'End adjusting after {max_adjust} adjustments.')
                 return False
 
             # Within the maximum adjustment attempts,
