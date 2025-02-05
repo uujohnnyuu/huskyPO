@@ -3,6 +3,7 @@ import inspect
 import os
 import time
 
+
 class TestFunctionFilter(logging.Filter):
     def filter(self, record):
         # Iterate through the current stack to find a function starting with `test_`
@@ -48,7 +49,7 @@ def some_func():
     start = time.time()
     logging.info("log from some_func()")
     end = time.time()
-    consume = (end-start) * 1000
+    consume = (end - start) * 1000
     logger.info(f"consume: {consume}")
 
 
@@ -56,7 +57,7 @@ def some_func2():
     start = time.time()
     logging.info("log from some_func2()")
     end = time.time()
-    consume = (end-start) * 1000
+    consume = (end - start) * 1000
     logger2.info(f"consume: {consume}")
 
 
