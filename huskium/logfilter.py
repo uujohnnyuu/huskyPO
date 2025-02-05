@@ -1,76 +1,68 @@
-import logging
 import inspect
+import logging
 import os
 import time
 
+from .config import Log
 
-class TestFunctionFilter(logging.Filter):
+
+class PrefixFilter(logging.Filter):
+
     def filter(self, record):
-        # Iterate through the current stack to find a function starting with `test_`
-        for frame_record in inspect.stack(0):
-            func_name = frame_record.function
-            if func_name.startswith("test_"):
-                record.funcName = func_name
-                record.filename = os.path.basename(frame_record.filename)
-                record.lineno = frame_record.lineno
-                return True  # Successfully found a `test_` function, modify the log information
-        return True  # If no `test_` function is found, keep the original logging behavior
-
-
-class TestFunctionFilter2(logging.Filter):
-    def filter(self, record):
-        # Get the current frame
+        # Avoid inspect.stack(0), as it is costly.
         frame = inspect.currentframe()
         while frame:
-            func_name = frame.f_code.co_name  # Retrieve function name
-            if func_name.startswith("test_"):  # Check if the function name starts with `test_`
-                record.funcName = func_name
+            funcname = frame.f_code.co_name
+            if funcname.startswith(Log.PREFIX):
+                record.funcName = funcname
                 record.filename = os.path.basename(frame.f_code.co_filename)
                 record.lineno = frame.f_lineno
-                return True  # Found a `test_` function, modify the log information and return
-            frame = frame.f_back  # Move to the previous frame
-        return True  # If no `test_` function is found, keep the original logging behavior
+                return True
+            frame = frame.f_back
+        return True
 
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    filename=None,
+    filemode='w',
     format='%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.DEBUG,
 )
 
 
 logger = logging.getLogger()
-logger.addFilter(TestFunctionFilter())
-
-logger2 = logging.getLogger()
-logger2.addFilter(TestFunctionFilter2())
+filter = PrefixFilter()
+logger.addFilter(filter)
 
 
-def some_func():
+def has_filter_func():
     start = time.time()
-    logging.info("log from some_func()")
+    logger.info("log from has_filter_func()")
     end = time.time()
     consume = (end - start) * 1000
-    logger.info(f"consume: {consume}")
+    logger.info(f"consume: {consume}\n")
 
 
-def some_func2():
+def no_filter_func():
     start = time.time()
-    logging.info("log from some_func2()")
+    logging.info("log from no_filter_func()")
     end = time.time()
     consume = (end - start) * 1000
-    logger2.info(f"consume: {consume}")
+    logging.info(f"consume: {consume}\n")
 
 
 def test_func():
-    some_func()
+    has_filter_func()
 
 
-def test_func2():
-    some_func2()
+def non_test_func():
+    has_filter_func()
 
 
-test_func2()
+no_filter_func()
+no_filter_func()
+has_filter_func()
+has_filter_func()
 test_func()
-test_func2()
-test_func()
-test_func2()
+non_test_func()

@@ -8,7 +8,7 @@ pytest.ini
 mypy_report.txt
 run.py
 log.log
-try.py
+try*.py
 
 huskytc/
 build/
