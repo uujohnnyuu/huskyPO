@@ -415,30 +415,30 @@ def get_stackinfo(
 
 
 def _debug(message: str = '') -> None:
-    if Log.RECORD:
+    if Log.INNER:
         debug(message, stacklevel=2)
 
 
 def _info(message: str = '') -> None:
-    if Log.RECORD:
+    if Log.INNER:
         info(message, stacklevel=2)
 
 
 def _warning(message: str = '') -> None:
-    if Log.RECORD:
+    if Log.INNER:
         warning(message, stacklevel=2)
 
 
 def _error(message: str = '') -> None:
-    if Log.RECORD:
+    if Log.INNER:
         error(message, stacklevel=2)
 
 
 def _exception(message: str = '') -> None:
-    if Log.RECORD:
+    if Log.INNER:
         exception(message, stacklevel=2)
 
 
 def _critical(message: str = '') -> None:
-    if Log.RECORD:
+    if Log.INNER:
         critical(message, stacklevel=2)
