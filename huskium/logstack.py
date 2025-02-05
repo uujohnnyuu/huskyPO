@@ -274,12 +274,18 @@ def critical(
     )
 
 
-def get_stacklevel(prefix: str | None = None, start: int = 1, outer: int = 1) -> int:
+def get_stacklevel(
+    prefix: str | None = None,
+    lower: bool = True,
+    start: int = 1, 
+    outer: int = 1
+) -> int:
     """
     Finds the stack level whose prefix is.
 
     Args:
         - prefix: The prefix of the target stack level.
+        - lower: If True, the prefix is case-insensitive.
         - start: The stack level to start the search from.
         - outer: The outermost wrapping level of this function used for logging.
 
@@ -316,6 +322,8 @@ def get_stacklevel(prefix: str | None = None, start: int = 1, outer: int = 1) ->
     prefix = prefix or Log.PREFIX
     if prefix is None:
         return start
+    if lower:
+        prefix = prefix.lower()
 
     # Get the current frame.
     frame = inspect.currentframe()
@@ -329,13 +337,14 @@ def get_stacklevel(prefix: str | None = None, start: int = 1, outer: int = 1) ->
         if frame is None:
             break
 
-    # Start searching through the subsequent frames.
-    # Once a module or function matches the prefix, return it's stack level.
+    # Return stack level if a module or function matches the prefix. 
     while frame:
-        if (
-            frame.f_code.co_name.startswith(prefix) or
-            os.path.basename(frame.f_code.co_filename).startswith(prefix)
-        ):
+        funcname = frame.f_code.co_name
+        filename = os.path.basename(frame.f_code.co_filename)
+        if lower:
+            funcname = funcname.lower()
+            filename = filename.lower()
+        if funcname.startswith(prefix) or filename.startswith(prefix):
             return level
         frame = frame.f_back
         level += 1
