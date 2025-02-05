@@ -24,7 +24,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from . import logstack
 from .by import ByAttribute
-from .config import Area, Cache, Offset, Timeout
+from .config import Area, Cache, Log, Offset, Timeout
 from .page import Coordinate, Page
 from .types import (
     EXTENDED_IGNORED_EXCEPTIONS,
@@ -122,10 +122,12 @@ class Element:
         self._if_clear_caches()  # dynamic element should clear caches.
 
     def _log_info(self, msg: str | None = None):
-        logstack.info(f'Element({self.remark}): {msg}', stacklevel=2)
+        if Log.INNER:
+            logstack.info(f'Element({self.remark}): {msg}', stacklevel=2)
 
     def _log_warning(self, msg: str | None = None):
-        logstack.warning(f'Element({self.remark}): {msg}', stacklevel=2)
+        if Log.INNER:
+            logstack.warning(f'Element({self.remark}): {msg}', stacklevel=2)
 
     def dynamic(
         self,

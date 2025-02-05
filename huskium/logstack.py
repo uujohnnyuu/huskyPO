@@ -74,7 +74,7 @@ def debug(
     message: str,
     *,
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -110,7 +110,7 @@ def info(
     message: str,
     *,
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -146,7 +146,7 @@ def warning(
     message: str,
     *,
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -182,7 +182,7 @@ def error(
     message: str,
     *,
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -218,7 +218,7 @@ def exception(
     message: str,
     *,
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     excinfo: bool | tuple | None = True,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -254,7 +254,7 @@ def critical(
     message: str,
     *,
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     excinfo: bool | tuple | None = None,
     stackinfo: bool = False,
     stacklevel: int = 1,
@@ -288,7 +288,7 @@ def critical(
 
 def get_stacklevel(
     prefix: str | None = None,
-    lower: bool = True,
+    lower: bool | None = None,
     start: int = 1,
     outer: int = 1
 ) -> int:
@@ -330,10 +330,14 @@ def get_stacklevel(
     # Adjust start to the first frame of the actual logging.
     start += outer
 
-    # Check prefix; if absent, return start directly.
+    # If final prefix is None, return start directly.
     prefix = prefix or Log.PREFIX
     if prefix is None:
         return start
+    
+    # Set lower.
+    if lower is None:
+        lower = Log.LOWER
     if lower:
         prefix = prefix.lower()
 

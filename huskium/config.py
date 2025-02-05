@@ -18,6 +18,7 @@ class Log:
     """
     INNER: bool = False
     PREFIX: str | None = 'test'
+    LOWER: bool = True
 
 
 class Cache:
