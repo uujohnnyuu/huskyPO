@@ -17,6 +17,7 @@ class Log:
             - True: Record internal logs.
     """
     RECORD: bool = False
+    PREFIX: str | None = 'test'
 
 
 class Cache:
