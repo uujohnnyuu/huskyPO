@@ -129,7 +129,7 @@ class Element:
         """
         if not LOGGER.isEnabledFor(logging.DEBUG):
             return
-        log = {
+        dict_log = {
             "message": msg,
             "remark": self.remark,
             "driver": str(self._page._driver),
@@ -142,7 +142,7 @@ class Element:
             "clickable_cache": str(self.clickable_cache),
             "select_cache": str(self.select_cache),
         }
-        log = json.dumps(log, ensure_ascii=False, indent=4)
+        log = json.dumps(dict_log, ensure_ascii=False, indent=4)
         LOGGER.debug(log, stacklevel=2)
 
     def dynamic(
@@ -526,7 +526,7 @@ class Element:
                 self._log(f'present_cache -> invisible({present})', element_or_true)
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTION:
-                element_or_true: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                     ecex.invisibility_of_element_located(self.locator, self.index, present)
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
@@ -621,7 +621,7 @@ class Element:
                 self._log(f'present_cache -> unclickable({present})', element_or_true)
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTION:
-                element_or_true: WebElement | Literal[True] = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                     ecex.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
