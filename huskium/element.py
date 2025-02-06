@@ -127,7 +127,7 @@ class Element:
         """
         Inner `LOGGER.debug()`.
         """
-        if not LOGGER.isEnabledFor(logging.DEBUG):
+        if not LOGGER.isEnabledFor(logging.INFO):
             return
         dict_log = {
             "message": msg,
@@ -143,7 +143,7 @@ class Element:
             "select_cache": str(self.select_cache),
         }
         log = json.dumps(dict_log, ensure_ascii=False, indent=4)
-        LOGGER.debug(log, stacklevel=2)
+        LOGGER.info(log, stacklevel=2)
 
     def dynamic(
         self,
