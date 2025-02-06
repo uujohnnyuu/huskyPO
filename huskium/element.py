@@ -24,7 +24,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from . import ec_extension as ecex
 from .by import ByAttribute
-from .config import Cache, Timeout, Offset, Area 
+from .config import Cache, Timeout, Offset, Area
 from .logfilter import PrefixFilter
 from .page import Page, Coordinate
 from .types import EXTENDED_IGNORED_EXCEPTIONS, SeleniumWebElement, WebDriver, WebElement
