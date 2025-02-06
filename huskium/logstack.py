@@ -16,12 +16,20 @@ Otherwise, discrepancies in stack levels may occur.
 
 from __future__ import annotations
 
+import warnings
 import inspect
 import logging
 import os
 from typing import Mapping
 
 from .config import Log
+
+
+WARN_MSG = '"logstack" will be deprecated in huskium v1.1.0+. Use "logfilter" instead.'
+
+
+warnings.simplefilter("default", DeprecationWarning)
+warnings.warn(WARN_MSG, DeprecationWarning)
 
 
 def config(
@@ -416,33 +424,3 @@ def get_stackinfo(
     if to_dict:
         return {'filename': filename, 'lineno': lineno, 'funcname': funcname}
     return f'|{filename}:{lineno}|{funcname}|'
-
-
-def _debug(message: str = '') -> None:
-    if Log.INNER:
-        debug(message, stacklevel=2)
-
-
-def _info(message: str = '') -> None:
-    if Log.INNER:
-        info(message, stacklevel=2)
-
-
-def _warning(message: str = '') -> None:
-    if Log.INNER:
-        warning(message, stacklevel=2)
-
-
-def _error(message: str = '') -> None:
-    if Log.INNER:
-        error(message, stacklevel=2)
-
-
-def _exception(message: str = '') -> None:
-    if Log.INNER:
-        exception(message, stacklevel=2)
-
-
-def _critical(message: str = '') -> None:
-    if Log.INNER:
-        critical(message, stacklevel=2)
