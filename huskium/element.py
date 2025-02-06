@@ -123,13 +123,13 @@ class Element:
         self._if_clear_caches()  # dynamic element should clear caches.
 
     def _log(
-        self, 
-        msg: str, 
-        element = None, 
-        present_cache = None, 
-        visible_cache = None, 
-        clickable_cache = None,
-        select_cache = None
+        self,
+        msg: str,
+        element=None,
+        present_cache=None,
+        visible_cache=None,
+        clickable_cache=None,
+        select_cache=None
     ) -> None:
         """
         Inner `LOGGER.debug()`.
