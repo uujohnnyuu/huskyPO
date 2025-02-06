@@ -33,7 +33,7 @@ from .types import EXTENDED_IGNORED_EXCEPTIONS, SeleniumWebElement, WebDriver, W
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 prefix_filter = PrefixFilter()
 logger.addFilter(prefix_filter)
 

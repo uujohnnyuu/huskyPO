@@ -35,7 +35,7 @@ TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, flo
 Coordinate: TypeAlias = TupleCoordinate | dict[str, int] | dict[str, float]
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 prefix_filter = PrefixFilter()
 logger.addFilter(prefix_filter)
 

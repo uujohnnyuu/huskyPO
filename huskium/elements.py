@@ -29,7 +29,7 @@ from .page import Page
 from .types import EXTENDED_IGNORED_EXCEPTIONS, WebDriver, WebElement
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 prefix_filter = PrefixFilter()
 logger.addFilter(prefix_filter)
 
