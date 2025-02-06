@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import math
 import platform
@@ -107,7 +108,7 @@ class Element:
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
-            self._log('Get new driver.')
+            self._log('Get new driver.', element='EEEEEEEEEEEEEEEEEEE')
             self._if_clear_caches()
         return self
 
@@ -122,32 +123,23 @@ class Element:
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
         self._if_clear_caches()  # dynamic element should clear caches.
 
-    def _log(
-        self,
-        msg: str,
-        element=None,
-        present_cache=None,
-        visible_cache=None,
-        clickable_cache=None,
-        select_cache=None
-    ) -> None:
+    def _log(self, msg: str, element=None) -> None:
         """
         Inner `LOGGER.debug()`.
         """
-        log = f"""
-            message         : {msg}
-            remark          : {self.remark}
-            driver          : {self._page._driver}
-            locator         : {(self._by, self._value)}
-            index           : {self._index}
-            timeout         : {self.timeout}
-            wait_timeout    : {self.wait_timeout}
-            element         : {element}
-            present_cache   : {present_cache}
-            visible_cache   : {visible_cache}
-            clickable_cache : {clickable_cache}
-            select_cache    : {select_cache}
-        """
+        log = {
+            "message": msg,
+            "remark": self.remark,
+            "driver": str(self._page._driver),
+            "locator": str((self._by, self._value, self._index)),
+            "timeout": str((self._timeout, self.timeout, self.wait_timeout)),
+            "element": str(element),
+            "present_cache": str(self.present_cache),
+            "visible_cache": str(self.visible_cache),
+            "clickable_cache": str(self.clickable_cache),
+            "select_cache": str(self.select_cache),
+        }
+        log = json.dumps(log, ensure_ascii=False, indent=4)  # Need to check eff.
         LOGGER.debug(log, stacklevel=2)
 
     def dynamic(
