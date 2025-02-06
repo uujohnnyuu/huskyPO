@@ -1,12 +1,47 @@
 import inspect
 import logging
 import os
-import time
 
 from .config import Log
 
 
 class PrefixFilter(logging.Filter):
+    """
+    A prefix filter for logging, 
+    used to display log information for function frames where the prefix matches Log.PREFIX.
+
+    Usage::
+
+        import logging
+        from huskium import Log, PrefixFilter
+
+        # Whether using "logging" or "logger", 
+        # a filter object must be created if further operations or removal are needed.  
+        # If no modifications or removals are required, "PrefixFilter()" can be used directly.  
+        prefix_filter = PrefixFilter()
+
+        # Example using "logging", filtering frames with names starting with "test".  
+        # For "logger", the same applies, just create a logger instance first.  
+        logging.getLogger().addFilter(prefix_filter)
+        Log.PREFIX = "test"  # Default. Set to "None" to disable filtering.
+
+        def some_func():
+            # The filter applies here, locating frames starting with "test".
+            logging.info(...)
+
+        def test_func():
+            # Logs from "test_func" are displayed, while "some_func" is filtered out.
+            some_func()
+
+        # Case-insensitive by default. To enforce case sensitivity:
+        Log.LOWER = False
+
+        def TesT_func():
+            # Since case sensitivity is enforced, "TesT" is not recognized, 
+            # and "some_func" logs are displayed instead.
+            some_func()
+
+    """
 
     def filter(self, record):
         # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
@@ -24,77 +59,3 @@ class PrefixFilter(logging.Filter):
                     return True
                 frame = frame.f_back
         return True
-
-
-logging.basicConfig(
-    filename=None,
-    filemode='w',
-    format='%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.DEBUG,
-)
-
-
-logger = logging.getLogger()
-filter = PrefixFilter()
-logger.addFilter(filter)
-
-
-def has_filter_func():
-    start = time.time()
-    logger.info("log from has_filter_func()")
-    end = time.time()
-    consume = (end - start) * 1000
-    logger.info(f"consume: {consume}\n")
-
-
-def no_filter_func():
-    start = time.time()
-    logging.info("log from no_filter_func()")
-    end = time.time()
-    consume = (end - start) * 1000
-    logging.info(f"consume: {consume}\n")
-
-
-def test_func():
-    has_filter_func()
-
-
-def Test_func():
-    has_filter_func()
-
-
-def TesT_func():
-    has_filter_func()
-
-
-def non_test_func():
-    has_filter_func()
-
-
-# no_filter_func()
-# no_filter_func()
-# has_filter_func()
-# has_filter_func()
-# test_func()
-# non_test_func()
-
-test_func()
-
-test_func()
-
-Log.PREFIX = "xxx"
-test_func()
-
-Log.PREFIX = None
-test_func()
-
-Log.PREFIX = "test"
-test_func()
-
-Log.LOWER = False
-Test_func()
-
-Log.LOWER = True
-Log.PREFIX = "teST"
-TesT_func()
