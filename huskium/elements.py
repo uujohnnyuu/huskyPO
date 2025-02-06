@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, cast, Literal, Self, Type
 
 from selenium.common.exceptions import TimeoutException
@@ -23,8 +24,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Timeout
+from .logfilter import PrefixFilter
 from .page import Page
 from .types import EXTENDED_IGNORED_EXCEPTIONS, WebDriver, WebElement
+
+
+logger = logging.getLogger(__file__)
+prefix_filter = PrefixFilter()
+logger.addFilter(prefix_filter)
 
 
 class Elements:

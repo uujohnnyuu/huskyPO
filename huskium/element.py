@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import logging
 import math
 import platform
 import time
@@ -22,19 +23,19 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
 from . import ec_extension as ecex
-from . import logstack
 from .by import ByAttribute
-from .config import Area, Cache, Log, Offset, Timeout
-from .page import Coordinate, Page
-from .types import (
-    EXTENDED_IGNORED_EXCEPTIONS,
-    SeleniumWebElement,
-    WebDriver,
-    WebElement
-)
+from .config import Cache, Timeout, Offset, Area 
+from .logfilter import PrefixFilter
+from .page import Page, Coordinate
+from .types import EXTENDED_IGNORED_EXCEPTIONS, SeleniumWebElement, WebDriver, WebElement
 
 
 ElementReferenceException = (AttributeError, StaleElementReferenceException)
+
+
+logger = logging.getLogger(__file__)
+prefix_filter = PrefixFilter()
+logger.addFilter(prefix_filter)
 
 
 class _Name:

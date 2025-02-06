@@ -6,7 +6,8 @@
 
 from __future__ import annotations
 
-from typing import Any, cast, Literal, Self
+import logging
+from typing import Any, cast, Literal, Self, TypeAlias
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -25,13 +26,18 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from . import ec_extension as ecex
-from . import logstack
-from .config import Area, Offset, Timeout
+from .config import Timeout, Offset, Area
+from .logfilter import PrefixFilter
 from .types import WebDriver, WebElement
 
 
-TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
-Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
+TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, float, float]
+Coordinate: TypeAlias = TupleCoordinate | dict[str, int] | dict[str, float]
+
+
+logger = logging.getLogger(__file__)
+prefix_filter = PrefixFilter()
+logger.addFilter(prefix_filter)
 
 
 class Page:

@@ -16,7 +16,6 @@ class Log:
             - False (default): Do not record internal logs.
             - True: Record internal logs.
     """
-    INNER: bool = False
     PREFIX: str | None = 'test'
     LOWER: bool = True
 
