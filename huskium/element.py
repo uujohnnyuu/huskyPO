@@ -41,6 +41,7 @@ LOGGER.addFilter(PREFIX_FILTER)
 
 class _Name:
     _page = '_page'
+    _driver = '_driver'
     _wait_timeout = '_wait_timeout'
     _present_cache = '_present_cache'
     _visible_cache = '_visible_cache'
@@ -53,6 +54,7 @@ class Element:
 
     if TYPE_CHECKING:
         _page: Page
+        _driver: WebDriver
         _wait_timeout: int | float
         _present_cache: WebElement
         _visible_cache: WebElement
@@ -108,7 +110,8 @@ class Element:
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
-            self._log('Get new driver.')
+            self._driver = self._page._driver
+            self._log(f'Get driver {self._driver}.')
             self._if_clear_caches()
         return self
 
@@ -121,29 +124,17 @@ class Element:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
+        self._log('Dynamically set element attributes.')
         self._if_clear_caches()  # dynamic element should clear caches.
 
-    def _log(self, msg: str, element=None) -> None:
+    def _log(self, msg: str, stacklevel: int = 1) -> None:
         """
         Inner `LOGGER.debug()`.
         """
+        # TODO need to modify back to debug.
         if not LOGGER.isEnabledFor(logging.INFO):
             return
-        dict_log = {
-            "message": msg,
-            "remark": self.remark,
-            "driver": str(self._page._driver),
-            "locator": str((self._by, self._value, self._index)),
-            "timeout": str((self._timeout, self.timeout, self.wait_timeout)),
-            "cache": str(self.cache),
-            "element": str(element),
-            "present_cache": str(self.present_cache),
-            "visible_cache": str(self.visible_cache),
-            "clickable_cache": str(self.clickable_cache),
-            "select_cache": str(self.select_cache),
-        }
-        log = json.dumps(dict_log, ensure_ascii=False, indent=4)
-        LOGGER.info(log, stacklevel=2)
+        LOGGER.info(f'Element({self.remark}): {msg}', stacklevel=stacklevel+1)
 
     def dynamic(
         self,
@@ -239,8 +230,9 @@ class Element:
         """
         if self.cache:
             for cache_name in _Name._caches:
-                vars(self).pop(cache_name, None)
-            self._log('Clear all caches.')
+                if hasattr(self, cache_name):
+                    delattr(self, cache_name)
+                    self._log(f'Clear cache <{cache_name}>.', 2)
 
     def _if_force_relocate(self) -> None:
         """
@@ -299,7 +291,7 @@ class Element:
         """
         Get driver from Page-related instance.
         """
-        return self._page._driver
+        return self._driver
 
     @property
     def action(self) -> ActionChains:
@@ -404,9 +396,9 @@ class Element:
             )
             if self.cache:
                 self._present_cache = element
-                self._log('locator -> present_cache', element)
+                self._log(f'locator -> present_cache : {self._present_cache}')
             else:
-                self._log('locator -> present_element', element)
+                self._log(f'locator -> present_element : {element}')
             return element
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
@@ -438,7 +430,7 @@ class Element:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_element_located(self.locator, self.index)
             )
-            self._log('locator -> absent', true)
+            self._log(f'locator -> absent : {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('absent', exc, reraise)
@@ -472,7 +464,7 @@ class Element:
                 self._visible_cache = self.wait(timeout).until(
                     ecex.visibility_of_element(self._present_cache)
                 )
-                self._log('present_cache -> visible_cache', self._visible_cache)
+                self._log(f'present_cache -> visible_cache : {self._visible_cache}')
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTION:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -480,9 +472,9 @@ class Element:
                 )
                 if self.cache:
                     self._visible_cache = self._present_cache = element
-                    self._log('locator -> present_cache -> visible_cache', element)
+                    self._log(f'locator -> present_cache -> visible_cache : {self._visible_cache}')
                 else:
-                    self._log('locator -> visible_element', element)
+                    self._log(f'locator -> visible_element : {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('visible', exc, reraise)
@@ -523,7 +515,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.invisibility_of_element(self._present_cache, present)
                 )
-                self._log(f'present_cache -> invisible({present})', element_or_true)
+                self._log(f'present_cache -> invisible({present}) : {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTION:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -531,9 +523,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._log(f'locator -> present_cache -> invisible({present})', element_or_true)
+                    self._log(f'locator -> present_cache -> invisible({present}) : {self._present_cache}')
                 else:
-                    self._log(f'locator -> invisible({present})', element_or_true)
+                    self._log(f'locator -> invisible({present}) : {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
@@ -567,7 +559,7 @@ class Element:
                 self._clickable_cache = self._visible_cache = self.wait(timeout).until(
                     ecex.element_to_be_clickable(self._present_cache)
                 )
-                self._log('present_cache -> visible_cache -> clickable_cache', self._clickable_cache)
+                self._log(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTION:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -575,9 +567,9 @@ class Element:
                 )
                 if self.cache:
                     self._clickable_cache = self._visible_cache = self._present_cache = element
-                    self._log('locator -> present_cache -> visible_cache -> clickable_cache', element)
+                    self._log(f'locator -> present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
                 else:
-                    self._log('locator -> clickable_element', element)
+                    self._log(f'locator -> clickable_element : {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('clickable', exc, reraise)
@@ -618,7 +610,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.element_to_be_unclickable(self._present_cache, present)
                 )
-                self._log(f'present_cache -> unclickable({present})', element_or_true)
+                self._log(f'present_cache -> unclickable({present}) : {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTION:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -626,9 +618,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._log(f'locator -> present_cache -> unclickable({present})', element_or_true)
+                    self._log(f'locator -> present_cache -> unclickable({present}) : {self._present_cache}')
                 else:
-                    self._log(f'locator -> unclickable({present})', element_or_true)
+                    self._log(f'locator -> unclickable({present}) : {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
@@ -662,7 +654,7 @@ class Element:
                 element = self.wait(timeout).until(
                     ecex.element_to_be_selected(self._present_cache)
                 )
-                self._log('present_cache -> selected', element)
+                self._log(f'present_cache -> selected : {element}')
                 return element
             except ELEMENT_REFERENCE_EXCEPTION:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -670,9 +662,9 @@ class Element:
                 )
                 if self.cache:
                     self._present_cache = element
-                    self._log('locator -> present_cache -> selected', element)
+                    self._log(f'locator -> present_cache -> selected : {self._present_cache}')
                 else:
-                    self._log('locator -> selected', element)
+                    self._log(f'locator -> selected : {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('selected', exc, reraise)
@@ -712,7 +704,7 @@ class Element:
                 element = self.wait(timeout).until(
                     ecex.element_to_be_unselected(self._present_cache)
                 )
-                self._log('present_cache -> unselected', element)
+                self._log(f'present_cache -> unselected : {element}')
                 return element
             except ELEMENT_REFERENCE_EXCEPTION:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -720,9 +712,9 @@ class Element:
                 )
                 if self.cache:
                     self._present_cache = element
-                    self._log('locator -> present_cache -> unselected', element)
+                    self._log(f'locator -> present_cache -> unselected : {self._present_cache}')
                 else:
-                    self._log('locator -> unselected', element)
+                    self._log(f'locator -> unselected : {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('unselected', exc, reraise)

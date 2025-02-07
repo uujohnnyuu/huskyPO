@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+import logging
+
 
 class Log:
     """
@@ -18,6 +20,18 @@ class Log:
     """
     PREFIX: str | None = 'test'
     LOWER: bool = True
+    FILENAME = "./log.log"
+    FILEMODE = "w"
+    FORMAT = "%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s"
+    DATEFMT = '%Y-%m-%d %H:%M:%S'
+    LEVEL = logging.DEBUG
+    BASIC_CONFIG = {
+        "filename": FILENAME,
+        "filemode": FILEMODE,
+        "format": FORMAT,
+        "datefmt": DATEFMT,
+        "level": LEVEL
+    }
 
 
 class Cache:

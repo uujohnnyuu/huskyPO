@@ -44,10 +44,10 @@ class PrefixFilter(logging.Filter):
     """
 
     def filter(self, record):
-        # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
-        frame = inspect.currentframe()
         if Log.PREFIX:
             prefix = Log.PREFIX.lower() if Log.LOWER else Log.PREFIX
+            # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
+            frame = inspect.currentframe()
             while frame:
                 funcname = original_funcname = frame.f_code.co_name
                 if Log.LOWER:
