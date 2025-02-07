@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import math
 import platform
@@ -41,7 +40,6 @@ LOGGER.addFilter(PREFIX_FILTER)
 
 class _Name:
     _page = '_page'
-    _driver = '_driver'
     _wait_timeout = '_wait_timeout'
     _present_cache = '_present_cache'
     _visible_cache = '_visible_cache'
@@ -288,9 +286,6 @@ class Element:
 
     @property
     def driver(self) -> WebDriver:
-        """
-        Get driver from Page-related instance.
-        """
         return self._driver
 
     @property
@@ -362,9 +357,10 @@ class Element:
         """
         Handling a TimeoutException after it occurs.
         """
+        exc.msg = self._timeout_message(status, present)
         if Timeout.reraise(reraise):
-            exc.msg = self._timeout_message(status, present)
             raise exc from None
+        self._log(exc.msg, 2)
         return False
 
     def wait_present(

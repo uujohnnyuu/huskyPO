@@ -36,10 +36,16 @@ PREFIX_FILTER = PrefixFilter()
 LOGGER.addFilter(PREFIX_FILTER)
 
 
+class _Name:
+    _page = '_page'
+    _wait_timeout = '_wait_timeout'
+
+
 class Elements:
 
     if TYPE_CHECKING:
         _page: Page
+        _driver: WebDriver
         _wait_timeout: int | float
 
     def __init__(
@@ -77,7 +83,10 @@ class Elements:
         """
         if not isinstance(instance, Page):
             raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
-        self._page = instance
+        if getattr(self, _Name._page, None) != instance:
+            self._page = instance
+            self._driver = self._page._driver
+            self._log(f'Get driver {self._driver}.')
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
@@ -89,6 +98,16 @@ class Elements:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
+        self._log('Dynamically set element attributes.')
+
+    def _log(self, msg: str, stacklevel: int = 1) -> None:
+        """
+        Inner `LOGGER.debug()`.
+        """
+        # TODO need to modify back to debug.
+        if not LOGGER.isEnabledFor(logging.INFO):
+            return
+        LOGGER.info(f'Elements({self.remark}): {msg}', stacklevel=stacklevel + 1)
 
     def dynamic(
         self,
@@ -199,10 +218,7 @@ class Elements:
 
     @property
     def driver(self) -> WebDriver:
-        """
-        Get driver from Page.
-        """
-        return self._page._driver
+        return self._driver
 
     def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:
         """
@@ -271,13 +287,9 @@ class Elements:
     def wait_timeout(self) -> int | float | None:
         """
         Get the final waiting timeout of the element.
-        If no element action has been executed yet,
-        it will return None.
+        If no element action has been executed yet, it will return None.
         """
-        try:
-            return self._wait_timeout
-        except AttributeError:
-            return None
+        return getattr(self, _Name._wait_timeout, None)
 
     def _timeout_message(self, status: str) -> str:
         """
@@ -298,9 +310,10 @@ class Elements:
         """
         Handling a TimeoutException after it occurs.
         """
+        exc.msg = self._timeout_message(status)
         if Timeout.reraise(reraise):
-            exc.msg = self._timeout_message(status)
             raise exc from None
+        self._log(exc.msg, 2)
         return False
 
     def wait_all_present(
@@ -331,9 +344,11 @@ class Elements:
                 the elements did not reach the expected state within the timeout.
         """
         try:
-            return self.wait(timeout).until(
+            elements = self.wait(timeout).until(
                 ecex.presence_of_all_elements_located(self.locator)
             )
+            self._log(f'locator -> all_present_elements : {elements}')
+            return elements
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
 
@@ -362,9 +377,11 @@ class Elements:
                 the elements did not reach the expected state within the timeout.
         """
         try:
-            return self.wait(timeout).until(
+            true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_all_elements_located(self.locator)
             )
+            self._log(f'locator -> all_absent : {true}')
+            return true
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
 
@@ -394,9 +411,11 @@ class Elements:
                 the elements did not reach the expected state within the timeout.
         """
         try:
-            return self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_all_elements_located(self.locator)
             )
+            self._log(f'locator -> all_visible_elements : {elements}')
+            return elements
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
 
@@ -426,9 +445,11 @@ class Elements:
                 the elements did not reach the expected state within the timeout.
         """
         try:
-            return self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_any_elements_located(self.locator)
             )
+            self._log(f'locator -> any_visible_elements : {elements}')
+            return elements
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)
 
