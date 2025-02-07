@@ -11,18 +11,30 @@ import logging
 
 class Log:
     """
-    Internal log settings.
+    General log settings.
 
-    Class Attributes:
-        - RECORD (bool):
-            - False (default): Do not record internal logs.
-            - True: Record internal logs.
+    Class Attributes of `PrefixFilter` (`from huskium import PrefixFilter`):
+        - PREFIX:
+            - `str` (default: `"test"`): If `PrefixFilter` is set in the logging filter,  
+                it records the first frame whose name starts with `"test"`.
+            - `None`: Behaves the same as basic logging.
+        - LOWER:
+            - `True` (default): `PREFIX` and frame names are case-insensitive.
+            - `False`: `PREFIX` and frame names are case-sensitive.
+
+    Class Attributes of `logging.basicConfig()`:
+        - FILENAME: `'./log.log'`
+        - FILEMODE: `'w'`
+        - FORMAT: `'%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'`
+        - DATEFMT: `'%Y-%m-%d %H:%M:%S'`
+        - LEVEL: `logging.DEBUG`
+        - BASIC_CONFIG: A dictionary containing the above parameters.
     """
     PREFIX: str | None = 'test'
     LOWER: bool = True
-    FILENAME = "./log.log"
-    FILEMODE = "w"
-    FORMAT = "%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s"
+    FILENAME = './log.log'
+    FILEMODE = 'w'
+    FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'
     DATEFMT = '%Y-%m-%d %H:%M:%S'
     LEVEL = logging.DEBUG
     BASIC_CONFIG = {
