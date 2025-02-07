@@ -15,7 +15,7 @@ class Log:
 
     Class Attributes of `PrefixFilter` (`from huskium import PrefixFilter`):
         - PREFIX:
-            - `str` (default: `"test"`): If `PrefixFilter` is set in the logging filter,  
+            - `str` (default: `"test"`): If `PrefixFilter` is set in the logging filter,
                 it records the first frame whose name starts with `"test"`.
             - `None`: Behaves the same as basic logging.
         - LOWER:
