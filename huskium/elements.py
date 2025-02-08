@@ -104,10 +104,9 @@ class Elements:
         """
         Inner `LOGGER.debug()`.
         """
-        # TODO need to modify back to debug.
-        if not LOGGER.isEnabledFor(logging.INFO):
-            return
-        LOGGER.info(f'Elements({self.remark}): {msg}', stacklevel=stacklevel + 1)
+        if not LOGGER.isEnabledFor(logging.DEBUG):
+            return None
+        LOGGER.debug(f'Elements({self.remark}): {msg}', stacklevel=stacklevel + 1)
 
     def dynamic(
         self,
