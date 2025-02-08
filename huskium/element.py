@@ -1338,11 +1338,11 @@ class Element:
             return None
         self._log('Start adjusting.')
         round = 0
-        while (offset := self._get_adjusted_offset(offset, area, min_distance)):
+        while (adjusted_offset := self._get_adjusted_offset(offset, area, min_distance)):
             if round == max_adjustment:
                 self._log(f'Warning: Stop adjusting after max round {max_adjustment}.')
                 return round
-            self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
+            self.driver.swipe(*adjusted_offset, duration)  # type: ignore[attr-defined]
             round += 1
             self._log(f'Adjusting round {round}.')
         self._log(f'Stop adjusting after round {round}.')
