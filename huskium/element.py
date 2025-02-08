@@ -132,8 +132,7 @@ class Element:
         # TODO need to modify back to debug.
         if not LOGGER.isEnabledFor(logging.INFO):
             return
-        stacklevel += 1
-        LOGGER.info(f'Element({self.remark}): {msg}', stacklevel=stacklevel)
+        LOGGER.info(f'Element({self.remark}): {msg}', stacklevel=stacklevel+1)
 
     def dynamic(
         self,
@@ -1108,8 +1107,8 @@ class Element:
         offset: Coordinate = Offset.UP,
         area: Coordinate = Area.FULL,
         timeout: int | float = 3,
-        max_swipe: int = 10,
-        max_adjust: int = 2,
+        max_round: int = 10,
+        max_adjustment: int = 2,
         min_distance: int = 100,
         duration: int = 1000
     ) -> Self:
@@ -1122,11 +1121,11 @@ class Element:
             - offset: Please refer to the Usage.
             - area: Please refer to the Usage.
             - timeout: The maximum time in seconds to wait for the element to become visible.
-            - max_swipe: The maximum number of swipes allowed.
-            - max_adjust: The maximum number of adjustments
+            - max_round: The maximum number of swipes allowed.
+            - max_adjustment: The maximum number of adjustments
                 to align all borders of the element within the view border.
             - min_distance: The minimum swipe distance to avoid being mistaken for a click.
-            - duration: The duration of the swipe in milliseconds, from start to end.
+            - duration: The duration of the swipe and adjustment in milliseconds.
 
         Note on Args "min_distance" and "duration":
             - Both parameters are used to adjust the element position with a swipe
@@ -1189,8 +1188,8 @@ class Element:
         """
         area = self._page._get_area(area)
         offset = self._page._get_offset(offset, area)
-        self._start_swiping_by(offset, duration, timeout, max_swipe)
-        self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
+        self._start_swiping_by(offset, duration, timeout, max_round)
+        self._start_adjusting_by(offset, area, max_adjustment, min_distance, duration)
         return self
 
     def flick_by(
@@ -1198,8 +1197,8 @@ class Element:
         offset: Coordinate = Offset.UP,
         area: Coordinate = Area.FULL,
         timeout: int | float = 3,
-        max_flick: int = 10,
-        max_adjust: int = 2,
+        max_round: int = 10,
+        max_adjustment: int = 2,
         min_distance: int = 100,
         duration: int = 1000
     ) -> Self:
@@ -1212,11 +1211,11 @@ class Element:
             - offset: Please refer to the Usage.
             - area: Please refer to the Usage.
             - timeout: The maximum time in seconds to wait for the element to become visible.
-            - max_swipe: The maximum number of flicks allowed.
-            - max_adjust: The maximum number of adjustments
+            - max_round: The maximum number of flicks allowed.
+            - max_adjustment: The maximum number of adjustments
                 to align all borders of the element within the view border.
             - min_distance: The minimum flick distance to avoid being mistaken for a click.
-            - duration: The duration of the swipe in milliseconds, from start to end.
+            - duration: The duration of the adjustment (not flick) in milliseconds.
 
         Note on Args "min_distance" and "duration":
             - Both parameters are used to adjust the element position with a flick
@@ -1228,7 +1227,7 @@ class Element:
 
         Usage::
 
-            # Swipe parameters. Refer to the Class notes for details.
+            # Flick parameters. Refer to the Class notes for details.
             from huskium import Offset, Area
 
             # Flick down.
@@ -1279,8 +1278,8 @@ class Element:
         """
         area = self._page._get_area(area)
         offset = self._page._get_offset(offset, area)
-        self._start_flicking_by(offset, timeout, max_flick)
-        self._start_adjusting_by(offset, area, max_adjust, min_distance, duration)
+        self._start_flicking_by(offset, timeout, max_round)
+        self._start_adjusting_by(offset, area, max_adjustment, min_distance, duration)
         return self
 
     def _start_swiping_by(
@@ -1288,96 +1287,123 @@ class Element:
         offset: tuple[int, int, int, int],
         duration: int,
         timeout: int | float,
-        max_swipe: int
-    ) -> int | Literal[False]:
-        count = 0
+        max_round: int
+    ) -> int | None:
+        if not max_round:
+            self._log(f'Warning: max_round is {max_round}, no swiping performed.')
+            return
+        self._log(f'Start swiping.')
+        round = 0
         while not self.is_viewable(timeout):
-            if count == max_swipe:
-                return False
+            if round == max_round:
+                self._log(f'Warning: Stop swiping after max round {max_round}.')
+                return round
             self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
-            count += 1
-        return count
+            round += 1
+            self._log(f'Swiping round {round}.')
+        self._log(f'Stop swiping after round {round}.')
+        return round
 
     def _start_flicking_by(
         self,
         offset: tuple[int, int, int, int],
         timeout: int | float,
-        max_swipe: int
-    ) -> int | Literal[False]:
-        count = 0
+        max_round: int
+    ) -> int | None:
+        if not max_round:
+            self._log(f'Warning: max_round is {max_round}, no flicking performed.')
+            return
+        self._log(f'Start flicking.')
+        round = 0
         while not self.is_viewable(timeout):
-            if count == max_swipe:
-                return False
+            if round == max_round:
+                self._log(f'Warning: Stop flicking after max round {max_round}.')
+                return round
             self.driver.flick(*offset)  # type: ignore[attr-defined]
-            count += 1
-        return count
+            round += 1
+            self._log(f'Flicking round {round}.')
+        self._log(f'Stop flicking after round {round}.')
+        return round
 
     def _start_adjusting_by(
         self,
         offset: tuple[int, int, int, int],
         area: tuple[int, int, int, int],
-        max_adjust: int,
+        max_adjustment: int,
         min_distance: int,
         duration: int
-    ) -> int | Literal[False]:
+    ) -> int | None:
+        if not max_adjustment:
+            self._log(f'For max_adjustment is {max_adjustment}, no adjustment performed.')
+            return
+        self._log('Start adjusting.')
+        round = 0
+        while (offset := self._get_adjusted_offset(offset, area, min_distance)):
+            if round == max_adjustment:
+                self._log(f'Warning: Stop adjusting after max round {max_adjustment}.')
+                return round
+            self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
+            round += 1
+            self._log(f'Adjusting round {round}.')
+        self._log(f'Stop adjusting after round {round}.')
+        return round
+
+    def _get_adjusted_offset(
+        self,
+        offset: tuple[int, int, int, int],
+        area: tuple[int, int, int, int],
+        min_distance: int,
+    ) -> tuple[int, int, int, int] | None:
 
         def delta(area: int, element: int) -> int:
-            diff = int(area - element)
-            return int(math.copysign(min_distance, diff)) if abs(diff) < min_distance else diff
+            diff = area - element
+            return int(math.copysign(min_distance, diff) if abs(diff) < min_distance else diff)
 
-        for i in range(1, max_adjust + 2):
+        # original offset
+        start_x, start_y, end_x, end_y = offset
+        self._log(f'Original offset (sx, sy, ex, ey): {offset}')
 
-            # offset
-            start_x, start_y, end_x, end_y = offset
+        # area border
+        area_left, area_top, area_width, area_height = area
+        area_right = area_left + area_width
+        area_bottom = area_top + area_height
+        self._log(f'Area border (l, r, t, b): {(area_left, area_right, area_top, area_bottom)}')
 
-            # area border
-            area_left, area_top, area_width, area_height = area
-            area_right = area_left + area_width
-            area_bottom = area_top + area_height
+        # element border
+        element_left, element_right, element_top, element_bottom = self.border.values()
+        self._log(f'Element border (l, r, t, b): {(element_left, element_right, element_top, element_bottom)}')
 
-            # element border
-            element_left, element_right, element_top, element_bottom = self.border.values()
+        # delta = (area - element) and compare with min distance
+        delta_left = delta(area_left, element_left)
+        delta_right = delta(area_right, element_right)
+        delta_top = delta(area_top, element_top)
+        delta_bottom = delta(area_bottom, element_bottom)
+        self._log(f'Delta border (l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}')
 
-            # delta = (area - element) and compare with min distance
-            delta_left = delta(area_left, element_left)
-            delta_right = delta(area_right, element_right)
-            delta_top = delta(area_top, element_top)
-            delta_bottom = delta(area_bottom, element_bottom)
+        # adjust condition
+        adjust = ((delta_left > 0), (delta_right < 0), (delta_top > 0), (delta_bottom < 0))
+        self._log(f'Adjust action (l, r, t, b): {adjust}')
+        adjust_actions = {
+            (True, False, True, False): (delta_left, delta_top),
+            (False, False, True, False): (0, delta_top),
+            (False, True, True, False): (delta_right, delta_top),
+            (True, False, False, False): (delta_left, 0),
+            (False, True, False, False): (delta_right, 0),
+            (True, False, False, True): (delta_left, delta_bottom),
+            (False, False, False, True): (0, delta_bottom),
+            (False, True, False, True): (delta_right, delta_bottom),
+        }
+        delta_x, delta_y = adjust_actions.get(adjust, (0, 0))
 
-            # adjust condition
-            adjust_left = delta_left > 0
-            adjust_right = delta_right < 0
-            adjust_top = delta_top > 0
-            adjust_bottom = delta_bottom < 0
-            adjust = (adjust_left, adjust_right, adjust_top, adjust_bottom)
-            adjust_actions = {
-                (True, False, True, False): (delta_left, delta_top),
-                (False, False, True, False): (0, delta_top),
-                (False, True, True, False): (delta_right, delta_top),
-                (True, False, False, False): (delta_left, 0),
-                (False, True, False, False): (delta_right, 0),
-                (True, False, False, True): (delta_left, delta_bottom),
-                (False, False, False, True): (0, delta_bottom),
-                (False, True, False, True): (delta_right, delta_bottom),
-            }
-
-            # Set the end point by adjust actions.
-            if adjust in adjust_actions:
-                delta_x, delta_y = adjust_actions[adjust]
-                end_x = start_x + delta_x
-                end_y = start_y + delta_y
-            else:
-                return i
-
-            # Check if the maximum number of adjustments has been reached.
-            if i == max_adjust + 1:
-                return False
-
-            # Within the maximum adjustment attempts,
-            # keep adjusting if the element is not fully visible within the area.
-            self.driver.swipe(start_x, start_y, end_x, end_y, duration)  # type: ignore[attr-defined]
-
-        raise RuntimeError("Unexpected end of function. All paths should return.")
+        # return
+        if delta_x == 0 and delta_y == 0:
+            self._log('No further adjustment needed.')
+            return
+        end_x, end_y = (start_x + delta_x), (start_y + delta_y)
+        adjusted_offset = (start_x, start_y, end_x, end_y)
+        self._log(f'Original offset (sx, sy, ex, ey): {offset}')
+        self._log(f'Adjusted offset (sx, sy, ex, ey): {adjusted_offset}')
+        return adjusted_offset
 
     def clear(self) -> Self:
         """

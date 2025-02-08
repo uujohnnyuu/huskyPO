@@ -107,8 +107,7 @@ class Elements:
         # TODO need to modify back to debug.
         if not LOGGER.isEnabledFor(logging.INFO):
             return
-        stacklevel += 1
-        LOGGER.info(f'Elements({self.remark}): {msg}', stacklevel=stacklevel)
+        LOGGER.info(f'Elements({self.remark}): {msg}', stacklevel=stacklevel+1)
 
     def dynamic(
         self,
