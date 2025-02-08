@@ -132,7 +132,7 @@ class Element:
         # TODO need to modify back to debug.
         if not LOGGER.isEnabledFor(logging.INFO):
             return
-        LOGGER.info(f'Element({self.remark}): {msg}', stacklevel=stacklevel+1)
+        LOGGER.info(f'Element({self.remark}): {msg}', stacklevel=stacklevel + 1)
 
     def dynamic(
         self,
@@ -1291,7 +1291,7 @@ class Element:
     ) -> int | None:
         if not max_round:
             self._log(f'Warning: max_round is {max_round}, no swiping performed.')
-            return
+            return None
         self._log(f'Start swiping.')
         round = 0
         while not self.is_viewable(timeout):
@@ -1312,7 +1312,7 @@ class Element:
     ) -> int | None:
         if not max_round:
             self._log(f'Warning: max_round is {max_round}, no flicking performed.')
-            return
+            return None
         self._log(f'Start flicking.')
         round = 0
         while not self.is_viewable(timeout):
@@ -1335,7 +1335,7 @@ class Element:
     ) -> int | None:
         if not max_adjustment:
             self._log(f'For max_adjustment is {max_adjustment}, no adjustment performed.')
-            return
+            return None
         self._log('Start adjusting.')
         round = 0
         while (offset := self._get_adjusted_offset(offset, area, min_distance)):
@@ -1398,7 +1398,7 @@ class Element:
         # return
         if delta_x == 0 and delta_y == 0:
             self._log('No further adjustment needed.')
-            return
+            return None
         end_x, end_y = (start_x + delta_x), (start_y + delta_y)
         adjusted_offset = (start_x, start_y, end_x, end_y)
         self._log(f'Original offset (sx, sy, ex, ey): {offset}')
