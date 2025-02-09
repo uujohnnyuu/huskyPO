@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, cast, Literal, Self, TypeAlias
+from typing import TYPE_CHECKING, Any, cast, Literal, Self, TypeAlias
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -40,7 +40,14 @@ PREFIX_FILTER = PrefixFilter()
 LOGGER.addFilter(PREFIX_FILTER)
 
 
+class _Name:
+    _wait_timeout = '_wait_timeout'
+
+
 class Page:
+
+    if TYPE_CHECKING:
+        _wait_timeout: int | float
 
     def __init__(self, driver: WebDriver) -> None:
         if not isinstance(driver, WebDriver):
@@ -84,10 +91,7 @@ class Page:
         Get the final waiting timeout of the page function which executed with explicit wait.
         If no relevant function has been executed yet, it will return None.
         """
-        try:
-            return self._wait_timeout
-        except AttributeError:
-            return None
+        return getattr(self, _Name._wait_timeout, None)
 
     @property
     def log_types(self) -> Any:

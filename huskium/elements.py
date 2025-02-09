@@ -86,7 +86,7 @@ class Elements:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = self._page._driver
-            self._log(f'Get driver {self._driver}.')
+            LOGGER.debug(self._log(f'Get driver {self._driver}.'))
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
@@ -98,15 +98,13 @@ class Elements:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
-        self._log('Dynamically set element attributes.')
+        LOGGER.debug(self._log('Dynamically set element attributes.'))
 
-    def _log(self, msg: str, stacklevel: int = 1) -> None:
+    def _log(self, msg: str) -> None:
         """
-        Inner `LOGGER.debug()`.
+        Elements(remark): msg
         """
-        if not LOGGER.isEnabledFor(logging.DEBUG):
-            return None
-        LOGGER.debug(f'Elements({self.remark}): {msg}', stacklevel=stacklevel + 1)
+        return f'Elements({self.remark}): {msg}'
 
     def dynamic(
         self,
@@ -311,8 +309,9 @@ class Elements:
         """
         exc.msg = self._timeout_message(status)
         if Timeout.reraise(reraise):
+            LOGGER.exception(self._log(exc.msg), stacklevel=2)
             raise exc from None
-        self._log(exc.msg, 2)
+        LOGGER.warning(self._log(exc.msg), exc_info=True, stacklevel=2)
         return False
 
     def wait_all_present(
@@ -346,7 +345,7 @@ class Elements:
             elements = self.wait(timeout).until(
                 ecex.presence_of_all_elements_located(self.locator)
             )
-            self._log(f'locator -> all_present_elements : {elements}')
+            LOGGER.debug(self._log(f'locator -> all_present_elements : {elements}'))
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
@@ -379,7 +378,7 @@ class Elements:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_all_elements_located(self.locator)
             )
-            self._log(f'locator -> all_absent : {true}')
+            LOGGER.debug(self._log(f'locator -> all_absent : {true}'))
             return true
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
@@ -413,7 +412,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_all_elements_located(self.locator)
             )
-            self._log(f'locator -> all_visible_elements : {elements}')
+            LOGGER.debug(self._log(f'locator -> all_visible_elements : {elements}'))
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
@@ -447,7 +446,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_any_elements_located(self.locator)
             )
-            self._log(f'locator -> any_visible_elements : {elements}')
+            LOGGER.debug(self._log(f'locator -> any_visible_elements : {elements}'))
             return elements
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)
