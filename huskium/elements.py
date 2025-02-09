@@ -85,7 +85,7 @@ class Elements:
             raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
-            self._driver = self._page._driver
+            self._driver = instance._driver
             LOGGER.debug(self._log(f'Get driver {self._driver}.'))
         return self
 

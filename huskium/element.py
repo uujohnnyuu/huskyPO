@@ -108,7 +108,7 @@ class Element:
         # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
-            self._driver = self._page._driver
+            self._driver = instance._driver
             LOGGER.debug(self._log(f'Get driver {self._driver}.'))
             self._if_clear_caches()
         return self
