@@ -131,12 +131,14 @@ class Element:
         """
         return f'Element({self.remark}): {msg}'
 
-    def _exc_info(self, exc: Exception):
+    def _exc_info(self, exc: TimeoutException) -> tuple:
         """
         exc_info=(type(exc), exc, exc.__traceback__)
+        Ignore inner `AttributeError` raised by `self._xxx_cache` and
+        StaleElementReferenceException raised by `self._if_force_relocate()`,
+        record only the main TimeoutException.
         """
-        if isinstance(exc.__context__, AttributeError):
-            # Ignore AttributeError of caches.
+        if isinstance(exc.__context__, ELEMENT_REFERENCE_EXCEPTION):
             exc.__context__ = None
         return type(exc), exc, exc.__traceback__
 
