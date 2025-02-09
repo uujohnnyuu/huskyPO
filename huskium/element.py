@@ -125,7 +125,7 @@ class Element:
         LOGGER.debug(self._log('Dynamically set element attributes.'))
         self._if_clear_caches()  # dynamic element should clear caches.
 
-    def _log(self, msg: str) -> None:
+    def _log(self, msg: str) -> str:
         """
         Element(remark): msg
         """

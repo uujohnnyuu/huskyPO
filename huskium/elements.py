@@ -100,7 +100,7 @@ class Elements:
         self._set_data(value.by, value.value, value.timeout, value.remark)
         LOGGER.debug(self._log('Dynamically set element attributes.'))
 
-    def _log(self, msg: str) -> None:
+    def _log(self, msg: str) -> str:
         """
         Elements(remark): msg
         """
