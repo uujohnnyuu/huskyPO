@@ -1337,7 +1337,8 @@ class Element:
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:
-                LOGGER.warning(self._log(f'Stop flicking. Element remains not viewable after max {max_round} rounds.\n'))
+                LOGGER.warning(
+                    self._log(f'Stop flicking. Element remains not viewable after max {max_round} rounds.\n'))
                 return round
             self.driver.flick(*offset)  # type: ignore[attr-defined]
             round += 1
