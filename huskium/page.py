@@ -604,7 +604,7 @@ class Page:
             if Timeout.reraise(reraise):
                 LOGGER.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)    
+            LOGGER.warning(exc.msg)
             return False
 
     def new_window_is_opened(
