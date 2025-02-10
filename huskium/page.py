@@ -1113,6 +1113,7 @@ class Page:
                 'and should be between "0.0" and "1.0".'
             )
 
+        LOGGER.debug(f'coordinate: {coordinate}')
         return coordinate
 
     def _get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
@@ -1127,6 +1128,7 @@ class Page:
             area_height = int(window_height * area_height)
 
         area = (area_x, area_y, area_width, area_height)
+        LOGGER.debug(f'area: {area}')
         return cast(tuple[int, int, int, int], area)
 
     def _get_offset(
@@ -1145,6 +1147,7 @@ class Page:
             end_y = int(area_y + area_height * end_y)
 
         offset = (start_x, start_y, end_x, end_y)
+        LOGGER.debug(f'offset: {offset}')
         return cast(tuple[int, int, int, int], offset)
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:
