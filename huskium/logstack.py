@@ -29,7 +29,7 @@ WARN_MSG = '"logstack" will be deprecated in huskium v1.1.0+. Use "logfilter" in
 
 
 warnings.simplefilter("default", DeprecationWarning)
-warnings.warn(WARN_MSG, DeprecationWarning)
+warnings.warn(WARN_MSG, DeprecationWarning, stacklevel=2)
 
 
 def config(
