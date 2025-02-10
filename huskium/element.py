@@ -108,7 +108,7 @@ class Element:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            LOGGER.debug(self._log(f'Get driver {self._driver}.'))
+            LOGGER.debug(self._log(f'Get new driver {self._driver}.'))
             self._if_clear_caches()
         return self
 
