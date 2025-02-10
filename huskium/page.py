@@ -250,13 +250,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.url_to_be(url))
         except TimeoutException as exc:
+            current_url = self.driver.current_url
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for url to be "{url}". '
+                f'The current url is "{current_url}".'
+            )
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for url to be "{url}". '
-                    f'The current url is "{current_url}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def url_contains(
@@ -274,13 +276,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.url_contains(url))
         except TimeoutException as exc:
+            current_url = self.driver.current_url
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for url contains "{url}". '
+                f'The current url is "{current_url}".'
+            )
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for url contains "{url}". '
-                    f'The current url is "{current_url}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def url_matches(
@@ -299,13 +303,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.url_matches(pattern))
         except TimeoutException as exc:
+            current_url = self.driver.current_url
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for url matches pattern "{pattern}". '
+                f'The current url is "{current_url}".'
+            )
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for url matches pattern "{pattern}". '
-                    f'The current url is "{current_url}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def url_changes(
@@ -323,13 +329,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.url_changes(url))
         except TimeoutException as exc:
+            current_url = self.driver.current_url
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for url changes. '
+                f'The current url is still "{current_url}".'
+            )
             if Timeout.reraise(reraise):
-                current_url = self.driver.current_url
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for url changes. '
-                    f'The current url is still "{current_url}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     @property
@@ -355,13 +363,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.title_is(title))
         except TimeoutException as exc:
+            current_title = self.driver.title
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for title to be "{title}". '
+                f'The current title is "{current_title}".'
+            )
             if Timeout.reraise(reraise):
-                current_title = self.driver.title
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for title to be "{title}". '
-                    f'The current title is "{current_title}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def title_contains(
@@ -378,13 +388,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.title_contains(title))
         except TimeoutException as exc:
+            current_title = self.driver.title
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for title contains "{title}". '
+                f'The current title is "{current_title}".'
+            )
             if Timeout.reraise(reraise):
-                current_title = self.driver.title
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for title contains "{title}". '
-                    f'The current title is "{current_title}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def refresh(self) -> None:
@@ -584,13 +596,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.number_of_windows_to_be(num_windows))
         except TimeoutException as exc:
+            current_num_windows = len(self.driver.window_handles)
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for number of windows to be "{num_windows}". '
+                f'The current number of windows is "{current_num_windows}".'
+            )
             if Timeout.reraise(reraise):
-                current_num_windows = len(self.driver.window_handles)
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for number of windows to be "{num_windows}". '
-                    f'The current number of windows is "{current_num_windows}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)    
             return False
 
     def new_window_is_opened(
@@ -605,13 +619,15 @@ class Page:
         try:
             return self.wait(timeout).until(ec.new_window_is_opened(current_handles))
         except TimeoutException as exc:
+            current_num_windows = len(self.driver.window_handles)
+            exc.msg = (
+                f'Timed out waiting {self._wait_timeout} seconds for new window is opened. '
+                f'The current number of windows is "{current_num_windows}".'
+            )
             if Timeout.reraise(reraise):
-                current_num_windows = len(self.driver.window_handles)
-                exc.msg = (
-                    f'Timed out waiting {self._wait_timeout} seconds for new window is opened. '
-                    f'The current number of windows is "{current_num_windows}".'
-                )
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def print_page(self, print_options: PrintOptions | None = None) -> str:
@@ -1219,9 +1235,11 @@ class Page:
         try:
             return self.wait(timeout).until(ec.alert_is_present())
         except TimeoutException as exc:
+            exc.msg = f'Timed out waiting {self._wait_timeout} seconds for alert to be present.'
             if Timeout.reraise(reraise):
-                exc.msg = f'Timed out waiting {self._wait_timeout} seconds for alert to be present.'
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def switch_to_default_content(self) -> None:
@@ -1322,9 +1340,11 @@ class Page:
         try:
             return self.wait(timeout).until(ecex.webview_is_present(switch, index))
         except TimeoutException as exc:
+            exc.msg = f'Timed out waiting {self._wait_timeout} seconds for WEBVIEW to be present.'
             if Timeout.reraise(reraise):
-                exc.msg = f'Timed out waiting {self._wait_timeout} seconds for WEBVIEW to be present.'
-                raise exc from None
+                LOGGER.exception(exc.msg)
+                raise exc
+            LOGGER.warning(exc.msg)
             return False
 
     def switch_to_app(self) -> Any | str:
