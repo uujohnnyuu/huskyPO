@@ -36,8 +36,8 @@ def _find_element_by(
         return driver.find_element(*locator)
     try:
         return driver.find_elements(*locator)[index]
-    except IndexError:
-        raise NoSuchElementException
+    except IndexError as exc:
+        raise NoSuchElementException from exc
 
 
 def _find_elements_by(

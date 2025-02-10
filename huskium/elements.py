@@ -310,7 +310,7 @@ class Elements:
         exc.msg = self._timeout_message(status)
         if Timeout.reraise(reraise):
             LOGGER.exception(self._log(exc.msg), stacklevel=2)
-            raise exc from None
+            raise exc  # No cache handling, do not suppress exception messages.
         LOGGER.warning(self._log(exc.msg), exc_info=True, stacklevel=2)
         return False
 

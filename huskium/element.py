@@ -1316,12 +1316,12 @@ class Element:
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:
-                LOGGER.warning(self._log(f'Stop swiping after max round {max_round}.'))
+                LOGGER.warning(self._log(f'Stop swiping. Element remains not viewable after max {max_round} rounds.\n'))
                 return round
             self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
             round += 1
-            LOGGER.debug(self._log(f'Swiping round {round}.'))
-        LOGGER.debug(self._log(f'Stop swiping after round {round}.'))
+            LOGGER.debug(self._log(f'Swiping round {round} done.\n'))
+        LOGGER.debug(self._log(f'Stop swiping. Element is viewable after {round} rounds.\n'))
         return round
 
     def _start_flicking_by(
@@ -1333,16 +1333,16 @@ class Element:
         if not max_round:
             LOGGER.warning(self._log(f'For max_round is {max_round}, no flicking performed.'))
             return None
-        self._log(f'Start flicking.')
+        LOGGER.debug(self._log(f'Start flicking.'))
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:
-                LOGGER.warning(self._log(f'Stop flicking after max round {max_round}.'))
+                LOGGER.warning(self._log(f'Stop flicking. Element remains not viewable after max {max_round} rounds.\n'))
                 return round
             self.driver.flick(*offset)  # type: ignore[attr-defined]
             round += 1
-            LOGGER.debug(self._log(f'Flicking round {round}.'))
-        LOGGER.debug(self._log(f'Stop flicking after round {round}.'))
+            LOGGER.debug(self._log(f'Flicking round {round} done.\n'))
+        LOGGER.debug(self._log(f'Stop flicking. Element is viewable after {round} rounds.\n'))
         return round
 
     def _start_adjusting_by(
@@ -1360,12 +1360,12 @@ class Element:
         round = 0
         while (adjusted_offset := self._get_adjusted_offset(offset, area, min_distance)):
             if round == max_adjustment:
-                LOGGER.debug(self._log(f'Stop adjusting after max round {max_adjustment}.'))
+                LOGGER.debug(self._log(f'Stop adjusting after max {max_adjustment} rounds.\n'))
                 return round
             self.driver.swipe(*adjusted_offset, duration)  # type: ignore[attr-defined]
             round += 1
-            LOGGER.debug(self._log(f'Adjusting round {round}.'))
-        LOGGER.debug(self._log(f'Stop adjusting after round {round}.'))
+            LOGGER.debug(self._log(f'Adjusting round {round} done.\n'))
+        LOGGER.debug(self._log(f'Stop adjusting after {round} round.\n'))
         return round
 
     def _get_adjusted_offset(
@@ -1375,46 +1375,57 @@ class Element:
         min_distance: int,
     ) -> tuple[int, int, int, int] | None:
 
-        def delta(area: int, element: int) -> int:
-            diff = area - element
-            return int(math.copysign(min_distance, diff) if abs(diff) < min_distance else diff)
+        def dist(delta) -> int:
+            return int(max(abs(delta), min_distance) * (1 if delta >= 0 else -1))
 
         # original offset
         start_x, start_y, end_x, end_y = offset
-        LOGGER.debug(self._log(f'Original offset (sx, sy, ex, ey): {offset}'))
+        LOGGER.debug(self._log(f'OriginalOffset(sx, sy, ex, ey): {offset}'))
 
         # area border
         area_left, area_top, area_width, area_height = area
         area_right = area_left + area_width
         area_bottom = area_top + area_height
-        LOGGER.debug(self._log(f'Area border (l, r, t, b): {(area_left, area_right, area_top, area_bottom)}'))
+        LOGGER.debug(self._log(f'Area(l, r, t, b): {(area_left, area_right, area_top, area_bottom)}'))
 
         # element border
         element_left, element_right, element_top, element_bottom = self.border.values()
+        LOGGER.debug(self._log(f'Element(l, r, t, b): {(element_left, element_right, element_top, element_bottom)}'))
+
+        # delta = (area - element)
+        delta_left = area_left - element_left
+        delta_right = area_right - element_right
+        delta_top = area_top - element_top
+        delta_bottom = area_bottom - element_bottom
+        LOGGER.debug(self._log(f'Delta(A-E)(l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}'))
+
+        # adjust action, note that this must use delta to judge
+        adjust_action = ((delta_left > 0), (delta_right < 0), (delta_top > 0), (delta_bottom < 0))
+        LOGGER.debug(self._log(f'AdjustAction(l>0, r<0, t>0, b<0): {adjust_action}'))
+
+        # compare delta with min_distance
+        dist_left = dist(delta_left)
+        dist_right = dist(delta_right)
+        dist_top = dist(delta_top)
+        dist_bottom = dist(delta_bottom)
         LOGGER.debug(
-            self._log(f'Element border (l, r, t, b): {(element_left, element_right, element_top, element_bottom)}'))
-
-        # delta = (area - element) and compare with min distance
-        delta_left = delta(area_left, element_left)
-        delta_right = delta(area_right, element_right)
-        delta_top = delta(area_top, element_top)
-        delta_bottom = delta(area_bottom, element_bottom)
-        LOGGER.debug(self._log(f'Delta border (l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}'))
-
-        # adjust condition
-        adjust = ((delta_left > 0), (delta_right < 0), (delta_top > 0), (delta_bottom < 0))
-        LOGGER.debug(self._log(f'Adjust action (l, r, t, b): {adjust}'))
+            self._log(
+                f'AdjustDistance(min={min_distance})(l, r, t, b): '
+                f'{(dist_left, dist_right, dist_top, dist_bottom)}'
+            )
+        )
         adjust_actions = {
-            (True, False, True, False): (delta_left, delta_top),
-            (False, False, True, False): (0, delta_top),
-            (False, True, True, False): (delta_right, delta_top),
-            (True, False, False, False): (delta_left, 0),
-            (False, True, False, False): (delta_right, 0),
-            (True, False, False, True): (delta_left, delta_bottom),
-            (False, False, False, True): (0, delta_bottom),
-            (False, True, False, True): (delta_right, delta_bottom),
+            (True, False, True, False): (dist_left, dist_top),
+            (False, False, True, False): (0, dist_top),
+            (False, True, True, False): (dist_right, dist_top),
+            (True, False, False, False): (dist_left, 0),
+            (False, True, False, False): (dist_right, 0),
+            (True, False, False, True): (dist_left, dist_bottom),
+            (False, False, False, True): (0, dist_bottom),
+            (False, True, False, True): (dist_right, dist_bottom),
         }
-        delta_x, delta_y = adjust_actions.get(adjust, (0, 0))
+        delta_x, delta_y = adjust_actions.get(adjust_action, (0, 0))
+        LOGGER.debug(self._log(f'(delta_x, delta_y): {(delta_x, delta_y)}'))
 
         # return
         if delta_x == 0 and delta_y == 0:
@@ -1422,8 +1433,8 @@ class Element:
             return None
         end_x, end_y = (start_x + delta_x), (start_y + delta_y)
         adjusted_offset = (start_x, start_y, end_x, end_y)
-        LOGGER.debug(self._log(f'Original offset (sx, sy, ex, ey): {offset}'))
-        LOGGER.debug(self._log(f'Adjusted offset (sx, sy, ex, ey): {adjusted_offset}'))
+        LOGGER.debug(self._log(f'OriginalOffset(sx, sy, ex, ey): {offset}'))
+        LOGGER.debug(self._log(f'AdjustedOffset(sx, sy, ex, ey): {adjusted_offset}'))
         return adjusted_offset
 
     def clear(self) -> Self:
