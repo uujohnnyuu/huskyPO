@@ -236,8 +236,7 @@ class Element:
         """
         if self.cache:
             for cache_name in _Name._caches:
-                if hasattr(self, cache_name):
-                    delattr(self, cache_name)
+                if vars(self).pop(cache_name, None):
                     LOGGER.debug(self._log(f'Clear cache <{cache_name}>.'), stacklevel=2)
 
     def _if_force_relocate(self) -> None:
