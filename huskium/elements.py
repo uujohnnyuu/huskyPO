@@ -41,6 +41,15 @@ class _Name:
     _wait_timeout = '_wait_timeout'
 
 
+class ElementsLoggerAdapter(logging.LoggerAdapter):
+
+    def __init__(self, logger, etype, remark):
+        super().__init__(logger, {"etype": etype, "remark": remark})
+
+    def process(self, msg, kwargs):
+        return f'{self.extra["etype"]}({self.extra["remark"]}): {msg}', kwargs
+
+
 class Elements:
 
     if TYPE_CHECKING:
@@ -76,6 +85,7 @@ class Elements:
         """
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
+        self._logger = ElementsLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -86,7 +96,7 @@ class Elements:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            LOGGER.debug(self._log(f'Get new driver {self._driver}.'))
+            self._logger.debug(f'Get new driver {self._driver}.')
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
@@ -98,7 +108,7 @@ class Elements:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
-        LOGGER.debug(self._log('Dynamically set element attributes.'))
+        self._logger.debug('Dynamically set element attributes.')
 
     def _log(self, msg: str) -> str:
         """
@@ -309,9 +319,9 @@ class Elements:
         """
         exc.msg = self._timeout_message(status)
         if Timeout.reraise(reraise):
-            LOGGER.exception(self._log(exc.msg), stacklevel=2)
+            self._logger.exception(exc.msg, stacklevel=2)
             raise exc  # No cache handling, do not suppress exception messages.
-        LOGGER.warning(self._log(exc.msg), exc_info=True, stacklevel=2)
+        self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
     def wait_all_present(
@@ -345,7 +355,7 @@ class Elements:
             elements = self.wait(timeout).until(
                 ecex.presence_of_all_elements_located(self.locator)
             )
-            LOGGER.debug(self._log(f'locator -> all_present_elements : {elements}'))
+            self._logger.debug(f'locator -> all_present_elements : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
@@ -378,7 +388,7 @@ class Elements:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_all_elements_located(self.locator)
             )
-            LOGGER.debug(self._log(f'locator -> all_absent : {true}'))
+            self._logger.debug(f'locator -> all_absent : {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
@@ -412,7 +422,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_all_elements_located(self.locator)
             )
-            LOGGER.debug(self._log(f'locator -> all_visible_elements : {elements}'))
+            self._logger.debug(f'locator -> all_visible_elements : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
@@ -446,7 +456,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_any_elements_located(self.locator)
             )
-            LOGGER.debug(self._log(f'locator -> any_visible_elements : {elements}'))
+            self._logger.debug(f'locator -> any_visible_elements : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)

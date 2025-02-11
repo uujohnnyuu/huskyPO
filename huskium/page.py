@@ -34,8 +34,7 @@ from .types import WebDriver, WebElement
 TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate: TypeAlias = TupleCoordinate | dict[str, int] | dict[str, float]
 
-
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)  
 PREFIX_FILTER = PrefixFilter()
 LOGGER.addFilter(PREFIX_FILTER)
 
@@ -44,23 +43,41 @@ class _Name:
     _wait_timeout = '_wait_timeout'
 
 
+class PageLoggerAdapter(logging.LoggerAdapter):
+
+    def __init__(self, logger, ptype, remark):
+        super().__init__(logger, {"ptype": ptype, "remark": remark})
+
+    def process(self, msg, kwargs):
+        return f'{self.extra["ptype"]}({self.extra["remark"]}): {msg}', kwargs
+    
+
 class Page:
 
     if TYPE_CHECKING:
         _wait_timeout: int | float
 
-    def __init__(self, driver: WebDriver) -> None:
+    def __init__(self, driver: WebDriver, remark: str = 'Page') -> None:
         if not isinstance(driver, WebDriver):
-            raise TypeError(
-                'The driver type should be "WebDriver", '
-                f'not {type(driver).__name__}.'
-            )
+            raise TypeError(f'The driver type should be "WebDriver", not {type(driver).__name__}.')
+        if not isinstance(remark, str):
+            raise TypeError(f'The remark type should be "str", not {type(remark).__name__}.')
         self._driver = driver
+        self._remark = remark
         self._action = ActionChains(driver)
+        self._logger = PageLoggerAdapter(LOGGER, type(self).__name__, self.remark)
+
+    @property
+    def logger(self) -> PageLoggerAdapter:
+        return self._logger
 
     @property
     def driver(self) -> WebDriver:
         return self._driver
+    
+    @property
+    def remark(self) -> str:
+        return self._remark
 
     @property
     def action(self) -> ActionChains:
@@ -1113,7 +1130,7 @@ class Page:
                 'and should be between "0.0" and "1.0".'
             )
 
-        LOGGER.debug(f'coordinate: {coordinate}')
+        self._logger.debug(f'{name} origin: {coordinate}')
         return coordinate
 
     def _get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
@@ -1128,7 +1145,7 @@ class Page:
             area_height = int(window_height * area_height)
 
         area = (area_x, area_y, area_width, area_height)
-        LOGGER.debug(f'area: {area}')
+        self._logger.debug(f'area actual (x, y, w, h): {area}')
         return cast(tuple[int, int, int, int], area)
 
     def _get_offset(
@@ -1147,7 +1164,7 @@ class Page:
             end_y = int(area_y + area_height * end_y)
 
         offset = (start_x, start_y, end_x, end_y)
-        LOGGER.debug(f'offset: {offset}')
+        self._logger.debug(f'offset actual (sx, sy, ex, ey): {offset}')
         return cast(tuple[int, int, int, int], offset)
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:
