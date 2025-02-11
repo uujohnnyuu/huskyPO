@@ -294,7 +294,7 @@ class Element:
         If initial cache is None, return `Cache.ELEMENT`.
         """
         return Cache.ELEMENT if self._cache is None else self._cache
-    
+
     @property
     def logger(self) -> ElementLoggerAdapter:
         return self._logger

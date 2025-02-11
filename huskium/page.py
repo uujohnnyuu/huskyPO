@@ -34,7 +34,7 @@ from .types import WebDriver, WebElement
 TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate: TypeAlias = TupleCoordinate | dict[str, int] | dict[str, float]
 
-LOGGER = logging.getLogger(__name__)  
+LOGGER = logging.getLogger(__name__)
 PREFIX_FILTER = PrefixFilter()
 LOGGER.addFilter(PREFIX_FILTER)
 
@@ -50,7 +50,7 @@ class PageLoggerAdapter(logging.LoggerAdapter):
 
     def process(self, msg, kwargs):
         return f'{self.extra["ptype"]}({self.extra["remark"]}): {msg}', kwargs
-    
+
 
 class Page:
 
@@ -74,7 +74,7 @@ class Page:
     @property
     def driver(self) -> WebDriver:
         return self._driver
-    
+
     @property
     def remark(self) -> str:
         return self._remark
