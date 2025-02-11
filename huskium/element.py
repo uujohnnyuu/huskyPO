@@ -2139,7 +2139,7 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTION:
             self._select_cache = Select(self.present)
         return self._select_cache
-    
+
     @property
     def select_cache(self) -> Select | None:
         """
