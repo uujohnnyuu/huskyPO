@@ -43,6 +43,19 @@ class PrefixFilter(logging.Filter):
 
     """
 
+    def __init__(self):
+        super().__init__()
+        self.func_filter = FuncnamePrefixFilter()
+        self.file_filter = FilenamePrefixFilter()
+
+    def filter(self, record):
+        if Log.FUNCFRAME:
+            return self.func_filter.filter(record)
+        return self.file_filter.filter(record)
+
+
+class FuncnamePrefixFilter(logging.Filter):
+
     def filter(self, record):
         if Log.PREFIX:
             prefix = Log.PREFIX.lower() if Log.LOWER else Log.PREFIX
@@ -56,6 +69,26 @@ class PrefixFilter(logging.Filter):
                     record.funcName = original_funcname
                     record.filename = os.path.basename(frame.f_code.co_filename)
                     record.lineno = frame.f_lineno
+                    return True
+                frame = frame.f_back
+        return True
+    
+
+class FilenamePrefixFilter(logging.Filter):
+
+    def filter(self, record):
+        if Log.PREFIX:
+            prefix = Log.PREFIX.lower() if Log.LOWER else Log.PREFIX
+            # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
+            frame = inspect.currentframe()
+            while frame:
+                filename = original_filename = os.path.basename(frame.f_code.co_filename)
+                if Log.LOWER:
+                    filename = filename.lower()
+                if filename.startswith(prefix):
+                    record.filename = original_filename
+                    record.lineno = frame.f_lineno
+                    record.funcName = frame.f_code.co_name
                     return True
                 frame = frame.f_back
         return True

@@ -30,8 +30,12 @@ class Log:
         - LEVEL: `logging.DEBUG`
         - BASIC_CONFIG: A dictionary containing the above parameters.
     """
+    # prefix
     PREFIX: str | None = 'test'
+    FUNCFRAME: bool = True
     LOWER: bool = True
+
+    # basicConfig
     FILENAME = './log.log'
     FILEMODE = 'w'
     FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'
