@@ -24,7 +24,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Cache, Timeout, Offset, Area
-from .logfilter import PrefixFilter
+from .logging_filter import PrefixFilter
+from .logger_adapter import PageElementLoggerAdapter
 from .page import Page, Coordinate
 from .types import SeleniumWebElement, WebDriver, WebElement
 
@@ -45,15 +46,6 @@ class _Name:
     _clickable_cache = '_clickable_cache'
     _select_cache = '_select_cache'
     _caches = [_present_cache, _visible_cache, _clickable_cache, _select_cache]
-
-
-class ElementLoggerAdapter(logging.LoggerAdapter):
-
-    def __init__(self, logger, etype, remark):
-        super().__init__(logger, {"etype": etype, "remark": remark})
-
-    def process(self, msg, kwargs):
-        return f'{self.extra["etype"]}({self.extra["remark"]}): {msg}', kwargs
 
 
 class Element:
@@ -104,7 +96,7 @@ class Element:
         """
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._logger = ElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
+        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -294,10 +286,6 @@ class Element:
         If initial cache is None, return `Cache.ELEMENT`.
         """
         return Cache.ELEMENT if self._cache is None else self._cache
-
-    @property
-    def logger(self) -> ElementLoggerAdapter:
-        return self._logger
 
     @property
     def driver(self) -> WebDriver:

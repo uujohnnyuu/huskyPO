@@ -27,7 +27,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from . import ec_extension as ecex
 from .config import Timeout, Offset, Area
-from .logfilter import PrefixFilter
+from .logging_filter import PrefixFilter
+from .logger_adapter import PageElementLoggerAdapter
 from .types import WebDriver, WebElement
 
 
@@ -43,15 +44,6 @@ class _Name:
     _wait_timeout = '_wait_timeout'
 
 
-class PageLoggerAdapter(logging.LoggerAdapter):
-
-    def __init__(self, logger, ptype, remark):
-        super().__init__(logger, {"ptype": ptype, "remark": remark})
-
-    def process(self, msg, kwargs):
-        return f'{self.extra["ptype"]}({self.extra["remark"]}): {msg}', kwargs
-
-
 class Page:
 
     if TYPE_CHECKING:
@@ -65,11 +57,7 @@ class Page:
         self._driver = driver
         self._remark = remark
         self._action = ActionChains(driver)
-        self._logger = PageLoggerAdapter(LOGGER, type(self).__name__, self.remark)
-
-    @property
-    def logger(self) -> PageLoggerAdapter:
-        return self._logger
+        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     @property
     def driver(self) -> WebDriver:

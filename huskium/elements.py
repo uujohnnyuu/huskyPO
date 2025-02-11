@@ -24,7 +24,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Timeout
-from .logfilter import PrefixFilter
+from .logging_filter import PrefixFilter
+from .logger_adapter import PageElementLoggerAdapter
 from .page import Page
 from .types import WebDriver, WebElement
 
@@ -39,15 +40,6 @@ LOGGER.addFilter(PREFIX_FILTER)
 class _Name:
     _page = '_page'
     _wait_timeout = '_wait_timeout'
-
-
-class ElementsLoggerAdapter(logging.LoggerAdapter):
-
-    def __init__(self, logger, etype, remark):
-        super().__init__(logger, {"etype": etype, "remark": remark})
-
-    def process(self, msg, kwargs):
-        return f'{self.extra["etype"]}({self.extra["remark"]}): {msg}', kwargs
 
 
 class Elements:
@@ -85,7 +77,7 @@ class Elements:
         """
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
-        self._logger = ElementsLoggerAdapter(LOGGER, type(self).__name__, self.remark)
+        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -109,12 +101,6 @@ class Elements:
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
         self._logger.debug('Dynamically set element attributes.')
-
-    def _log(self, msg: str) -> str:
-        """
-        Elements(remark): msg
-        """
-        return f'Elements({self.remark}): {msg}'
 
     def dynamic(
         self,
