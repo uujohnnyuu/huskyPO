@@ -78,11 +78,30 @@ my_page.search_result1.click()
 driver.close()
 ```
 
+### 3️⃣ Advanced Dynamic Element
+```python
+from huskium import Page, Element, By
+
+class MyPage(Page):
+    
+    # Set a static element first. 
+    static_search_result = Element()  
+
+    # Method 1: Call `dynamic` to set `static_search_result`.
+    def dynamic_search_result(self, order: int = 1):
+        return self.static_search_result.dynamic(By.XPATH, f'(//h3)[{order}]', remark=f'Search NO.{order}')
+
+    # Method 2: Use the data descriptor mechanism.
+    def dynamic_search_result(self, order: int = 1):
+        self.static_search_result = Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search NO.{order}')
+        return self.static_search_result
+```
+
 ---
 
 ## Timeout Global Settings
 
-1️⃣ **Global Timeout Configuration**
+### 1️⃣ Global Timeout Configuration
 ```python
 from huskium import Timeout
 
@@ -90,7 +109,7 @@ Timeout.DEFAULT = 60  # Default timeout for all Elements (default is 30s)
 Timeout.RERAISE = False  # Prevent raising exceptions on timeouts
 ```
 
-2️⃣ **Priority Order for Timeout Values**
+### 2️⃣ Priority Order for Timeout Values
 - **P1**: Method-Level (`page.element.wait_method(timeout=20)`)
 - **P2**: Element-Level (`Element(..., timeout=10, ...)`)
 - **P3**: Global-Level (`Timeout.DEFAULT = 60`)
@@ -99,7 +118,7 @@ Timeout.RERAISE = False  # Prevent raising exceptions on timeouts
 
 ## Cache Global Settings
 
-1️⃣ **Enable/Disable Cache**
+### 1️⃣ Enable/Disable Cache**
 ```python
 from huskium import Cache
 
@@ -107,9 +126,58 @@ Cache.ELEMENT = False  # Disable caching globally
 element = Element(..., cache=False)  # Disable caching for a specific element
 ```
 
-2️⃣ **Cache Priority Order**
+### 2️⃣ Cache Priority Order**
 - **P1**: Element-Level (`Element(..., cache=False)`)
 - **P2**: Global-Level (`Cache.ELEMENT = False`)
+
+---
+
+## Log Global Settings
+
+### 1️⃣ Inner Debug Log
+```python
+from huskium import Log
+
+# Capture log messages from frames where the name starts with 'test'.
+# Set to None to disable filtering.
+Log.PREFIX = 'test'  
+
+# Specify whether to filter logs by function name.
+# If False, filtering is based on filename (module) instead.
+Log.FUNCFRAME: bool = True
+
+# Set to True for case-insensitive filtering.
+Log.LOWER: bool = True
+```
+
+### 2️⃣ Log Filter
+```python
+from huskium import PrefixFilter, FuncnamePrefixFilter, FilenamePrefixFilter
+
+# Apply a filter to customize logging.
+# PrefixFilter includes both FuncnamePrefixFilter and FilenamePrefixFilter.
+# If Log.FUNCNAME = True, FuncnamePrefixFilter is used; otherwise, FilenamePrefixFilter is applied.
+logging.getLogger().addFilter(PrefixFilter())
+
+# Use specific filters independently if needed, regardless of Log.FUNCNAME.
+logging.getLogger().addFilter(FilenamePrefixFilter())
+
+# It is recommended to configure logging per module.
+# Huskium’s core modules already define LOGGER, so Log settings control behavior externally.
+LOGGER = logging.getLogger(__name__)
+FILTER = FuncnamePrefixFilter()
+LOGGER.addFilter(FILTER)
+```
+
+### 3️⃣ Log Display Example
+```log
+# When Log.PREFIX = None, logging behaves normally, showing the first frame (stacklevel = 1).
+2025-02-11 11:13:08 | DEBUG | element.py:574 | wait_clickable | Element(logout_button): Some message.
+
+# When Log.PREFIX = 'test', logs display the first frame with a name starting with 'test' (stacklevel >= 1).
+# This helps quickly trace the module and line where the issue occurs.
+2025-02-11 11:13:22 | DEBUG | test_game.py:64 | test_game_flow | Element(logout_button): Some message.
+```
 
 ---
 
