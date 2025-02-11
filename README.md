@@ -36,9 +36,7 @@
 
 ## Page Object Example Code
 
-### 1️⃣ Constructing a Page Object
-Create a Page object in a separate Python file:
-
+### 1. Constructing Page Objects
 ```python
 # my_page.py
 
@@ -56,8 +54,7 @@ class MyPage(Page):
         return Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search result no.{order}')
 ```
 
-### 2️⃣ Writing Test Cases
-
+### 2. Writing Test Cases
 ```python
 # test_my_page.py
 
@@ -80,7 +77,7 @@ my_page.search_result1.click()
 driver.close()
 ```
 
-### 3️⃣ Advanced Dynamic Element
+### 3. Advanced Dynamic Element
 ```python
 from huskium import Page, Element, By
 
@@ -103,7 +100,7 @@ class MyPage(Page):
 
 ## Timeout Global Settings
 
-### 1️⃣ Global Timeout Configuration
+### 1. Global Timeout Configuration
 ```python
 from huskium import Timeout
 
@@ -111,7 +108,7 @@ Timeout.DEFAULT = 60  # Default timeout for all Elements (default is 30s)
 Timeout.RERAISE = False  # Prevent raising exceptions on timeouts
 ```
 
-### 2️⃣ Priority Order for Timeout Values
+### 2. Priority Order for Timeout Values
 - **P1**: Method-Level (`page.element.wait_method(timeout=20)`)
 - **P2**: Element-Level (`Element(..., timeout=10, ...)`)
 - **P3**: Global-Level (`Timeout.DEFAULT = 60`)
@@ -120,7 +117,7 @@ Timeout.RERAISE = False  # Prevent raising exceptions on timeouts
 
 ## Cache Global Settings
 
-### 1️⃣ Enable/Disable Cache
+### 1. Enable/Disable Cache
 ```python
 from huskium import Cache
 
@@ -128,7 +125,7 @@ Cache.ELEMENT = False  # Disable caching globally
 element = Element(..., cache=False)  # Disable caching for a specific element
 ```
 
-### 2️⃣ Cache Priority Order
+### 2. Cache Priority Order
 - **P1**: Element-Level (`Element(..., cache=False)`)
 - **P2**: Global-Level (`Cache.ELEMENT = False`)
 
@@ -136,7 +133,7 @@ element = Element(..., cache=False)  # Disable caching for a specific element
 
 ## Log Global Settings
 
-### 1️⃣ Inner Debug Log
+### 1. Inner Debug Log
 ```python
 from huskium import Log
 
@@ -152,7 +149,7 @@ Log.FUNCFRAME: bool = True
 Log.LOWER: bool = True
 ```
 
-### 2️⃣ Log Filter
+### 2. Log Filter
 ```python
 from huskium import PrefixFilter, FuncnamePrefixFilter, FilenamePrefixFilter
 
@@ -171,7 +168,7 @@ FILTER = FuncnamePrefixFilter()
 LOGGER.addFilter(FILTER)
 ```
 
-### 3️⃣ Log Display Example
+### 3. Log Display Example
 ```log
 # When Log.PREFIX = None, logging behaves normally, showing the first frame (stacklevel = 1).
 2025-02-11 11:13:08 | DEBUG | element.py:574 | wait_clickable | Element(logout_button): Some message.
@@ -185,8 +182,7 @@ LOGGER.addFilter(FILTER)
 
 ## Wait Actions
 
-### 1️⃣ Basic Element Status
-
+### 1. Basic Element Statu
 ```python
 # Single Element
 page.element.wait_present()
@@ -205,7 +201,7 @@ page.elements.wait_all_visible()
 page.elements.wait_any_visible()
 ```
 
-### 2️⃣ Reverse Element States with Presence Check
+### 2. Reverse Element States with Presence Check
 ```python
 # For invisible and unclickable elements, absence is allowed by setting present=False:
 page.element.wait_invisible(present=False)  # Can be either absent or invisible
@@ -238,7 +234,6 @@ page.draw_lines(dots)
 ---
 
 ## Action Chains
-
 ```python
 page.element.move_to_element().drag_and_drop().perform()
 page.scroll_from_origin().double_click().perform()
@@ -248,13 +243,11 @@ page.element.move_to_element().drag_and_drop()
 page.scroll_from_origin().double_click()
 ...  # do something
 page.perform()  # perform all actions
-
 ```
 
 ---
 
 ## Select Actions
-
 ```python
 page.element.options
 page.element.select_by_value("option_value")
