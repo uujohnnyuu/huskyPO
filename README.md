@@ -1,190 +1,193 @@
 # huskium
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Usage](#usage)
+3. [Page Object Example Code](#page-object-example-code)
+4. [Timeout Global Settings](#timeout-global-settings)
+5. [Cache Global Settings](#cache-global-settings)
+6. [Wait Actions](#wait-actions)
+7. [Appium Extended Actions](#appium-extended-actions)
+8. [Other Actions](#other-actions)
+9. [Logstack](#logstack)
+10. [Inheritance](#inheritance)
+11. [TODO](#todo)
+
 ---
 
 ## Copyright
 - Developer: Johnny Chou
+
 ---
 
 ## Overview
 - **huskium** is a Page Object framework built on Selenium and Appium.
-- **huskium** leverages Python’s data descriptors to simplify and enhance UI automation.
+- It leverages Python’s data descriptors to simplify and enhance UI automation.
+- Currently tracking Appium v4.5.0 (released on 2025/01/22).
+
 ---
 
 ## Usage
 - **Build page objects** simply and elegantly using the `Page` and `Element(s)` classes.
-- **Write test scripts** simply and elegantly using the constructed Page objects.
+- **Write test scripts** easily with the constructed Page objects.
+
 ---
 
 ## Page Object Example Code
-1. Construct a Page object in any Python file, each page recommended to be a separate Page class.
+
+### 1️⃣ Constructing a Page Object
+Create a Page object in a separate Python file:
+
 ```python
 # my_page.py
 
-
-from huskium import Page, Element, Elements
-from huskium import By
-from huskium import dynamic
-
+from huskium import Page, Element, Elements, By, dynamic
 
 class MyPage(Page):
-    
-    # Static element: The most common way to set up Page objects.
-    # Element is a data descriptor of Page, allowing simple setup as shown below:
+    # Static element definition
     search_field = Element(By.NAME, 'q', remark='Search input box')
     search_results = Elements(By.TAG_NAME, 'h3', remark='All search results')
     search_result1 = Element(By.XPATH, '(//h3)[1]', remark='First search result')
-    
-    # Dynamic element: Rarely used, typically determined during test case execution.
-    # Must use @dynamic to enable the descriptor's functionality.
+
+    # Dynamic element example
     @dynamic
     def search_result(self, order: int = 1):
         return Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search result no.{order}')
-    
-    # For dynamic elements as properties, use the following format:
-    @property
-    @dynamic
-    def keyword_results(self):
-        return Elements(By.XPATH, f'//*[contains(text(), "{Keyword.text1}")]')
-    
-    # To record dynamic elements statically, use standard data descriptor dynamic assignment:
-    # 1. Create a data descriptor object (e.g., static_element).
-    static_element = Element()
-    
-    # 2. Define a function and call "dynamic" to assign a value to "static_element".
-    # The logic for dynamic parameters is the same as in Element.
-    # After calling "dynamic_element", you can also use "static_element" to operate it.
-    def dynamic_element(self, par):
-        return self.static_element.dynamic(By.XPATH, f'//*[contains(text(), "{par}")]')
-    
-    # 3. Use the standard method for a data descriptor.
-    def dynamic_element(self, par):
-        self.static_element = Element(By.XPATH, f'//*[contains(text(), "{par}")]')
-        return self.static_element
 ```
 
-2. After constructing the Page object, you can begin writing test cases.
+### 2️⃣ Writing Test Cases
+
 ```python
 # test_my_page.py
-
 
 from selenium import webdriver
 from my_page import MyPage
 
+driver = webdriver.Chrome()
+my_page = MyPage(driver)
 
-class TestMyPage:
-    
-    driver = webdriver.Chrome()
+my_page.get("https://google.com")
 
-    # Set up a page object. All actions will be triggered from this object.
-    my_page = MyPage(driver)
+# Perform actions with automatic explicit waits
+my_page.search_field.send_keys("Selenium").submit()
+my_page.search_results.wait_all_visible()
+my_page.save_screenshot("screenshot.png")
 
-    # The Page object can also call driver-related methods.
-    my_page.get("https://google.com")
+assert "Selenium" in my_page.search_result1.text
+my_page.search_result1.click()
 
-    # Example of a wait usage:
-    # Wait until an element is visible, then take a screenshot.
-    my_page.search_field.wait_visible()
-    my_page.save_screenshot("my/file/image1.png")
-
-    # All actions automatically handle explicit waits.
-    # No need to manually call wait methods unless required, 
-    # e.g. Equivalent to: 
-    # my_page.search_field.wait_clickable().send_keys(keyword).wait_clickable().submit()
-    my_page.search_field.send_keys(keyword).submit()
-
-    # Various wait states are available.
-    my_page.loading_image.wait_absent()
-    my_page.search_results.wait_all_visible()
-    my_page.save_screenshot("my/file/image2.png")
-
-    # Assertions can be made directly:
-    search_keyword = 'dinner'
-    assert my_page.keyword_results(search_keyword).quantity > 1
-    assert search_keyword in my_page.search_result1.text
-
-    # Reuse found elements through existing sessions:
-    # Once an element (e.g., `my_page.search_result1`) is located, 
-    # it will use the same session unless the element becomes stale.
-    # No need to store the found element in a separate variable.
-    # Just perform actions directly:
-    my_page.search_result1.click()
-    ...
-
-    driver.close()
+driver.close()
 ```
+
+### 3️⃣ Advanced Dynamic Element
+```python
+from huskium import Page, Element, By
+
+class MyPage(Page):
+    
+    # Set a static element first. 
+    static_search_result = Element()  
+
+    # Method 1: Call `dynamic` to set `static_search_result`.
+    def dynamic_search_result(self, order: int = 1):
+        return self.static_search_result.dynamic(By.XPATH, f'(//h3)[{order}]', remark=f'Search NO.{order}')
+
+    # Method 2: Use the data descriptor mechanism.
+    def dynamic_search_result(self, order: int = 1):
+        self.static_search_result = Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search NO.{order}')
+        return self.static_search_result
+```
+
 ---
 
 ## Timeout Global Settings
-1.	In addition to setting timeouts for individual elements and methods, 
-a global timeout setting is also available. See the example below:
+
+### 1️⃣ Global Timeout Configuration
 ```python
 from huskium import Timeout
 
-
-# Set the default timeout for all Elements.
-# The huskium default is 30 seconds. You can change it as needed:
-Timeout.DEFAULT = 60
-
-# If you don’t want any waiting, you can also set it to 0:
-Timeout.DEFAULT = 0
-
-# Set the reraise behavior for timeouts on all Elements.
-# The huskium default is True, with the following logic:
-# True: Raise a TimeoutException if the element times out.
-# False: Return False if the element times out, without raising a TimeoutException.
-Timeout.RERAISE = False
+Timeout.DEFAULT = 60  # Default timeout for all Elements (default is 30s)
+Timeout.RERAISE = False  # Prevent raising exceptions on timeouts
 ```
 
-2.	The priority order for timeout values is as follows:
-- P1: Method-Level:
-    - `page.element.wait_method(timeout=20)`
-- P2: Element-Level:
-    - `element = Element(..., timeout=10, ...)`
-- P3: Global-Level:
-    - `Timeout.DEFAULT = 60`
+### 2️⃣ Priority Order for Timeout Values
+- **P1**: Method-Level (`page.element.wait_method(timeout=20)`)
+- **P2**: Element-Level (`Element(..., timeout=10, ...)`)
+- **P3**: Global-Level (`Timeout.DEFAULT = 60`)
 
-3.	The priority order for timeout reraise behavior is as follows:
-- P1: Method-Level:
-    - `page.element.wait_method(reraise=True)`
-- P2: Global-Level:
-    - `Timeout.RERAISE = False`
 ---
 
 ## Cache Global Settings
-1. Cache determines whether the `Element` class should reference a previously located `WebElement` 
-for actions or locate the element again for each action.  
-2. The benefits of Cache are evident when the same `Element` is accessed multiple times, 
-such as performing `.text` followed by `.click()`.
-3. Note that `Elements` does not support cache. 
-For multiple elements, the state can be highly unstable, 
-so each action must locate the elements again to ensure expected behavior.  
+
+### 1️⃣ Enable/Disable Cache
 ```python
 from huskium import Cache
 
-
-# Set the default cache for all Element.
-# The default is True. You can change it as needed:
-Cache.ELEMENT = False
-
-
-# You can also configure the cache for an individual Element:
-element = Element(..., cache=False)
+Cache.ELEMENT = False  # Disable caching globally
+element = Element(..., cache=False)  # Disable caching for a specific element
 ```
 
-4.	The priority order for cache value is as follows:
-- P1: Element-Level:
-    - `element = Element(..., cache=False)`
-- P2: Global-Level:
-    - `Cache.ELEMENT = False`
+### 2️⃣ Cache Priority Order
+- **P1**: Element-Level (`Element(..., cache=False)`)
+- **P2**: Global-Level (`Cache.ELEMENT = False`)
+
+---
+
+## Log Global Settings
+
+### 1️⃣ Inner Debug Log
+```python
+from huskium import Log
+
+# Capture log messages from frames where the name starts with 'test'.
+# Set to None to disable filtering.
+Log.PREFIX = 'test'  
+
+# Specify whether to filter logs by function name.
+# If False, filtering is based on filename (module) instead.
+Log.FUNCFRAME: bool = True
+
+# Set to True for case-insensitive filtering.
+Log.LOWER: bool = True
+```
+
+### 2️⃣ Log Filter
+```python
+from huskium import PrefixFilter, FuncnamePrefixFilter, FilenamePrefixFilter
+
+# Apply a filter to customize logging.
+# PrefixFilter includes both FuncnamePrefixFilter and FilenamePrefixFilter.
+# If Log.FUNCNAME = True, FuncnamePrefixFilter is used; otherwise, FilenamePrefixFilter is applied.
+logging.getLogger().addFilter(PrefixFilter())
+
+# Use specific filters independently if needed, regardless of Log.FUNCNAME.
+logging.getLogger().addFilter(FilenamePrefixFilter())
+
+# It is recommended to configure logging per module.
+# Huskium’s core modules already define LOGGER, so Log settings control behavior externally.
+LOGGER = logging.getLogger(__name__)
+FILTER = FuncnamePrefixFilter()
+LOGGER.addFilter(FILTER)
+```
+
+### 3️⃣ Log Display Example
+```log
+# When Log.PREFIX = None, logging behaves normally, showing the first frame (stacklevel = 1).
+2025-02-11 11:13:08 | DEBUG | element.py:574 | wait_clickable | Element(logout_button): Some message.
+
+# When Log.PREFIX = 'test', logs display the first frame with a name starting with 'test' (stacklevel >= 1).
+# This helps quickly trace the module and line where the issue occurs.
+2025-02-11 11:13:22 | DEBUG | test_game.py:64 | test_game_flow | Element(logout_button): Some message.
+```
+
 ---
 
 ## Wait Actions
-We offer a comprehensive set of wait methods, 
-extending the official expected_conditions in `ec_extension.py` 
-and encapsulating them into corresponding methods. 
-Below are the extended methods for Element(s):
+
+### 1️⃣ Basic Element Status
+
 ```python
-# Element
+# Single Element
 page.element.wait_present()
 page.element.wait_absent()
 page.element.wait_visible()
@@ -194,151 +197,86 @@ page.element.wait_unclickable()
 page.element.wait_selected()
 page.element.wait_unselected()
 
-# Elements
+# Multiple Elements
 page.elements.wait_all_present()
 page.elements.wait_all_absent()
 page.elements.wait_all_visible()
 page.elements.wait_any_visible()
-
-# You can set default timeout and reraise behavior for all wait functions.
-page.element.wait_visible(timeout=10, reraise=True)
-# Recommended to use default settings (timeout=30, reraise=True) for simplicity.
-page.element.wait_visible()
-
-# For reverse conditions like invisible and unclickable, 
-# use the "present" parameter to define if existence is required.
-# Element must be present and invisible (default).
-page.element.wait_invisible(present=True)
-# Element can be absent or [present and invisible].
-page.element.wait_invisible(present=False)
-# Element must be present and unclickable (default).
-page.element.wait_unclickable(present=True)
-# Element can be absent or [present and unclickable].
-page.element.wait_unclickable(present=False)
-
-# Selection states are tied to user actions, 
-# so the element must be present; no "present" parameter is provided.
-page.element.wait_selected()
-page.element.wait_unselected()
 ```
+
+### 2️⃣ Reverse Element States with Presence Check
+```python
+# For invisible and unclickable elements, absence is allowed by setting present=False:
+page.element.wait_invisible(present=False)  # Can be either absent or invisible
+page.element.wait_unclickable(present=False)  # Can be either absent or unclickable
+```
+
 ---
 
-## Appium Extended Actions
-We have extended Appium with highly convenient action features, including:
-```python
-# Offset allows you to define swipe directions. 
-# It supports eight standard directions: 
-# UP, DOWN, LEFT, RIGHT, UPPER_LEFT, UPPER_RIGHT, LOWER_LEFT, LOWER_RIGHT.
-# Area lets you define the swipeable range, 
-# defaulting to the full device screen (FULL), or you can customize it.
+## Appium Extended Actions (Appium 2.0+)
 
+### Enhanced Appium Actions Example
+```python
 from huskium import Offset, Area
 
-# Page swiping. Refer to function docstrings for details.
+# Page swipe
 page.swipe_by(Offset.UP, Area.FULL)
-page.swipe_by(Offset.DOWN)
-page.swipe_by(Offset.LEFT)
-page.swipe_by(Offset.RIGHT)
-page.swipe_by(Offset.UPPER_LEFT)
-page.swipe_by(Offset.UPPER_RIGHT)
-page.swipe_by(Offset.LOWER_LEFT)
-page.swipe_by(Offset.LOWER_RIGHT)
 
-# Page flicking. Refer to function docstrings for details.
-# All Offset directions are supported.
-page.flick_by(Offset.UP, Area.FULL)
-
-# Element swiping until an element is visible.
-# All Offset directions are supported.
-page.element.swipe_by(Offset.UP, Area.FULL)
-
-# Element flicking until an element is visible.
-# All Offset directions are supported.
+# Element flick until visible
 page.element.flick_by(Offset.UP, Area.FULL)
 
-# Page draw lines.
-# Define dots coordinates
-dots = [{"x": x1, "y": y1}, {"x": x2, "y": y2}, {"x": x3, "y": y3}, ...]
-# Alternatively, use element locations if available
+# Drawing gestures (e.g., "9875321" for reverse Z)
+dots = page.elements.locations
+page.draw_gesture(dots, "9875321")
+
+# Drawing any lines between dots
 dots = page.elements.locations
 page.draw_lines(dots)
-
-# Page draw gesture.
-# 9-grid coordinates, or define your own
-dots = page.elements.locations  
-# 9-grid gesture string (1–9 represent grid positions). This example draws a reverse Z.
-gesture = "9875321"  
-page.draw_gesture(dots, gesture)
 ```
+
 ---
 
-## Other Actions
-All Selenium and Appium features are included. Here are some examples:
+### Action Chains
+
 ```python
-# ActionChains
-page.element.scroll_to_element().perform()
 page.element.move_to_element().drag_and_drop().perform()
+page.scroll_from_origin().double_click().perform()
 
-# Temporarily store ActionChains and execute later
+# or
 page.element.move_to_element().drag_and_drop()
-...  # Process other logic before executing perform()
-page.element.perform()
+page.scroll_from_origin().double_click()
+...  # do something
+page.perform()  # perform all actions
 
-# Select options
-page.element.options
-page.element.select_by_value()
 ```
+
 ---
 
-## Logstack
-Using logstack to log specific frame information.
-The logstack module extends logging functionality, 
-allowing you to capture information for specific frames, 
-such as those starting with a designated prefix (e.g., test), 
-without tracing all frames manually.
+### Select Actions
+
 ```python
-from huskium import logstack
-
-# Configure logging using either logging.basicConfig() or logstack.config().
-# logstack.config() simplifies the default settings. You can use it as shown below
-# to output the log file to "./log.log".
-logstack.config()
-
-# Use logstack in your code to log specific frames
-def some_func():
-    ...
-    # Logs information from the first frame with the prefix (default: test)
-    logstack.info("Log from some function.", prefix="test")
-
-def test_func():
-    ...
-    # Logs frame info for test_func, not some_func
-    some_func()
-
-# Example log output:
-# 2025-01-04 18:20:48 | INFO | testing.py:32 | test_func | Log from some function.
+page.element.options
+page.element.select_by_value("option_value")
 ```
+
+---
 
 ## Inheritance
-You can also extend the Page and Element classes to include custom methods. 
-There’s no need to manually handle descriptors, and the inheritance usage remains unchanged.
-```python
-from huskium import Page as HuskyPage
-from huskium import Element as HuskyElement
 
+🔹 **Extending Page and Element Classes**
+```python
+from huskium import Page as HuskyPage, Element as HuskyElement
 
 class Page(HuskyPage):
-
     def extended_func(self, par):
         ...
 
-
 class Element(HuskyElement):
-
     def extended_func(self, par):
         ...
 ```
+
 ---
 
 ## TODO
-Keep tracking the Appium version.  
+- Keep tracking Appium version updates.
