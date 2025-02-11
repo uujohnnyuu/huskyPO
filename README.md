@@ -6,12 +6,13 @@
 3. [Page Object Example Code](#page-object-example-code)
 4. [Timeout Global Settings](#timeout-global-settings)
 5. [Cache Global Settings](#cache-global-settings)
-6. [Wait Actions](#wait-actions)
-7. [Appium Extended Actions](#appium-extended-actions)
-8. [Other Actions](#other-actions)
-9. [Logstack](#logstack)
-10. [Inheritance](#inheritance)
-11. [TODO](#todo)
+6. [Log Global Settings](#log-global-settings)
+7. [Wait Actions](#wait-actions)
+8. [Appium Extended Actions](#appium-extended-actions)
+9. [Action Chains](#action-chains)
+10. [Select Actions](#select-actions)
+11. [Inheritance](#inheritance)
+12. [TODO](#todo)
 
 ---
 
@@ -213,9 +214,9 @@ page.element.wait_unclickable(present=False)  # Can be either absent or unclicka
 
 ---
 
-## Appium Extended Actions (Appium 2.0+)
+## Appium Extended Actions
 
-### Enhanced Appium Actions Example
+### Enhanced Appium Actions (Appium 2.0+)
 ```python
 from huskium import Offset, Area
 
