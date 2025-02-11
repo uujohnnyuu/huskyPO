@@ -72,7 +72,7 @@ class FuncnamePrefixFilter(logging.Filter):
                     return True
                 frame = frame.f_back
         return True
-    
+
 
 class FilenamePrefixFilter(logging.Filter):
 
