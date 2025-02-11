@@ -1,23 +1,23 @@
 # huskium
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Usage](#usage)
-3. [Page Object Example Code](#page-object-example-code)
-4. [Timeout Global Settings](#timeout-global-settings)
-5. [Cache Global Settings](#cache-global-settings)
-6. [Log Global Settings](#log-global-settings)
-7. [Wait Actions](#wait-actions)
-8. [Appium Extended Actions](#appium-extended-actions)
-9. [Action Chains](#action-chains)
-10. [Select Actions](#select-actions)
-11. [Inheritance](#inheritance)
-12. [TODO](#todo)
+- [Overview](#overview)
+- [Usage](#usage)
+- [Page Object Example Code](#page-object-example-code)
+- [Timeout Settings](#timeout-settings)
+- [Cache Settings](#cache-settings)
+- [Log Settings](#log-settings)
+- [Wait Actions](#wait-actions)
+- [Appium Extended Actions](#appium-extended-actions)
+- [Action Chains](#action-chains)
+- [Select Actions](#select-actions)
+- [Inheritance](#inheritance)
+- [TODO](#todo)
 
 ---
 
 ## Copyright
-- Developer: Johnny Chou
+### Developer: Johnny Chou
 
 ---
 
