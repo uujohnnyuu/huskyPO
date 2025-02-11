@@ -261,9 +261,9 @@ class Page:
                 f'The current url is "{current_url}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def url_contains(
@@ -287,9 +287,9 @@ class Page:
                 f'The current url is "{current_url}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def url_matches(
@@ -314,9 +314,9 @@ class Page:
                 f'The current url is "{current_url}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def url_changes(
@@ -340,9 +340,9 @@ class Page:
                 f'The current url is still "{current_url}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     @property
@@ -374,9 +374,9 @@ class Page:
                 f'The current title is "{current_title}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def title_contains(
@@ -399,9 +399,9 @@ class Page:
                 f'The current title is "{current_title}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def refresh(self) -> None:
@@ -607,9 +607,9 @@ class Page:
                 f'The current number of windows is "{current_num_windows}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def new_window_is_opened(
@@ -630,9 +630,9 @@ class Page:
                 f'The current number of windows is "{current_num_windows}".'
             )
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def print_page(self, print_options: PrintOptions | None = None) -> str:
@@ -1245,9 +1245,9 @@ class Page:
         except TimeoutException as exc:
             exc.msg = f'Timed out waiting {self._wait_timeout} seconds for alert to be present.'
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def switch_to_default_content(self) -> None:
@@ -1350,9 +1350,9 @@ class Page:
         except TimeoutException as exc:
             exc.msg = f'Timed out waiting {self._wait_timeout} seconds for WEBVIEW to be present.'
             if Timeout.reraise(reraise):
-                LOGGER.exception(exc.msg)
+                self._logger.exception(exc.msg)
                 raise exc
-            LOGGER.warning(exc.msg)
+            self._logger.warning(exc.msg)
             return False
 
     def switch_to_app(self) -> Any | str:
