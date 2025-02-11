@@ -2129,6 +2129,18 @@ class Element:
         return self
 
     @property
+    def select(self) -> Select:
+        """
+        Get the Select object by present element.
+        """
+        try:
+            self._if_force_relocate()
+            self._select_cache = Select(self._present_cache)
+        except ELEMENT_REFERENCE_EXCEPTION:
+            self._select_cache = Select(self.present)
+        return self._select_cache
+    
+    @property
     def select_cache(self) -> Select | None:
         """
         Get the Select cache.
