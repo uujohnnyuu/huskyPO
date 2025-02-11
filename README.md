@@ -123,6 +123,8 @@ Timeout.RERAISE = True
 ## Cache Settings
 
 ### 1. Global Configuration
+Caches the WebElement for each Element to improve performance.
+Note that `Elements` does not support caching, as multiple elements are highly unstable.
 ```python
 from huskium import Cache
 
@@ -231,8 +233,8 @@ page.flick_by(Offset.LOWER_LEFT)
 # Element swipe or flick until visible.
 page.element.swipe_by()  # Default Offset.UP, Area.FULL
 page.element.flick_by()  # Default Offset.UP, Area.FULL
-page.swipe_by(Offset.UPPER_RUGHT)
-page.flick_by(Offset.LOWER_LEFT, Area.FULL)
+page.element.swipe_by(Offset.UPPER_RUGHT)
+page.element.flick_by(Offset.LOWER_LEFT, Area.FULL)
 
 # Drawing gestures (e.g., "9875321" for reverse Z)
 dots = page.elements.locations
