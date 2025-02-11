@@ -123,7 +123,7 @@ Timeout.RERAISE = True
 ## Cache Settings
 
 ### 1. Global Configuration
-Caches the WebElement for each Element to improve performance.
+Caches the WebElement for each `Element` to improve performance.
 Note that `Elements` does not support caching, as multiple elements are highly unstable.
 ```python
 from huskium import Cache
