@@ -237,7 +237,7 @@ page.draw_lines(dots)
 
 ---
 
-### Action Chains
+## Action Chains
 
 ```python
 page.element.move_to_element().drag_and_drop().perform()
@@ -253,7 +253,7 @@ page.perform()  # perform all actions
 
 ---
 
-### Select Actions
+## Select Actions
 
 ```python
 page.element.options
@@ -264,7 +264,6 @@ page.element.select_by_value("option_value")
 
 ## Inheritance
 
-🔹 **Extending Page and Element Classes**
 ```python
 from huskium import Page as HuskyPage, Element as HuskyElement
 
