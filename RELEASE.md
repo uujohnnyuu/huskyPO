@@ -1,3 +1,30 @@
+# huskium v1.0.6
+
+## Overview
+- **Stable release**.
+- **New features**: Added `log_filter` and `log_adapter` module.
+- **Enhancements**: Improved `debug mode` across all functionalities.
+- **Deprecation**: `logstack` will be deprecated in v1.1.0+.
+
+## New Features
+- **log_filter**: Added `PrefixFilter`, `FuncPrefixFilter`, and `FilePrefixFilter`.
+- **log_adapter**: Added `PageElementLoggerAdapter`.
+
+## Enhancements
+- **Debug Mode**: Significantly improved debug mode display and functionality.
+
+## Deprecation
+- **logstack**: With the introduction of logging filters for tracking specific frames, 
+`logstack` is set to be deprecated in v1.1.0+.  
+As of v1.0.6, huskium's internal components no longer use `logstack`.
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.0.6
+```
+---
+
 # huskium v1.0.5
 
 ## Overview

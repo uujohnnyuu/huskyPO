@@ -27,8 +27,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from . import ec_extension as ecex
 from .config import Timeout, Offset, Area
-from .logging_filter import PrefixFilter
-from .logger_adapter import PageElementLoggerAdapter
+from .log_filter import PrefixFilter
+from .log_adapter import PageElementLoggerAdapter
 from .types import WebDriver, WebElement
 
 
