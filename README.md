@@ -36,25 +36,26 @@
 
 ## Page Object Example Code
 
-### 1. Constructing Page Objects
+### 1. Page Object
 ```python
 # my_page.py
 
 from huskium import Page, Element, Elements, By, dynamic
 
 class MyPage(Page):
-    # Static element definition
+
+    # Static element: the standard way to define element.
     search_field = Element(By.NAME, 'q', remark='Search input box')
     search_results = Elements(By.TAG_NAME, 'h3', remark='All search results')
     search_result1 = Element(By.XPATH, '(//h3)[1]', remark='First search result')
 
-    # Dynamic element example
+    # Dynamic element: mainly used when element attributes are determined at runtime.
     @dynamic
     def search_result(self, order: int = 1):
         return Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search result no.{order}')
 ```
 
-### 2. Writing Test Cases
+### 2. Test Case
 ```python
 # test_my_page.py
 
@@ -66,7 +67,7 @@ my_page = MyPage(driver)
 
 my_page.get("https://google.com")
 
-# Perform actions with automatic explicit waits
+# Perform actions with automatic explicit waits.
 my_page.search_field.send_keys("Selenium").submit()
 my_page.search_results.wait_all_visible()
 my_page.save_screenshot("screenshot.png")
@@ -98,42 +99,47 @@ class MyPage(Page):
 
 ---
 
-## Timeout Global Settings
+## Timeout Settings
 
-### 1. Global Timeout Configuration
+### 1. Global Configuration
 ```python
 from huskium import Timeout
 
-Timeout.DEFAULT = 60  # Default timeout for all Elements (default is 30s)
-Timeout.RERAISE = False  # Prevent raising exceptions on timeouts
+# Default timeout for all Elements.
+Timeout.DEFAULT = 30
+
+# True: Raising TiemoutException if the process timed out.
+# False: Return False if the process timed out.
+Timeout.RERAISE = True
 ```
 
-### 2. Priority Order for Timeout Values
+### 2. Priority
 - **P1**: Method-Level (`page.element.wait_method(timeout=20)`)
 - **P2**: Element-Level (`Element(..., timeout=10, ...)`)
 - **P3**: Global-Level (`Timeout.DEFAULT = 60`)
 
 ---
 
-## Cache Global Settings
+## Cache Settings
 
-### 1. Enable/Disable Cache
+### 1. Global Configuration
 ```python
 from huskium import Cache
 
-Cache.ELEMENT = False  # Disable caching globally
-element = Element(..., cache=False)  # Disable caching for a specific element
+# True: Caches the WebElement for each Element to improve performance.
+# False: Does not cache the WebElement, re-locating the element for each operation.
+Cache.ELEMENT = True
 ```
 
-### 2. Cache Priority Order
+### 2. Priority
 - **P1**: Element-Level (`Element(..., cache=False)`)
 - **P2**: Global-Level (`Cache.ELEMENT = False`)
 
 ---
 
-## Log Global Settings
+## Log Settings
 
-### 1. Inner Debug Log
+### 1. Global Configuration
 ```python
 from huskium import Log
 
@@ -182,7 +188,7 @@ LOGGER.addFilter(FILTER)
 
 ## Wait Actions
 
-### 1. Basic Element Statu
+### 1. Basic Element Status
 ```python
 # Single Element
 page.element.wait_present()
@@ -212,15 +218,21 @@ page.element.wait_unclickable(present=False)  # Can be either absent or unclicka
 
 ## Appium Extended Actions
 
-### Enhanced Appium Actions (Appium 2.0+)
+### Appium 2.0+ Usage
 ```python
 from huskium import Offset, Area
 
-# Page swipe
-page.swipe_by(Offset.UP, Area.FULL)
+# Page swipe or flick.
+page.swipe_by()  # Default Offset.UP, Area.FULL
+page.flick_by()  # Default Offset.UP, Area.FULL
+page.swipe_by(Offset.UPPER_RUGHT, Area.FULL)
+page.flick_by(Offset.LOWER_LEFT)
 
-# Element flick until visible
-page.element.flick_by(Offset.UP, Area.FULL)
+# Element swipe or flick until visible.
+page.element.swipe_by()  # Default Offset.UP, Area.FULL
+page.element.flick_by()  # Default Offset.UP, Area.FULL
+page.swipe_by(Offset.UPPER_RUGHT)
+page.flick_by(Offset.LOWER_LEFT, Area.FULL)
 
 # Drawing gestures (e.g., "9875321" for reverse Z)
 dots = page.elements.locations
