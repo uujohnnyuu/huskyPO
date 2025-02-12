@@ -18,12 +18,12 @@ class PrefixFilter(logging.Filter):
         from huskium import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
 
         # Apply a filter to customize logging.
-        # PrefixFilter includes both FuncnamePrefixFilter and FilenamePrefixFilter.
-        # If Log.FUNCNAME = True, FuncnamePrefixFilter is used; otherwise, FilenamePrefixFilter is applied.
+        # PrefixFilter includes both FuncPrefixFilter and FilePrefixFilter.
+        # If Log.FUNCNAME = True, FuncPrefixFilter is used; otherwise, FilePrefixFilter is applied.
         logging.getLogger().addFilter(PrefixFilter())
 
         # Use specific filters independently if needed, regardless of Log.FUNCNAME.
-        logging.getLogger().addFilter(FilenamePrefixFilter())
+        logging.getLogger().addFilter(FilePrefixFilter())
 
         # It is recommended to configure logging per module for your structure.
         # Huskium’s core modules already define LOGGER, so Log settings control behavior externally.

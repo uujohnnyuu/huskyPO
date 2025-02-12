@@ -96,7 +96,6 @@ class Element:
         """
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -225,6 +224,7 @@ class Element:
         self._timeout = timeout
         self._remark = remark
         self._cache = cache
+        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     def _if_clear_caches(self) -> None:
         """
@@ -1302,7 +1302,7 @@ class Element:
         if not max_round:
             self._logger.warning(f'For max_round is {max_round}, no swiping performed.')
             return None
-        self._logger.debug(f'Start swiping.')
+        self._logger.debug('Start swiping.')
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:
@@ -1323,7 +1323,7 @@ class Element:
         if not max_round:
             self._logger.warning(f'For max_round is {max_round}, no flicking performed.')
             return None
-        self._logger.debug(f'Start flicking.')
+        self._logger.debug('Start flicking.')
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:

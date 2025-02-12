@@ -5,7 +5,8 @@ __pycache__/
 .mypy_cache
 
 pytest.ini
-mypy_report.txt
+mypy*
+flake8*
 run.py
 log.log
 try*.py

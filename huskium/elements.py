@@ -77,7 +77,6 @@ class Elements:
         """
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
-        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """
@@ -174,6 +173,7 @@ class Elements:
         self._value = value
         self._timeout = timeout
         self._remark = remark
+        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
     @property
     def by(self) -> str | None:
