@@ -1,13 +1,10 @@
-.DS_Store
-.vscode/
+*DS_Store*
+*vscode*
+*__pycache__*
+*mypy*
+*flake8*
+*verify*
 
-__pycache__/
-.mypy_cache
-
-pytest.ini
-mypy*
-flake8*
-run.py
 log.log
 try*.py
 
@@ -15,7 +12,3 @@ huskytc/
 build/
 dist/
 huskium.egg-info/
-
-make.bat
-Makefile
-source/
