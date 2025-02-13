@@ -178,30 +178,15 @@ class Element:
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The locator strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
-            raise TypeError(
-                'The locator value type should be "str", '
-                f'not "{type(value).__name__}".'
-            )
+            raise TypeError(f'The locator value type should be "str", not "{type(value).__name__}".')
         if not isinstance(index, (int, type(None))):
-            raise TypeError(
-                'The index type should be "int", '
-                f'not "{type(index).__name__}".'
-            )
+            raise TypeError(f'The index type should be "int", not "{type(index).__name__}".')
         if not isinstance(timeout, (int, float, type(None))):
-            raise TypeError(
-                'The timeout type should be "int" or "float", '
-                f'not "{type(timeout).__name__}".'
-            )
+            raise TypeError(f'The timeout type should be "int" or "float", not "{type(timeout).__name__}".')
         if not isinstance(remark, (str, type(None))):
-            raise TypeError(
-                'The remark type should be "str", '
-                f'not "{type(remark).__name__}".'
-            )
+            raise TypeError(f'The remark type should be "str", not "{type(remark).__name__}".')
         if not isinstance(cache, (bool, type(None))):
-            raise TypeError(
-                'The cache type should be "bool", '
-                f'not "{type(cache).__name__}".'
-            )
+            raise TypeError(f'The cache type should be "bool", not "{type(cache).__name__}".')
 
     def _set_data(self, by, value, index, timeout, remark, cache) -> None:
         """
