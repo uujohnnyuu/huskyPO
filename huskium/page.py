@@ -98,7 +98,7 @@ class Page:
         """
         return getattr(self, _Name._wait_timeout, None)
 
-    def _timeout_process(self, status: str, exc: TimeoutException, reraise: bool | None):
+    def _timeout_process(self, status: str, exc: TimeoutException, reraise: bool | None) -> Literal[False]:
         exc.msg = status
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg)
