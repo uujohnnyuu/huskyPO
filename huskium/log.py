@@ -11,6 +11,7 @@ import os
 from .config import Log
 
 
+# Filter
 class PrefixFilter(logging.Filter):
     """
     A prefix filter for logging.
@@ -88,3 +89,13 @@ class FilePrefixFilter(logging.Filter):
                     return True
                 frame = frame.f_back
         return True
+
+
+# Adapter
+class PageElementLoggerAdapter(logging.LoggerAdapter):
+
+    def __init__(self, logger, petype, remark):
+        super().__init__(logger, {"petype": petype, "remark": remark})
+
+    def process(self, msg, kwargs):
+        return f'{self.extra["petype"]}({self.extra["remark"]}): {msg}', kwargs
