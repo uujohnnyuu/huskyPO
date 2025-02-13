@@ -11,7 +11,7 @@ import platform
 import time
 from typing import TYPE_CHECKING, Any, cast, Literal, Self, Type
 
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
@@ -24,18 +24,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Cache, Timeout, Offset, Area
-from .log import PrefixFilter, PageElementLoggerAdapter
-from .page import Page, Coordinate
-from .exception import _ForcedRelocationException
-from .types import SeleniumWebElement, WebDriver, WebElement
+from .logging import PREFIX_FILTER, PageElementLoggerAdapter
+from .page import Page
+from .exception import (
+    _ForcedRelocationException,
+    ELEMENT_REFERENCE_EXCEPTIONS,
+    EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS,
+    EXTENDED_IGNORED_EXCEPTIONS
+)
+from .types import SeleniumWebElement, WebDriver, WebElement, Coordinate
 
-
-ELEMENT_REFERENCE_EXCEPTIONS = (_ForcedRelocationException, AttributeError, StaleElementReferenceException)
-EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS = (_ForcedRelocationException, AttributeError)
-EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
 
 LOGGER = logging.getLogger(__name__)
-PREFIX_FILTER = PrefixFilter()
 LOGGER.addFilter(PREFIX_FILTER)
 
 

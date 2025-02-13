@@ -16,7 +16,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, cast, Literal, Self, Type
 
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.support.ui import WebDriverWait
@@ -24,15 +24,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Timeout
-from .log import PrefixFilter, PageElementLoggerAdapter
+from .logging import PREFIX_FILTER, PageElementLoggerAdapter
 from .page import Page
+from .exception import EXTENDED_IGNORED_EXCEPTIONS
 from .types import WebDriver, WebElement
 
 
-EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
-
 LOGGER = logging.getLogger(__name__)
-PREFIX_FILTER = PrefixFilter()
 LOGGER.addFilter(PREFIX_FILTER)
 
 

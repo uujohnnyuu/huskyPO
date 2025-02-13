@@ -16,3 +16,6 @@ from appium.webdriver.webelement import WebElement as AppiumWebElement
 
 WebDriver: TypeAlias = SeleniumWebDriver | AppiumWebDriver
 WebElement: TypeAlias = SeleniumWebElement | AppiumWebElement
+
+TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, float, float]
+Coordinate: TypeAlias = TupleCoordinate | dict[str, int] | dict[str, float]

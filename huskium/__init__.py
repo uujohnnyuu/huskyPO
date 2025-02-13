@@ -5,7 +5,7 @@
 
 
 from .config import Appium, Area, Cache, Log, Offset, Timeout
-from .log import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
+from .logging import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
 from .page import Page
 from .element import Element
 from .elements import Elements
