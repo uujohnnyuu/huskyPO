@@ -283,16 +283,6 @@ class Elements:
         """
         return getattr(self, _Name._wait_timeout, None)
 
-    def _timeout_message(self, status: str) -> str:
-        """
-        Waiting for elements "{self.remark}" to become "{status}" timed out
-        after {self._wait_timeout} seconds.
-        """
-        return (
-            f'Timed out waiting {self._wait_timeout} seconds '
-            f'for elements "{self.remark}" to be "{status}".'
-        )
-
     def _timeout_process(
         self,
         status: str,
