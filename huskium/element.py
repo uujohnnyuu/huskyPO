@@ -356,7 +356,7 @@ class Element:
                 exc.__context__ = None
             self._logger.exception(exc.msg, stacklevel=2)
             raise exc
-        self._logger.warning(exc.msg, stacklevel=2)
+        self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
     def wait_present(
@@ -507,7 +507,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.invisibility_of_element(self._present_cache, present)
                 )
-                self._logger.debug(f'present_cache -> invisible({present} : {element_or_true}')
+                self._logger.debug(f'present_cache -> invisible({present}) : {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -515,9 +515,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._logger.debug(f'locator -> present_cache -> invisible({present} : {self._present_cache}')
+                    self._logger.debug(f'locator -> present_cache -> invisible({present}) : {self._present_cache}')
                 else:
-                    self._logger.debug(f'locator -> invisible({present} : {element_or_true}')
+                    self._logger.debug(f'locator -> invisible({present}) : {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
@@ -605,7 +605,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.element_to_be_unclickable(self._present_cache, present)
                 )
-                self._logger.debug(f'present_cache -> unclickable({present} : {element_or_true}')
+                self._logger.debug(f'present_cache -> unclickable({present}) : {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -618,7 +618,7 @@ class Element:
                         f'{self._present_cache}'
                     )
                 else:
-                    self._logger.debug(f'locator -> unclickable({present} : {element_or_true}')
+                    self._logger.debug(f'locator -> unclickable({present}) : {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
@@ -1363,28 +1363,28 @@ class Element:
 
         # original offset
         start_x, start_y, end_x, end_y = offset
-        self._logger.debug(f'OriginalOffset(sx, sy, ex, ey: {offset}')
+        self._logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
 
         # area border
         area_left, area_top, area_width, area_height = area
         area_right = area_left + area_width
         area_bottom = area_top + area_height
-        self._logger.debug(f'Area(l, r, t, b: {(area_left, area_right, area_top, area_bottom)}')
+        self._logger.debug(f'Area(l, r, t, b): {(area_left, area_right, area_top, area_bottom)}')
 
         # element border
         element_left, element_right, element_top, element_bottom = self.border.values()
-        self._logger.debug(f'Element(l, r, t, b: {(element_left, element_right, element_top, element_bottom)}')
+        self._logger.debug(f'Element(l, r, t, b): {(element_left, element_right, element_top, element_bottom)}')
 
         # delta = (area - element)
         delta_left = area_left - element_left
         delta_right = area_right - element_right
         delta_top = area_top - element_top
         delta_bottom = area_bottom - element_bottom
-        self._logger.debug(f'Delta(A-E(l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}')
+        self._logger.debug(f'Delta(A-E)(l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}')
 
         # adjust action, note that this must use delta to judge
         adjust_action = ((delta_left > 0), (delta_right < 0), (delta_top > 0), (delta_bottom < 0))
-        self._logger.debug(f'AdjustAction(l>0, r<0, t>0, b<0: {adjust_action}')
+        self._logger.debug(f'AdjustAction(l>0, r<0, t>0, b<0): {adjust_action}')
 
         # compare delta with min_distance
         dist_left = dist(delta_left)
@@ -1406,7 +1406,7 @@ class Element:
             (False, True, False, True): (dist_right, dist_bottom),
         }
         delta_x, delta_y = adjust_actions.get(adjust_action, (0, 0))
-        self._logger.debug(f'(delta_x, delta_y: {(delta_x, delta_y)}')
+        self._logger.debug(f'End(dx, dy): {(delta_x, delta_y)}')
 
         # return
         if delta_x == 0 and delta_y == 0:
@@ -1414,8 +1414,8 @@ class Element:
             return None
         end_x, end_y = (start_x + delta_x), (start_y + delta_y)
         adjusted_offset = (start_x, start_y, end_x, end_y)
-        self._logger.debug(f'OriginalOffset(sx, sy, ex, ey: {offset}')
-        self._logger.debug(f'AdjustedOffset(sx, sy, ex, ey: {adjusted_offset}')
+        self._logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
+        self._logger.debug(f'AdjustedOffset(sx, sy, ex, ey): {adjusted_offset}')
         return adjusted_offset
 
     def clear(self) -> Self:
