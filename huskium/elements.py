@@ -298,12 +298,12 @@ class Elements:
         self,
         status: str,
         exc: TimeoutException,
-        reraise: bool | None = None
+        reraise: bool | None
     ) -> Literal[False]:
         """
         Handling a TimeoutException after it occurs.
         """
-        exc.msg = self._timeout_message(status)
+        exc.msg = f'Timed out waiting {self._wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg, stacklevel=2)
             raise exc  # No cache handling, do not suppress exception messages.

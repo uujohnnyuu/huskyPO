@@ -328,29 +328,19 @@ class Element:
         """
         return getattr(self, _Name._wait_timeout, None)
 
-    def _timeout_message(self, status: str, present: bool = True) -> str:
-        """
-        Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".
-        if not present: status += ' or absent'
-        """
-        if not present:
-            status += ' or absent'
-        return (
-            f'Timed out waiting {self._wait_timeout} seconds '
-            f'for element "{self.remark}" to be "{status}".'
-        )
-
     def _timeout_process(
         self,
         status: str,
         exc: TimeoutException,
-        reraise: bool | None = None,
+        reraise: bool | None,
         present: bool = True
     ) -> Literal[False]:
         """
         Handling a TimeoutException after it occurs.
         """
-        exc.msg = self._timeout_message(status, present)
+        if not present:
+            status += ' or absent'
+        exc.msg = f'Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".'
         if Timeout.reraise(reraise):
             if isinstance(exc.__context__, EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS):
                 exc.__context__ = None
