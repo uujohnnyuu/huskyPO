@@ -268,7 +268,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for url to be "{url}". '
                 f'The current url is "{current_url}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def url_contains(
         self,
@@ -290,7 +290,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for url contains "{url}". '
                 f'The current url is "{current_url}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def url_matches(
         self,
@@ -313,7 +313,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for url matches pattern "{pattern}". '
                 f'The current url is "{current_url}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def url_changes(
         self,
@@ -335,7 +335,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for url changes. '
                 f'The current url is still "{current_url}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     @property
     def title(self) -> str:
@@ -365,7 +365,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for title to be "{title}". '
                 f'The current title is "{current_title}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def title_contains(
         self,
@@ -386,7 +386,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for title contains "{title}". '
                 f'The current title is "{current_title}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def refresh(self) -> None:
         """
@@ -590,7 +590,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for number of windows to be "{num_windows}". '
                 f'The current number of windows is "{current_num_windows}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def new_window_is_opened(
         self,
@@ -609,7 +609,7 @@ class Page:
                 f'Timed out waiting {self._wait_timeout} seconds for new window is opened. '
                 f'The current number of windows is "{current_num_windows}".'
             )
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def print_page(self, print_options: PrintOptions | None = None) -> str:
         """
@@ -1220,7 +1220,7 @@ class Page:
             return self.wait(timeout).until(ec.alert_is_present())
         except TimeoutException as exc:
             status = f'Timed out waiting {self._wait_timeout} seconds for alert to be present.'
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def switch_to_default_content(self) -> None:
         """
@@ -1321,7 +1321,7 @@ class Page:
             return self.wait(timeout).until(ecex.webview_is_present(switch, index))
         except TimeoutException as exc:
             status = f'Timed out waiting {self._wait_timeout} seconds for WEBVIEW to be present.'
-            self._timeout_process(status, exc, reraise)
+            return self._timeout_process(status, exc, reraise)
 
     def switch_to_app(self) -> Any | str:
         """
