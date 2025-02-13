@@ -227,10 +227,10 @@ class Element:
 
     def _if_force_relocate(self) -> None:
         """
-        If cache is False, raise `StaleElementReferenceException` and force relocate the element.
+        If cache is False, raise `_ForcedRelocationException` and force relocate the element.
         """
         if not self.cache:
-            raise StaleElementReferenceException
+            raise _ForcedRelocationException
 
     @property
     def by(self) -> str | None:
