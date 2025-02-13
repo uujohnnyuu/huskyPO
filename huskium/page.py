@@ -263,7 +263,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def url_contains(
@@ -289,7 +289,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def url_matches(
@@ -316,7 +316,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def url_changes(
@@ -342,7 +342,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     @property
@@ -376,7 +376,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def title_contains(
@@ -401,7 +401,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def refresh(self) -> None:
@@ -609,7 +609,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def new_window_is_opened(
@@ -632,7 +632,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def print_page(self, print_options: PrintOptions | None = None) -> str:
@@ -1247,7 +1247,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def switch_to_default_content(self) -> None:
@@ -1352,7 +1352,7 @@ class Page:
             if Timeout.reraise(reraise):
                 self._logger.exception(exc.msg)
                 raise exc
-            self._logger.warning(exc.msg)
+            self._logger.warning(exc.msg, exc_info=True)
             return False
 
     def switch_to_app(self) -> Any | str:
