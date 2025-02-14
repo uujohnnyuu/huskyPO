@@ -1090,9 +1090,9 @@ class Element:
                 self._logger.debug(f'locator -> visible_cache : {self._visible_cache}')
             else:
                 self._logger.debug(f'locator -> visible_element : {element}')
-            self._logger.debug(f'Finding one is viewable.')
+            self._logger.debug('Finding one is viewable.')
             return True
-        self._logger.debug(f'Finding one is unviewable.')
+        self._logger.debug('Finding one is unviewable.')
         return False
 
     def swipe_by(
