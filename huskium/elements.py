@@ -468,7 +468,7 @@ class Elements:
             if not element.is_displayed():
                 self._logger.debug(f'element {element} is invisible.')
                 return False
-        self._logger.debug(f'All elements are visible.')
+        self._logger.debug('All elements are visible.')
         return True
 
     def are_any_visible(self) -> bool:
@@ -487,9 +487,9 @@ class Elements:
                 self._logger.debug(f'element {element} is visible.')
                 self._logger.debug(f'Append to visible elements {elements}.')
         if elements:
-            self._logger.debug(f'At least one element is visible.')
+            self._logger.debug('At least one element is visible.')
             return True
-        self._logger.debug(f'All elements are invisible.')
+        self._logger.debug('All elements are invisible.')
         return False
 
     @property
