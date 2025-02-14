@@ -751,8 +751,13 @@ class Element:
             result = self._present_cache.is_displayed()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_displayed()
-        if self.cache and result:
-            self._visible_cache = self._present_cache
+        if result:
+            if self.cache:
+                self._visible_cache = self._present_cache
+                self._logger.debug(f'present_cache -> visible_cache : {self._visible_cache}')
+            self._logger.debug('present one is visible')
+        else:
+            self._logger.debug('present one is invisible.')
         return result
 
     def is_enabled(self) -> bool:
@@ -761,9 +766,14 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            return self._present_cache.is_enabled()
+            result = self._present_cache.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.is_enabled()
+            result = self.present.is_enabled()
+        if result:
+            self._logger.debug('present one is enabled.')
+        else:
+            self._logger.debug('present one is disabled.')
+        return result
 
     def is_clickable(self) -> bool:
         """
@@ -775,8 +785,13 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             element = self.present
             result = element.is_displayed() and element.is_enabled()
-        if self.cache and result:
-            self._clickable_cache = self._visible_cache = self._present_cache
+        if result:
+            if self.cache:
+                self._clickable_cache = self._visible_cache = self._present_cache
+                self._logger.debug(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
+            self._logger.debug('present one is clickable.')
+        else:
+            self._logger.debug('present one is unclickable.')
         return result
 
     def is_selected(self) -> bool:
@@ -785,9 +800,14 @@ class Element:
         """
         try:
             self._if_force_relocate()
-            return self._present_cache.is_selected()
+            result = self._present_cache.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.is_selected()
+            result = self.present.is_selected()
+        if result:
+            self._logger.debug('present one is selected.')
+        else:
+            self._logger.debug('present one is unselected.')
+        return result
 
     def screenshot(self, filename: str) -> bool:
         """
@@ -1067,7 +1087,12 @@ class Element:
         if element and element.is_displayed():
             if self.cache:
                 self._visible_cache = element
+                self._logger.debug(f'locator -> visible_cache : {self._visible_cache}')
+            else:
+                self._logger.debug(f'locator -> visible_element : {element}')
+            self._logger.debug(f'Finding one is viewable.')
             return True
+        self._logger.debug(f'Finding one is unviewable.')
         return False
 
     def swipe_by(
