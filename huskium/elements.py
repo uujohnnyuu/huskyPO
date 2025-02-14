@@ -24,19 +24,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Timeout
-from .logging import PREFIX_FILTER, PageElementLoggerAdapter
+from .logging import PageElementLoggerAdapter
 from .page import Page
-from .exception import EXTENDED_IGNORED_EXCEPTIONS
 from .types import WebDriver, WebElement
+from .shared import PREFIX_FILTER, EXTENDED_IGNORED_EXCEPTIONS, _Name
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(PREFIX_FILTER)
-
-
-class _Name:
-    _page = '_page'
-    _wait_timeout = '_wait_timeout'
 
 
 class Elements:

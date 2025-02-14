@@ -24,29 +24,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import ec_extension as ecex
 from .by import ByAttribute
 from .config import Cache, Timeout, Offset, Area
-from .logging import PREFIX_FILTER, PageElementLoggerAdapter
+from .logging import PageElementLoggerAdapter
 from .page import Page
-from .exception import (
-    _ForcedRelocationException,
+from .exception import _ForcedRelocationException
+from .types import SeleniumWebElement, WebDriver, WebElement, Coordinate
+from .shared import (
+    PREFIX_FILTER,
     ELEMENT_REFERENCE_EXCEPTIONS,
     EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS,
-    EXTENDED_IGNORED_EXCEPTIONS
+    EXTENDED_IGNORED_EXCEPTIONS,
+    _Name
 )
-from .types import SeleniumWebElement, WebDriver, WebElement, Coordinate
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(PREFIX_FILTER)
-
-
-class _Name:
-    _page = '_page'
-    _wait_timeout = '_wait_timeout'
-    _present_cache = '_present_cache'
-    _visible_cache = '_visible_cache'
-    _clickable_cache = '_clickable_cache'
-    _select_cache = '_select_cache'
-    _caches = [_present_cache, _visible_cache, _clickable_cache, _select_cache]
 
 
 class Element:

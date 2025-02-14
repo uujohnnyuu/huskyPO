@@ -27,16 +27,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from . import ec_extension as ecex
 from .config import Timeout, Offset, Area
-from .logging import PREFIX_FILTER, PageElementLoggerAdapter
+from .logging import PageElementLoggerAdapter
 from .types import WebDriver, WebElement, TupleCoordinate, Coordinate
+from .shared import PREFIX_FILTER, _Name
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(PREFIX_FILTER)
-
-
-class _Name:
-    _wait_timeout = '_wait_timeout'
 
 
 class Page:

@@ -91,10 +91,6 @@ class FilePrefixFilter(logging.Filter):
         return True
 
 
-# Common PrefixFilter object
-PREFIX_FILTER = PrefixFilter()
-
-
 # Adapter
 class PageElementLoggerAdapter(logging.LoggerAdapter):
 
