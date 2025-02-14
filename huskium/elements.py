@@ -466,7 +466,9 @@ class Elements:
         """
         for element in self.all_present:
             if not element.is_displayed():
+                self._logger.debug(f'element {element} is invisible.')
                 return False
+        self._logger.debug(f'All elements are visible.')
         return True
 
     def are_any_visible(self) -> bool:
@@ -478,11 +480,17 @@ class Elements:
             - True: At least one element is visible.
             - False: All the elements are not visible.
         """
-        return True if [
-            element
-            for element in self.all_present
-            if element.is_displayed()
-        ] else False
+        elements = []
+        for element in self.all_present:
+            if element.is_displayed():
+                elements.append(element)
+                self._logger.debug(f'element {element} is visible.')
+                self._logger.debug(f'Append to visible elements {elements}.')
+        if elements:
+            self._logger.debug(f'At least one element is visible.')
+            return True
+        self._logger.debug(f'All elements are invisible.')
+        return False
 
     @property
     def quantity(self) -> int:
