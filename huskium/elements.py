@@ -79,7 +79,8 @@ class Elements:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'Get new driver {self._driver}.')
+            self._logger.debug(f'[__get__] Get new driver {self._driver}.')
+        self._logger.debug('[__get__] PASSED.')
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
@@ -91,7 +92,7 @@ class Elements:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
-        self._logger.debug('Dynamically set element attributes.')
+        self._logger.debug('[__set__] Set elements attributes.')
 
     def dynamic(
         self,
@@ -133,6 +134,7 @@ class Elements:
         # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
+        self._logger.debug('[dynamic] Set elements attributes.')
         return self
 
     def _verify_data(self, by, value, timeout, remark) -> None:
@@ -464,11 +466,12 @@ class Elements:
             - True: All the elements are visible.
             - False: At least one element is not visible.
         """
-        for element in self.all_present:
+        elements = self.all_present
+        for element in elements:
             if not element.is_displayed():
                 self._logger.debug(f'element {element} is invisible.')
                 return False
-        self._logger.debug('All elements are visible.')
+        self._logger.debug(f'All {len(elements)} elements are visible.')
         return True
 
     def are_any_visible(self) -> bool:
@@ -480,16 +483,12 @@ class Elements:
             - True: At least one element is visible.
             - False: All the elements are not visible.
         """
-        elements = []
-        for element in self.all_present:
-            if element.is_displayed():
-                elements.append(element)
-                self._logger.debug(f'element {element} is visible.')
-                self._logger.debug(f'Append to visible elements {elements}.')
-        if elements:
-            self._logger.debug('At least one element is visible.')
+        elements = self.all_present
+        visible_elements = [element for element in elements if element.is_displayed()]
+        if visible_elements:
+            self._logger.debug(f'Among all {len(elements)} elements, {len(visible_elements)} are visible.')
             return True
-        self._logger.debug('All elements are invisible.')
+        self._logger.debug(f'All {len(elements)} elements are invisible.')
         return False
 
     @property

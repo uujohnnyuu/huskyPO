@@ -102,8 +102,9 @@ class Element:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'Get new driver {self._driver}.')
+            self._logger.debug(f'[__get__] Get new driver {self._driver}.')
             self._if_clear_caches()
+        self._logger.debug('[__get__] PASSED.')
         return self
 
     def __set__(self, instance: Page, value: Element) -> None:
@@ -115,7 +116,7 @@ class Element:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
-        self._logger.debug('Dynamically set element attributes.')
+        self._logger.debug('[__set__] Set element attributes.')
         self._if_clear_caches()  # dynamic element should clear caches.
 
     def dynamic(
@@ -160,6 +161,7 @@ class Element:
         # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
+        self._logger.debug('[dynamic] Set element attributes.')
         self._if_clear_caches()  # dynamic element should clear caches.
         return self
 
