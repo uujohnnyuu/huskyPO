@@ -691,7 +691,7 @@ class Element:
     def present_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `present_cache`, or raises `NoSuchCacheException` 
+        Returns the inner `present_cache`, or raises `NoSuchCacheException`
         if caching is not required or the cache attribute is not present.
         Construct the except block to relocate the element and execute its method.
         """
@@ -703,7 +703,7 @@ class Element:
     def visible_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `visible_cache`, or raises `NoSuchCacheException` 
+        Returns the inner `visible_cache`, or raises `NoSuchCacheException`
         if caching is not required or the cache attribute is not present.
         Construct the except block to relocate the element and execute its method.
         """
@@ -715,7 +715,7 @@ class Element:
     def clickable_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `clickable_cache`, or raises `NoSuchCacheException` 
+        Returns the inner `clickable_cache`, or raises `NoSuchCacheException`
         if caching is not required or the cache attribute is not present.
         Construct the except block to relocate the element and execute its method.
         """
@@ -2094,9 +2094,9 @@ class Element:
     @property
     def select_try(self) -> Select:
         """
-        This attribute must be used with `try-except`. 
-        Returns the inner `present_cache`, or raises `NoSuchCacheException` 
-        if caching is not required or the cache attribute is not present. 
+        This attribute must be used with `try-except`.
+        Returns the inner `present_cache`, or raises `NoSuchCacheException`
+        if caching is not required or the cache attribute is not present.
         Construct the except block to relocate the element and execute its method.
         """
         if not (self.cache and hasattr(self, _Name._select_cache)):

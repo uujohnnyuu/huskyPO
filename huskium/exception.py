@@ -6,7 +6,7 @@
 
 class NoSuchCacheException(Exception):
     """
-    Typically used internally in Element. 
+    Typically used internally in Element.
     If no cache exists, this exception is raised to trigger element relocation.
     """
 
