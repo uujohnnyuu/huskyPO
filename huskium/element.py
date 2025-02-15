@@ -197,6 +197,17 @@ class Element:
                 if vars(self).pop(cache_name, None):
                     self._logger.debug(f'Clear cache <{cache_name}>.', stacklevel=2)
 
+    def _cache_try(self, name: str) -> Any:
+        """
+        Return `getattr(self, name)`, or raise `NoSuchCacheException` if no cache is available.
+        """
+        if self.cache and hasattr(self, name):
+            cache = getattr(self, name)
+            self._logger.debug(f'Execute cache {name}: {cache}', stacklevel=3)
+            return cache
+        self._logger.debug(f'No cache for {name}, relocating the element directly.', stacklevel=3)
+        raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
+
     @property
     def by(self) -> str | None:
         return self._by
@@ -692,36 +703,30 @@ class Element:
         """
         This attribute must be used with `try-except`.
         Returns the inner `present_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute is not present.
+        if caching is not required or the cache attribute doesn't exist.
         Construct the except block to relocate the element and execute its method.
         """
-        if not (self.cache and hasattr(self, _Name._present_cache)):
-            raise NoSuchCacheException
-        return self._present_cache
+        return self._cache_try(_Name._present_cache)
 
     @property
     def visible_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
         Returns the inner `visible_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute is not present.
+        if caching is not required or the cache attribute doesn't present.
         Construct the except block to relocate the element and execute its method.
         """
-        if not (self.cache and hasattr(self, _Name._visible_cache)):
-            raise NoSuchCacheException
-        return self._visible_cache
+        return self._cache_try(_Name._visible_cache)
 
     @property
     def clickable_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
         Returns the inner `clickable_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute is not present.
+        if caching is not required or the cache attribute doesn't exist.
         Construct the except block to relocate the element and execute its method.
         """
-        if not (self.cache and hasattr(self, _Name._clickable_cache)):
-            raise NoSuchCacheException
-        return self._clickable_cache
+        return self._cache_try(_Name._clickable_cache)
 
     @property
     def present_cache(self) -> WebElement | None:
@@ -2096,12 +2101,10 @@ class Element:
         """
         This attribute must be used with `try-except`.
         Returns the inner `present_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute is not present.
+        if caching is not required or the cache attribute doesn't exist.
         Construct the except block to relocate the element and execute its method.
         """
-        if not (self.cache and hasattr(self, _Name._select_cache)):
-            raise NoSuchCacheException
-        return self._select_cache
+        return self._cache_try(_Name._select_cache)
 
     @property
     def select_cache(self) -> Select | None:
