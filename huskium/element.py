@@ -26,15 +26,9 @@ from .by import ByAttribute
 from .config import Cache, Timeout, Offset, Area
 from .logging import PageElementLoggerAdapter
 from .page import Page
-from .exception import _ForcedRelocationException
+from .exception import NoSuchCacheException
 from .types import SeleniumWebElement, WebDriver, WebElement, Coordinate
-from .shared import (
-    PREFIX_FILTER,
-    ELEMENT_REFERENCE_EXCEPTIONS,
-    EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS,
-    EXTENDED_IGNORED_EXCEPTIONS,
-    _Name
-)
+from .shared import PREFIX_FILTER, ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name
 
 
 LOGGER = logging.getLogger(__name__)
@@ -203,13 +197,6 @@ class Element:
                 if vars(self).pop(cache_name, None):
                     self._logger.debug(f'Clear cache <{cache_name}>.', stacklevel=2)
 
-    def _if_force_relocate(self) -> None:
-        """
-        If cache is False, raise `_ForcedRelocationException` and force relocate the element.
-        """
-        if not self.cache:
-            raise _ForcedRelocationException
-
     @property
     def by(self) -> str | None:
         return self._by
@@ -320,7 +307,7 @@ class Element:
             status += ' or absent'
         exc.msg = f'Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".'
         if Timeout.reraise(reraise):
-            if isinstance(exc.__context__, EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS):
+            if isinstance(exc.__context__, NoSuchCacheException):
                 exc.__context__ = None
             self._logger.exception(exc.msg, stacklevel=2)
             raise exc
@@ -420,9 +407,8 @@ class Element:
         """
         try:
             try:
-                self._if_force_relocate()
                 self._visible_cache = self.wait(timeout).until(
-                    ecex.visibility_of_element(self._present_cache)
+                    ecex.visibility_of_element(self.present_try)
                 )
                 self._logger.debug(f'present_cache -> visible_cache : {self._visible_cache}')
                 return self._visible_cache
@@ -471,9 +457,8 @@ class Element:
         """
         try:
             try:
-                self._if_force_relocate()
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
-                    ecex.invisibility_of_element(self._present_cache, present)
+                    ecex.invisibility_of_element(self.present_try, present)
                 )
                 self._logger.debug(f'present_cache -> invisible({present}) : {element_or_true}')
                 return element_or_true
@@ -515,9 +500,8 @@ class Element:
         """
         try:
             try:
-                self._if_force_relocate()
                 self._clickable_cache = self._visible_cache = self.wait(timeout).until(
-                    ecex.element_to_be_clickable(self._present_cache)
+                    ecex.element_to_be_clickable(self.present_try)
                 )
                 self._logger.debug(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
                 return self._clickable_cache
@@ -569,9 +553,8 @@ class Element:
         """
         try:
             try:
-                self._if_force_relocate()
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
-                    ecex.element_to_be_unclickable(self._present_cache, present)
+                    ecex.element_to_be_unclickable(self.present_try, present)
                 )
                 self._logger.debug(f'present_cache -> unclickable({present}) : {element_or_true}')
                 return element_or_true
@@ -616,9 +599,8 @@ class Element:
         """
         try:
             try:
-                self._if_force_relocate()
                 element = self.wait(timeout).until(
-                    ecex.element_to_be_selected(self._present_cache)
+                    ecex.element_to_be_selected(self.present_try)
                 )
                 self._logger.debug(f'present_cache -> selected : {element}')
                 return element
@@ -666,9 +648,8 @@ class Element:
         """
         try:
             try:
-                self._if_force_relocate()
                 element = self.wait(timeout).until(
-                    ecex.element_to_be_unselected(self._present_cache)
+                    ecex.element_to_be_unselected(self.present_try)
                 )
                 self._logger.debug(f'present_cache -> unselected : {element}')
                 return element
@@ -705,6 +686,42 @@ class Element:
         The same as element.wait_clickable(reraise=True).
         """
         return cast(WebElement, self.wait_clickable(reraise=True))
+
+    @property
+    def present_try(self) -> WebElement:
+        """
+        This attribute must be used with `try-except`.
+        Returns the inner `present_cache`, or raises `NoSuchCacheException` 
+        if caching is not required or the cache attribute is not present.
+        Construct the except block to relocate the element and execute its method.
+        """
+        if not (self.cache and hasattr(self, _Name._present_cache)):
+            raise NoSuchCacheException
+        return self._present_cache
+
+    @property
+    def visible_try(self) -> WebElement:
+        """
+        This attribute must be used with `try-except`.
+        Returns the inner `visible_cache`, or raises `NoSuchCacheException` 
+        if caching is not required or the cache attribute is not present.
+        Construct the except block to relocate the element and execute its method.
+        """
+        if not (self.cache and hasattr(self, _Name._visible_cache)):
+            raise NoSuchCacheException
+        return self._visible_cache
+
+    @property
+    def clickable_try(self) -> WebElement:
+        """
+        This attribute must be used with `try-except`.
+        Returns the inner `clickable_cache`, or raises `NoSuchCacheException` 
+        if caching is not required or the cache attribute is not present.
+        Construct the except block to relocate the element and execute its method.
+        """
+        if not (self.cache and hasattr(self, _Name._clickable_cache)):
+            raise NoSuchCacheException
+        return self._clickable_cache
 
     @property
     def present_cache(self) -> WebElement | None:
@@ -749,8 +766,7 @@ class Element:
         It is the same as the official `is_displayed()` method.
         """
         try:
-            self._if_force_relocate()
-            result = self._present_cache.is_displayed()
+            result = self.present_try.is_displayed()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_displayed()
         if result:
@@ -767,8 +783,7 @@ class Element:
         Whether the element is enabled.
         """
         try:
-            self._if_force_relocate()
-            result = self._present_cache.is_enabled()
+            result = self.present_try.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_enabled()
         if result:
@@ -782,8 +797,8 @@ class Element:
         Whether the element is clickable.
         """
         try:
-            self._if_force_relocate()
-            result = self._present_cache.is_displayed() and self._present_cache.is_enabled()
+            cache = self.present_try
+            result = cache.is_displayed() and cache.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             element = self.present
             result = element.is_displayed() and element.is_enabled()
@@ -801,8 +816,7 @@ class Element:
         Whether the element is selected.
         """
         try:
-            self._if_force_relocate()
-            result = self._present_cache.is_selected()
+            result = self.present_try.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_selected()
         if result:
@@ -821,8 +835,7 @@ class Element:
                 This should end with a `.png` extension.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.screenshot(filename)
+            return self.present_try.screenshot(filename)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.screenshot(filename)
 
@@ -832,8 +845,7 @@ class Element:
         The text of the element when it is present.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.text
+            return self.present_try.text
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.text
 
@@ -843,8 +855,7 @@ class Element:
         The text of the element when it is visible.
         """
         try:
-            self._if_force_relocate()
-            return self._visible_cache.text
+            return self.visible_try.text
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.visible.text
 
@@ -859,8 +870,7 @@ class Element:
         Return example: {'x': 10, 'y': 15, 'width': 100, 'height': 200}
         """
         try:
-            self._if_force_relocate()
-            rect = self._present_cache.rect
+            rect = self.present_try.rect
         except ELEMENT_REFERENCE_EXCEPTIONS:
             rect = self.present.rect
         # rearranged
@@ -882,8 +892,7 @@ class Element:
         Return example: {'x': 200, 'y': 300}
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.location
+            return self.present_try.location
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.location
 
@@ -898,8 +907,7 @@ class Element:
         Return example: {'width': 200, 'height': 100}
         """
         try:
-            self._if_force_relocate()
-            size = self._present_cache.size
+            size = self.present_try.size
         except ELEMENT_REFERENCE_EXCEPTIONS:
             size = self.present.size
         # rearranged
@@ -917,8 +925,7 @@ class Element:
         {'left': 150, 'right': 250, 'top': 200, 'bottom': 400}
         """
         try:
-            self._if_force_relocate()
-            rect = self._present_cache.rect
+            rect = self.present_try.rect
         except ELEMENT_REFERENCE_EXCEPTIONS:
             rect = self.present.rect
         return {
@@ -937,8 +944,7 @@ class Element:
         {'x': 80, 'y': 190}
         """
         try:
-            self._if_force_relocate()
-            rect = self._present_cache.rect
+            rect = self.present_try.rect
         except ELEMENT_REFERENCE_EXCEPTIONS:
             rect = self.present.rect
         return {
@@ -951,8 +957,7 @@ class Element:
         Click the element when it is clickable.
         """
         try:
-            self._if_force_relocate()
-            self._clickable_cache.click()
+            self.clickable_try.click()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.clickable.click()
 
@@ -964,9 +969,9 @@ class Element:
             - sleep: Delay in seconds before clicking.
         """
         try:
-            self._if_force_relocate()
+            cache = self.clickable_try
             time.sleep(sleep)
-            self._clickable_cache.click()
+            cache.click()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             element = self.clickable
             time.sleep(sleep)
@@ -985,8 +990,7 @@ class Element:
             - NoSuchShadowRoot: If no shadow root was attached to element.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.shadow_root
+            return self.present_try.shadow_root
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.shadow_root
 
@@ -1000,8 +1004,7 @@ class Element:
         or zero coordinates if the element is not visible.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.location_once_scrolled_into_view
+            return self.present_try.location_once_scrolled_into_view
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.location_once_scrolled_into_view
 
@@ -1011,8 +1014,7 @@ class Element:
         Returns the ARIA role of the current web element.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.aria_role
+            return self.present_try.aria_role
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.aria_role
 
@@ -1022,8 +1024,7 @@ class Element:
         Returns the ARIA Level of the current webelement.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.accessible_name
+            return self.present_try.accessible_name
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.accessible_name
 
@@ -1053,8 +1054,7 @@ class Element:
             pause: How long the action pauses before moving after the tap and hold in seconds.
         """
         try:
-            self._if_force_relocate()
-            self.driver.drag_and_drop(self._present_cache, target._present_cache, pause)  # type: ignore[attr-defined]
+            self.driver.drag_and_drop(self.present_try, target.present_try, pause)  # type: ignore[attr-defined]
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.driver.drag_and_drop(self.present, target.present, pause)  # type: ignore[attr-defined]
         return self
@@ -1070,8 +1070,7 @@ class Element:
                 Default is 600 ms for W3C spec.
         """
         try:
-            self._if_force_relocate()
-            self.driver.scroll(self._present_cache, target._present_cache, duration)  # type: ignore[attr-defined]
+            self.driver.scroll(self.present_try, target.present_try, duration)  # type: ignore[attr-defined]
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.driver.scroll(self.present, target.present, duration)  # type: ignore[attr-defined]
         return self
@@ -1423,8 +1422,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._clickable_cache.clear()
+            self.clickable_try.clear()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.clickable.clear()
         return self
@@ -1444,8 +1442,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._clickable_cache.send_keys(*value)
+            self.clickable_try.send_keys(*value)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.clickable.send_keys(*value)
         return self
@@ -1465,8 +1462,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.get_dom_attribute(name)
+            return self.present_try.get_dom_attribute(name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.get_dom_attribute(name)
 
@@ -1496,8 +1492,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.get_attribute(name)
+            return self.present_try.get_attribute(name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.get_attribute(name)
 
@@ -1514,8 +1509,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.get_property(name)
+            return self.present_try.get_property(name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.get_property(name)
 
@@ -1525,10 +1519,9 @@ class Element:
         Submits a form.
         """
         try:
-            self._if_force_relocate()
-            self._clickable_cache.submit()
+            self.present_try.submit()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.clickable.submit()
+            self.present.submit()
 
     @property
     def tag_name(self) -> str:
@@ -1537,8 +1530,7 @@ class Element:
         This element's tagName property.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.tag_name
+            return self.present_try.tag_name
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.tag_name
 
@@ -1548,8 +1540,7 @@ class Element:
         The value of a CSS property.
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.value_of_css_property(property_name)
+            return self.present_try.value_of_css_property(property_name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.value_of_css_property(property_name)
 
@@ -1559,8 +1550,7 @@ class Element:
         The visible value of a CSS property.
         """
         try:
-            self._if_force_relocate()
-            return self._visible_cache.value_of_css_property(property_name)
+            return self.visible_try.value_of_css_property(property_name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.visible.value_of_css_property(property_name)
 
@@ -1645,8 +1635,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.click(self._present_cache)
+            self.action.click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.click(self.present)
         return self
@@ -1671,8 +1660,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.click_and_hold(self._present_cache)
+            self.action.click_and_hold(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.click_and_hold(self.present)
         return self
@@ -1697,8 +1685,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.context_click(self._present_cache)
+            self.action.context_click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.context_click(self.present)
         return self
@@ -1723,8 +1710,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.double_click(self._present_cache)
+            self.action.double_click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.double_click(self.present)
         return self
@@ -1753,8 +1739,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.drag_and_drop(self._present_cache, target._present_cache)
+            self.action.drag_and_drop(self.present_try, target.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.drag_and_drop(self.present, target.present)
         return self
@@ -1784,8 +1769,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.drag_and_drop_by_offset(self._present_cache, xoffset, yoffset)
+            self.action.drag_and_drop_by_offset(self.present_try, xoffset, yoffset)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.drag_and_drop_by_offset(self.present, xoffset, yoffset)
         return self
@@ -1809,8 +1793,7 @@ class Element:
         """
         # key_down, first to focus target element.
         try:
-            self._if_force_relocate()
-            self.action.key_down(value[0], self._present_cache)
+            self.action.key_down(value[0], self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.key_down(value[0], self.present)
         for key in value[1:-1]:
@@ -1842,8 +1825,7 @@ class Element:
         """
         if focus:
             try:
-                self._if_force_relocate()
-                self.action.key_down(value, self._present_cache)
+                self.action.key_down(value, self.present_try)
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 self.action.key_down(value, self.present)
         else:
@@ -1872,8 +1854,7 @@ class Element:
         """
         if focus:
             try:
-                self._if_force_relocate()
-                self.action.key_up(value, self._present_cache)
+                self.action.key_up(value, self.present_try)
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 self.action.key_up(value, self.present)
         else:
@@ -1928,8 +1909,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.send_keys_to_element(self._present_cache, *keys_to_send)
+            self.action.send_keys_to_element(self.present_try, *keys_to_send)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.send_keys_to_element(self.present, *keys_to_send)
         return self
@@ -1954,8 +1934,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.move_to_element(self._present_cache)
+            self.action.move_to_element(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.move_to_element(self.present)
         return self
@@ -1989,8 +1968,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.move_to_element_with_offset(self._present_cache, xoffset, yoffset)
+            self.action.move_to_element_with_offset(self.present_try, xoffset, yoffset)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.move_to_element_with_offset(self.present, xoffset, yoffset)
         return self
@@ -2015,8 +1993,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.release(self._present_cache)
+            self.action.release(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.release(self.present)
         return self
@@ -2050,8 +2027,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self.action.scroll_to_element(self._present_cache)
+            self.action.scroll_to_element(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.scroll_to_element(self.present)
         return self
@@ -2095,8 +2071,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            scroll_origin = ScrollOrigin.from_element(self._present_cache, x_offset, y_offset)
+            scroll_origin = ScrollOrigin.from_element(self.present_try, x_offset, y_offset)
             self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             scroll_origin = ScrollOrigin.from_element(self.present, x_offset, y_offset)
@@ -2109,10 +2084,23 @@ class Element:
         Get the Select object by present element.
         """
         try:
-            self._if_force_relocate()
-            self._select_cache = Select(self._present_cache)
+            select = Select(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
+            select = Select(self.present)
+        if self.cache:
+            self._select_cache = select
+        return select
+
+    @property
+    def select_try(self) -> Select:
+        """
+        This attribute must be used with `try-except`. 
+        Returns the inner `present_cache`, or raises `NoSuchCacheException` 
+        if caching is not required or the cache attribute is not present. 
+        Construct the except block to relocate the element and execute its method.
+        """
+        if not (self.cache and hasattr(self, _Name._select_cache)):
+            raise NoSuchCacheException
         return self._select_cache
 
     @property
@@ -2128,31 +2116,10 @@ class Element:
         Selenium Select API.
         Returns a list of all options belonging to this select tag.
         """
-        # All Select-related methods must be encapsulated using this structure
-        # to ensure no unnecessary steps are taken.
-        # The reason is that if "self._select_cache.method()" raises a
-        # StaleElementReferenceException or InvalidSessionIdException,
-        # we can directly rebuild with "self._select_cache = Select(self.present)",
-        # without needing to check "self._select_cache = Select(self._present_cache)" again.
         try:
-            try:
-                # The main process.
-                self._if_force_relocate()
-                return self._select_cache.options
-            except AttributeError:
-                # Handle the first AttributeError:
-                # If there is no available select attribute,
-                # create it using the "_present_cache" first.
-                self._select_cache = Select(self._present_cache)
+            return self.select_try.options
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            # Handle ElementReferenceException by creating a new select object.
-            # This exception can be triggered in two scenarios:
-            # 1. The main process triggers a stale exception.
-            # 2. During the first AttributeError handling,
-            #    if there is no "_present_cache" attribute,
-            #    or it triggers a stale or invalid session exception when initializing.
-            self._select_cache = Select(self.present)
-        return self._select_cache.options
+            return self.select.options
 
     @property
     def all_selected_options(self) -> list[SeleniumWebElement]:
@@ -2161,14 +2128,9 @@ class Element:
         Returns a list of all selected options belonging to this select tag.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.all_selected_options
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            return self.select_try.all_selected_options
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.all_selected_options
+            return self.select.all_selected_options
 
     @property
     def first_selected_option(self) -> SeleniumWebElement:
@@ -2178,14 +2140,9 @@ class Element:
         or the currently selected option in a normal select.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.first_selected_option
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            return self.select_try.first_selected_option
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.first_selected_option
+            return self.select.first_selected_option
 
     def select_by_value(self, value: str) -> None:
         """
@@ -2199,14 +2156,9 @@ class Element:
             - value: The value to match against.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.select_by_value(value)
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.select_by_value(value)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.select_by_value(value)
+            self.select.select_by_value(value)
 
     def select_by_index(self, index: int) -> None:
         """
@@ -2220,14 +2172,9 @@ class Element:
                 throws NoSuchElementException if there is no option with specified index in SELECT.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.select_by_index(index)
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.select_by_index(index)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.select_by_index(index)
+            self.select.select_by_index(index)
 
     def select_by_visible_text(self, text: str) -> None:
         """
@@ -2242,14 +2189,9 @@ class Element:
                 throws NoSuchElementException if there is no option with specified text in SELECT.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.select_by_visible_text(text)
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.select_by_visible_text(text)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.select_by_visible_text(text)
+            self.select.select_by_visible_text(text)
 
     def deselect_all(self) -> None:
         """
@@ -2258,14 +2200,9 @@ class Element:
         This is only valid when the SELECT supports multiple selections.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.deselect_all()
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.deselect_all()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.deselect_all()
+            self.select.deselect_all()
 
     def deselect_by_value(self, value: str) -> None:
         """
@@ -2278,14 +2215,9 @@ class Element:
             - value: The value to match against.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.deselect_by_value(value)
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.deselect_by_value(value)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.deselect_by_value(value)
+            self.select.deselect_by_value(value)
 
     def deselect_by_index(self, index: int) -> None:
         """
@@ -2298,14 +2230,9 @@ class Element:
             - index: The option at this index will be deselected.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.deselect_by_index(index)
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.deselect_by_index(index)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.deselect_by_index(index)
+            self.select.deselect_by_index(index)
 
     def deselect_by_visible_text(self, text: str) -> None:
         """
@@ -2318,14 +2245,9 @@ class Element:
             - text: The visible text to match against.
         """
         try:
-            try:
-                self._if_force_relocate()
-                return self._select_cache.deselect_by_visible_text(text)
-            except AttributeError:
-                self._select_cache = Select(self._present_cache)
+            self.select_try.deselect_by_visible_text(text)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self._select_cache = Select(self.present)
-        return self._select_cache.deselect_by_visible_text(text)
+            self.select.deselect_by_visible_text(text)
 
     @property
     def location_in_view(self) -> dict[str, int]:
@@ -2337,8 +2259,7 @@ class Element:
         Return example: {'x': 100, 'y': 250}
         """
         try:
-            self._if_force_relocate()
-            return self._present_cache.location_in_view  # type: ignore[attr-defined]
+            return self.present_try.location_in_view  # type: ignore[attr-defined]
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.location_in_view  # type: ignore[attr-defined]
 
@@ -2358,8 +2279,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(text * times)
+            self.present_try.send_keys(text * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(text * times)
         return self
@@ -2375,8 +2295,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.ENTER)
+            self.present_try.send_keys(Keys.ENTER)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.ENTER)
         return self
@@ -2393,8 +2312,7 @@ class Element:
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(first, 'a')
+            self.present_try.send_keys(first, 'a')
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(first, 'a')
         return self
@@ -2412,8 +2330,7 @@ class Element:
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(first, 'x')
+            self.present_try.send_keys(first, 'x')
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(first, 'x')
         return self
@@ -2431,8 +2348,7 @@ class Element:
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(first, 'c')
+            self.present_try.send_keys(first, 'c')
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(first, 'c')
         return self
@@ -2450,8 +2366,7 @@ class Element:
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(first, 'v')
+            self.present_try.send_keys(first, 'v')
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(first, 'v')
         return self
@@ -2470,8 +2385,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.ARROW_LEFT * times)
+            self.present_try.send_keys(Keys.ARROW_LEFT * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.ARROW_LEFT * times)
         return self
@@ -2490,8 +2404,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.ARROW_RIGHT * times)
+            self.present_try.send_keys(Keys.ARROW_RIGHT * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.ARROW_RIGHT * times)
         return self
@@ -2510,8 +2423,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.ARROW_UP * times)
+            self.present_try.send_keys(Keys.ARROW_UP * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.ARROW_UP * times)
         return self
@@ -2530,8 +2442,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.ARROW_DOWN * times)
+            self.present_try.send_keys(Keys.ARROW_DOWN * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.ARROW_DOWN * times)
         return self
@@ -2550,8 +2461,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.BACKSPACE * times)
+            self.present_try.send_keys(Keys.BACKSPACE * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.BACKSPACE * times)
         return self
@@ -2570,8 +2480,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.DELETE * times)
+            self.present_try.send_keys(Keys.DELETE * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.DELETE * times)
         return self
@@ -2590,8 +2499,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.TAB * times)
+            self.present_try.send_keys(Keys.TAB * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.TAB * times)
         return self
@@ -2610,8 +2518,7 @@ class Element:
 
         """
         try:
-            self._if_force_relocate()
-            self._present_cache.send_keys(Keys.SPACE * times)
+            self.present_try.send_keys(Keys.SPACE * times)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.present.send_keys(Keys.SPACE * times)
         return self

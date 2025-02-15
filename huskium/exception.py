@@ -4,9 +4,12 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-class _ForcedRelocationException(Exception):
+class NoSuchCacheException(Exception):
     """
-    Used internally in Element._if_force_relocate() when cache = False,
-    allowing the process to directly relocate the element without checking the cache attribute.
+    Typically used internally in Element. 
+    If no cache exists, this exception is raised to trigger element relocation.
     """
-    pass
+
+    def __init__(self, message="No cache available, please relocate the element in except."):
+        self.message = message
+        super().__init__(self.message)

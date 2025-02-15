@@ -7,15 +7,14 @@
 from selenium.common.exceptions import StaleElementReferenceException
 
 from .logging import PrefixFilter
-from .exception import _ForcedRelocationException
+from .exception import NoSuchCacheException
 
 
 # logging
 PREFIX_FILTER = PrefixFilter()
 
 # exception
-ELEMENT_REFERENCE_EXCEPTIONS = (_ForcedRelocationException, AttributeError, StaleElementReferenceException)
-EXCLUDED_ELEMENT_REFERENCE_EXCEPTIONS = (_ForcedRelocationException, AttributeError)
+ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
 EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
 
 
