@@ -96,9 +96,9 @@ class Element:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'[__get__] Get new driver {self._driver}.')
-            self._if_clear_caches()
-        self._logger.debug('[__get__] PASSED.')
+            self._logger.debug(f'[__get__] GET NEW DRIVER: {self._driver}.')
+            self._if_clear_caches('[__get__]')
+        self._logger.debug('[__get__] DONE.')
         return self
 
     def __set__(self, instance: Page, value: Element) -> None:
@@ -110,8 +110,9 @@ class Element:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
-        self._logger.debug('[__set__] Set element attributes.')
-        self._if_clear_caches()  # dynamic element should clear caches.
+        self._logger.debug('[__set__] SET ATTRIBUTES.')
+        self._if_clear_caches('[__set__]')  # dynamic element should clear caches.
+        self._logger.debug('[__set__] SET DONE.')
 
     def dynamic(
         self,
@@ -155,8 +156,9 @@ class Element:
         # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._logger.debug('[dynamic] Set element attributes.')
-        self._if_clear_caches()  # dynamic element should clear caches.
+        self._logger.debug('[dynamic] SET ATTRIBUTES.')
+        self._if_clear_caches('[dynamic]')  # dynamic element should clear caches.
+        self._logger.debug('[dynamic] DONE.')
         return self
 
     def _verify_data(self, by, value, index, timeout, remark, cache) -> None:
@@ -188,14 +190,14 @@ class Element:
         self._cache = cache
         self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
 
-    def _if_clear_caches(self) -> None:
+    def _if_clear_caches(self, logtag: str = '[CLEAR]') -> None:
         """
         If cache is True, clear all caches.
         """
         if self.cache:
             for cache_name in _Name._caches:
-                if vars(self).pop(cache_name, None):
-                    self._logger.debug(f'Clear cache <{cache_name}>.', stacklevel=2)
+                if cache := vars(self).pop(cache_name, None):
+                    self._logger.debug(f'{logtag} CLEAR {cache_name}: {cache}.', stacklevel=2)
 
     def _cache_try(self, name: str) -> Any:
         """
@@ -203,9 +205,9 @@ class Element:
         """
         if self.cache and hasattr(self, name):
             cache = getattr(self, name)
-            self._logger.debug(f'Execute cache {name}: {cache}', stacklevel=3)
+            self._logger.debug(f'EXECUTE {name}: {cache}', stacklevel=3)
             return cache
-        self._logger.debug(f'No cache for {name}, relocating the element directly.', stacklevel=3)
+        self._logger.debug(f'NO {name}: relocating the element directly.', stacklevel=3)
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property
@@ -682,6 +684,7 @@ class Element:
         """
         The same as `element.wait_present(reraise=True)`.
         """
+        self._logger.debug('Execute wait_present(reraise=True).', stacklevel=2)
         return cast(WebElement, self.wait_present(reraise=True))
 
     @property
@@ -689,6 +692,7 @@ class Element:
         """
         The same as element.wait_visible(reraise=True).
         """
+        self._logger.debug('Execute wait_visible(reraise=True).', stacklevel=2)
         return cast(WebElement, self.wait_visible(reraise=True))
 
     @property
@@ -696,6 +700,7 @@ class Element:
         """
         The same as element.wait_clickable(reraise=True).
         """
+        self._logger.debug('Execute wait_clickable(reraise=True).', stacklevel=2)
         return cast(WebElement, self.wait_clickable(reraise=True))
 
     @property
