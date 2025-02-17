@@ -468,9 +468,9 @@ class Elements:
             - False: At least one element is not visible.
         """
         elements = self.all_present
-        for element in elements:
+        for index, element in enumerate(elements, 1):
             if not element.is_displayed():
-                self._logger.debug(f'element {element} is invisible.')
+                self._logger.debug(f'Element {index} is invisible.')
                 return False
         self._logger.debug(f'All {len(elements)} elements are visible.')
         return True
