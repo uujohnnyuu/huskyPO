@@ -2098,6 +2098,9 @@ class Element:
             select = Select(self.present)
         if self.cache:
             self._select_cache = select
+            self._logger.debug(f'Get select_cache: {self._select_cache}')
+        else:
+            self._logger.debug(f'Get select: {select}')
         return select
 
     @property
