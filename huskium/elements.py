@@ -79,8 +79,9 @@ class Elements:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'[__get__] GET NEW DRIVER: {self._driver}.')
-        self._logger.debug('[__get__] DONE.')
+            self._logger.debug(f'[__get__] Driver updated: {self._driver}.')
+        else:
+            self._logger.debug(f'[__get__] Using existing driver: {self._driver}.')
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
@@ -92,8 +93,7 @@ class Elements:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
-        self._logger.debug('[__set__] SET ATTRIBUTES.')
-        self._logger.debug('[__set__] DONE.')
+        self._logger.debug('[__set__] Dynamic element set.')
 
     def dynamic(
         self,
@@ -135,8 +135,7 @@ class Elements:
         # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
-        self._logger.debug('[dynamic] SET ATTRIBUTES.')
-        self._logger.debug('[dynamic] DONE.')
+        self._logger.debug('[dynamic] Dynamic element set.')
         return self
 
     def _verify_data(self, by, value, timeout, remark) -> None:

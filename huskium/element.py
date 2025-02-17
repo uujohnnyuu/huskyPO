@@ -96,9 +96,10 @@ class Element:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'[__get__] GET NEW DRIVER: {self._driver}.')
+            self._logger.debug(f'[__get__] Driver updated: {self._driver}.')
             self._if_clear_caches('[__get__]')
-        self._logger.debug('[__get__] DONE.')
+        else:
+            self._logger.debug(f'[__get__] Using existing driver: {self._driver}.')
         return self
 
     def __set__(self, instance: Page, value: Element) -> None:
@@ -110,9 +111,8 @@ class Element:
         # Avoid using self.__init__() here, as it may reset the descriptor.
         # It’s better not to call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
-        self._logger.debug('[__set__] SET ATTRIBUTES.')
         self._if_clear_caches('[__set__]')  # dynamic element should clear caches.
-        self._logger.debug('[__set__] SET DONE.')
+        self._logger.debug('[__set__] Dynamic element set.')
 
     def dynamic(
         self,
@@ -156,9 +156,8 @@ class Element:
         # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._logger.debug('[dynamic] SET ATTRIBUTES.')
         self._if_clear_caches('[dynamic]')  # dynamic element should clear caches.
-        self._logger.debug('[dynamic] DONE.')
+        self._logger.debug('[dynamic] Dynamic element set.')
         return self
 
     def _verify_data(self, by, value, index, timeout, remark, cache) -> None:
@@ -197,7 +196,7 @@ class Element:
         if self.cache:
             for cache_name in _Name._caches:
                 if cache := vars(self).pop(cache_name, None):
-                    self._logger.debug(f'{logtag} CLEAR {cache_name}: {cache}.', stacklevel=2)
+                    self._logger.debug(f'{logtag} Cleared {cache_name}: {cache}.', stacklevel=2)
 
     def _cache_try(self, name: str) -> Any:
         """
@@ -205,9 +204,9 @@ class Element:
         """
         if self.cache and hasattr(self, name):
             cache = getattr(self, name)
-            self._logger.debug(f'EXECUTE {name}: {cache}', stacklevel=3)
+            self._logger.debug(f'Using {name}: {cache}', stacklevel=3)
             return cache
-        self._logger.debug(f'NO {name}: relocating the element directly.', stacklevel=3)
+        self._logger.debug(f'No {name}: relocating the element directly.', stacklevel=3)
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property
@@ -684,7 +683,6 @@ class Element:
         """
         The same as `element.wait_present(reraise=True)`.
         """
-        self._logger.debug('Execute wait_present(reraise=True).', stacklevel=2)
         return cast(WebElement, self.wait_present(reraise=True))
 
     @property
@@ -692,7 +690,6 @@ class Element:
         """
         The same as element.wait_visible(reraise=True).
         """
-        self._logger.debug('Execute wait_visible(reraise=True).', stacklevel=2)
         return cast(WebElement, self.wait_visible(reraise=True))
 
     @property
@@ -700,7 +697,6 @@ class Element:
         """
         The same as element.wait_clickable(reraise=True).
         """
-        self._logger.debug('Execute wait_clickable(reraise=True).', stacklevel=2)
         return cast(WebElement, self.wait_clickable(reraise=True))
 
     @property
