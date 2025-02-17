@@ -409,10 +409,9 @@ def get_stackinfo(
     # Search for a frame that matches the condition
     frame_target = frame
     while frame:
-        if (
-            frame.f_code.co_name.startswith(prefix) or
-            os.path.basename(frame.f_code.co_filename).startswith(prefix)
-        ):
+        funcname = frame.f_code.co_name
+        filename = os.path.basename(frame.f_code.co_filename)
+        if funcname.startswith(prefix) or filename.startswith(prefix):
             frame_target = frame
             break
         frame = frame.f_back
