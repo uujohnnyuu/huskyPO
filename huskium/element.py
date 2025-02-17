@@ -318,9 +318,9 @@ class Element:
         if not present:
             status += ' or absent'
         exc.msg = f'Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".'
+        if isinstance(exc.__context__, NoSuchCacheException):
+            exc.__context__ = None
         if Timeout.reraise(reraise):
-            if isinstance(exc.__context__, NoSuchCacheException):
-                exc.__context__ = None
             self._logger.exception(exc.msg, stacklevel=2)
             raise exc
         self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
