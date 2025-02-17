@@ -778,13 +778,10 @@ class Element:
             result = self.present_try.is_displayed()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_displayed()
-        if result:
-            if self.cache:
-                self._visible_cache = self._present_cache
-                self._logger.debug(f'present_cache -> visible_cache : {self._visible_cache}')
-            self._logger.debug('present one is visible')
-        else:
-            self._logger.debug('present one is invisible.')
+        if result and self.cache:
+            self._visible_cache = self._present_cache
+            self._logger.debug(f'present_cache -> visible_cache : {self._visible_cache}')
+        self._logger.debug(f'is_visible: {result}')
         return result
 
     def is_enabled(self) -> bool:
@@ -795,10 +792,7 @@ class Element:
             result = self.present_try.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_enabled()
-        if result:
-            self._logger.debug('present one is enabled.')
-        else:
-            self._logger.debug('present one is disabled.')
+        self._logger.debug(f'is_enabled: {result}')
         return result
 
     def is_clickable(self) -> bool:
@@ -811,13 +805,10 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             element = self.present
             result = element.is_displayed() and element.is_enabled()
-        if result:
-            if self.cache:
-                self._clickable_cache = self._visible_cache = self._present_cache
-                self._logger.debug(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
-            self._logger.debug('present one is clickable.')
-        else:
-            self._logger.debug('present one is unclickable.')
+        if result and self.cache:
+            self._clickable_cache = self._visible_cache = self._present_cache
+            self._logger.debug(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
+        self._logger.debug(f'is_clickable: {result}')
         return result
 
     def is_selected(self) -> bool:
@@ -828,10 +819,7 @@ class Element:
             result = self.present_try.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_selected()
-        if result:
-            self._logger.debug('present one is selected.')
-        else:
-            self._logger.debug('present one is unselected.')
+        self._logger.debug(f'is_selected: {result}')
         return result
 
     def screenshot(self, filename: str) -> bool:
