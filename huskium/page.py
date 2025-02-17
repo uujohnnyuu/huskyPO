@@ -93,9 +93,9 @@ class Page:
     def _timeout_process(self, status: str, exc: TimeoutException, reraise: bool | None) -> Literal[False]:
         exc.msg = status
         if Timeout.reraise(reraise):
-            self._logger.exception(exc.msg)
+            self._logger.exception(exc.msg, stacklevel=2)
             raise exc
-        self._logger.warning(exc.msg, exc_info=True)
+        self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
     @property
