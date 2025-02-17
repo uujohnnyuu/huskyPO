@@ -206,7 +206,7 @@ class Element:
             cache = getattr(self, name)
             self._logger.debug(f'Using {name}: {cache}', stacklevel=3)
             return cache
-        self._logger.debug(f'No {name}: relocating the element directly.', stacklevel=3)
+        self._logger.debug(f'No {name}(cache={self.cache}): relocating the element directly.', stacklevel=3)
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property
@@ -472,7 +472,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.invisibility_of_element(self.present_try, present)
                 )
-                self._logger.debug(f'present_cache -> invisible({present}) : {element_or_true}')
+                self._logger.debug(f'present_cache -> invisible(present={present}) : {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -480,9 +480,12 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._logger.debug(f'locator -> present_cache -> invisible({present}) : {self._present_cache}')
+                    self._logger.debug(
+                        f'locator -> present_cache -> invisible(present={present}) : '
+                        f'{self._present_cache}'
+                    )
                 else:
-                    self._logger.debug(f'locator -> invisible({present}) : {element_or_true}')
+                    self._logger.debug(f'locator -> invisible(present={present}) : {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
@@ -568,7 +571,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.element_to_be_unclickable(self.present_try, present)
                 )
-                self._logger.debug(f'present_cache -> unclickable({present}) : {element_or_true}')
+                self._logger.debug(f'present_cache -> unclickable(present={present}) : {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -577,11 +580,11 @@ class Element:
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
                     self._logger.debug(
-                        f'locator -> present_cache -> unclickable({present}) : '
+                        f'locator -> present_cache -> unclickable(present={present}) : '
                         f'{self._present_cache}'
                     )
                 else:
-                    self._logger.debug(f'locator -> unclickable({present}) : {element_or_true}')
+                    self._logger.debug(f'locator -> unclickable(present={present}) : {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
