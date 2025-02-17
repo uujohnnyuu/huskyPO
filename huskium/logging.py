@@ -42,13 +42,13 @@ class PrefixFilter(logging.Filter):
 
     def __init__(self):
         super().__init__()
-        self._funcfilter = FuncPrefixFilter()
-        self._filefilter = FilePrefixFilter()
+        self._func = FuncPrefixFilter()
+        self._file = FilePrefixFilter()
 
     def filter(self, record):
         if Log.FUNCFRAME:
-            return self._funcfilter.filter(record)
-        return self._filefilter.filter(record)
+            return self._func.filter(record)
+        return self._file.filter(record)
 
 
 class FuncPrefixFilter(logging.Filter):
