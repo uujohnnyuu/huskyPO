@@ -31,6 +31,10 @@ class Log:
     # prefix filter object
     PREFIX_FILTER = PrefixFilter('test')
 
+    # Deprecation of logstack
+    _PREFIX = 'test'
+    _LOWER = True
+
     # basicConfig
     FILENAME = './log.log'
     FILEMODE = 'w'

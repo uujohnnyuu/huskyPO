@@ -341,13 +341,13 @@ def get_stacklevel(
     start += outer
 
     # If final prefix is None, return start directly.
-    prefix = prefix or Log.PREFIX
+    prefix = prefix or Log._PREFIX
     if prefix is None:
         return start
 
     # Set lower.
     if lower is None:
-        lower = Log.LOWER
+        lower = Log._LOWER
     if lower:
         prefix = prefix.lower()
 
