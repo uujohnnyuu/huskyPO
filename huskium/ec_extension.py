@@ -27,10 +27,11 @@ def _find_element_by(
     index: int | None
 ) -> WebElement:
     """
-    index:
-        - None: `driver.find_element(*locator)`
-        - int: `driver.find_elements(*locator)[index]`,
-            and treat `IndexError` as `NoSuchElementException`.
+    Args:
+        index:
+            - None: `driver.find_element(*locator)`
+            - int: `driver.find_elements(*locator)[index]`,
+                and treat `IndexError` as `NoSuchElementException`.
     """
     if index is None:
         return driver.find_element(*locator)
@@ -62,19 +63,19 @@ def presence_of_element_located(
     Whether the element is present.
 
     Args:
-        - locator: (by, value)
-        - index:
+        locator: (by, value)
+        index:
             - None: driver.find_element(*locator)
             - int: driver.find_elements(*locator)[index]
 
-    Return:
-        - WebElement: The element is present.
+    Returns:
+        WebElement: The element is present.
 
-    WebDriverWait ignored exceptions:
-        - NoSuchElementException (default)
-
-    External exception handling:
-        - Unnecessary
+    Notes:
+        WebDriverWait ignored exceptions:
+            - NoSuchElementException (default)
+        External exception handling:
+            - Unnecessary
     """
 
     def _predicate(driver: WebDriver):

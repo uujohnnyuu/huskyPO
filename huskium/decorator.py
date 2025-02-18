@@ -15,8 +15,8 @@ def dynamic(func):
     """
     Dynamic element decorator for page objects.
     Applies to any dynamic elements that return an Element or Elements.
-
-    Usage::
+    
+    Examples:
 
         from huskium import dynamic
 
@@ -25,8 +25,7 @@ def dynamic(func):
             return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 
         # You can NOT set the dynamic element without using the dynamic decorator,
-        # as it will not trigger the descriptor method.
-        # The following is incorrect:
+        # as it will not trigger the descriptor method. The following is incorrect:
         def my_element(self, par):
             return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 

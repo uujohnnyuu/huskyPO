@@ -15,18 +15,11 @@ class Log:
     """
     General log settings.
 
-    `PREFIX_FILTER` object settings for huskium internal debug logging:
-    - `Log.PREFIX_FILTER.prefix = 'test'`: Finds frames with the prefix "test".
-    - `Log.PREFIX_FILTER.lower = True`: Case-insensitive; otherwise, case-sensitive.
-    - `Log.PREFIX_FILTER.funcframe = True`: Finds the function frame; otherwise, finds the file (module) frame.
-
-    Attributes of `logging.basicConfig()`:
-    - FILENAME: `'./log.log'`
-    - FILEMODE: `'w'`
-    - FORMAT: `'%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'`
-    - DATEFMT: `'%Y-%m-%d %H:%M:%S'`
-    - LEVEL: `logging.DEBUG`
-    - BASIC_CONFIG: A dictionary containing the above parameters.
+    Attributes:
+        PREFIX_FILTER (huskium internal debug logging):
+            - prefix (str): Finds frames with the prefix `"test"`.  
+            - lower (bool): Enables case-insensitive search; otherwise, it is case-sensitive.  
+            - funcframe (bool): Finds the function frame; otherwise, it finds the file (module) frame. 
     """
     # prefix filter object
     PREFIX_FILTER = PrefixFilter('test')
@@ -54,8 +47,8 @@ class Cache:
     """
     Configure the cache in the related function.
 
-    Class Attributes:
-        - ELEMENT (bool):
+    Attributes:
+        ELEMENT (bool):
             - True (default): Enable cache in Element.
             - False: Disable cache in Element.
     """
@@ -66,11 +59,11 @@ class Timeout:
     """
     Timeout settings.
 
-    Class Attributes:
-        - DEFAULT (int, float):
+    Attributes:
+        DEFAULT (int, float):
             - Default value is 30.
             - Specifies the default wait time (in seconds) for each element(s).
-        - RERAISE (bool):
+        RERAISE (bool):
             - True (default): Raise a TimeoutException when a timeout occurs.
             - False: Return False when a timeout occurs.
     """
@@ -85,7 +78,7 @@ class Timeout:
         Typically used in wait-related methods within Element or Elements.
 
         Args:
-            - switch (bool, None):
+            switch (bool, None):
                 - None (default): Follows the value of Timeout.RERAISE,
                     with logic the same as bool.
                 - True: Raise a TimeoutException when a timeout occurs.
@@ -98,10 +91,10 @@ class Appium:
     """
     General settings for Appium.
 
-    Class Attributes:
-        - LOCALHOST: 'http://127.0.0.1'
-        - PORT_4723: ':4723'
-        - WD_HUB (appium 1.0): '/wd/hub'
+    Attributes:
+        LOCALHOST: 'http://127.0.0.1'
+        PORT_4723: ':4723'
+        WD_HUB (appium 1.0): '/wd/hub'
     """
     LOCALHOST: str = 'http://127.0.0.1'
     PORT_4723: str = ':4723'
@@ -114,15 +107,16 @@ class Offset:
     You can set the preferred offset by assigning values to these variables,
     or create another Offset class based on your test scenario.
 
-    Class Attributes (start_x, start_y, end_x, end_y):
-        - UP: (0.5, 0.75, 0.5, 0.25)
-        - DOWN: (0.5, 0.25, 0.5, 0.75)
-        - LEFT: (0.75, 0.5, 0.25, 0.5)
-        - RIGHT: (0.25, 0.5, 0.75, 0.5)
-        - UPPER_LEFT: (0.75, 0.75, 0.25, 0.25)
-        - UPPER_RIGHT: (0.25, 0.75, 0.75, 0.25)
-        - LOWER_LEFT: (0.75, 0.25, 0.25, 0.75)
-        - LOWER_RIGHT: (0.25, 0.25, 0.75, 0.75)
+    Attributes:
+        Offset (start_x, start_y, end_x, end_y):
+            - UP: (0.5, 0.75, 0.5, 0.25)
+            - DOWN: (0.5, 0.25, 0.5, 0.75)
+            - LEFT: (0.75, 0.5, 0.25, 0.5)
+            - RIGHT: (0.25, 0.5, 0.75, 0.5)
+            - UPPER_LEFT: (0.75, 0.75, 0.25, 0.25)
+            - UPPER_RIGHT: (0.25, 0.75, 0.75, 0.25)
+            - LOWER_LEFT: (0.75, 0.25, 0.25, 0.75)
+            - LOWER_RIGHT: (0.25, 0.25, 0.75, 0.75)
     """
     UP: tuple = (0.5, 0.75, 0.5, 0.25)
     DOWN: tuple = (0.5, 0.25, 0.5, 0.75)
@@ -140,7 +134,8 @@ class Area:
     You can set the preferred area by assigning values to these variables,
     or create another Area class based on your test scenario.
 
-    Class Attributes (window_x, window_y, window_width, window_height):
-        - FULL: (0.0, 0.0, 1.0, 1.0)
+    Attributes:
+        Area (window_x, window_y, window_width, window_height):
+            - FULL: (0.0, 0.0, 1.0, 1.0)
     """
     FULL: tuple = (0.0, 0.0, 1.0, 1.0)
