@@ -17,9 +17,9 @@ class Log:
 
     Attributes:
         PREFIX_FILTER (huskium internal debug logging):
-            - prefix (str): Finds frames with the prefix `"test"`.  
-            - lower (bool): Enables case-insensitive search; otherwise, it is case-sensitive.  
-            - funcframe (bool): Finds the function frame; otherwise, it finds the file (module) frame. 
+            - prefix (str): Finds frames with the prefix `"test"`.
+            - lower (bool): Enables case-insensitive search; otherwise, it is case-sensitive.
+            - funcframe (bool): Finds the function frame; otherwise, it finds the file (module) frame.
     """
     # prefix filter object
     PREFIX_FILTER = PrefixFilter('test')

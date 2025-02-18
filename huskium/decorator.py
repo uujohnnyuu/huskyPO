@@ -15,7 +15,7 @@ def dynamic(func):
     """
     Dynamic element decorator for page objects.
     Applies to any dynamic elements that return an Element or Elements.
-    
+
     Examples:
 
         from huskium import dynamic

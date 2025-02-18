@@ -20,7 +20,7 @@ class ByAttribute:
     """
     This class is used for internal validation of the correctness of `By`.
 
-    Although it is not set as an inner or private method, users can also utilize this class 
+    Although it is not set as an inner or private method, users can also utilize this class
     to check which methods are available in their current version.
 
     Attributes:
