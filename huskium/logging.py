@@ -12,7 +12,7 @@ import os
 # Filter
 class PrefixFilter(logging.Filter):
     """
-    A prefix filter for logging.  
+    A prefix filter for logging.
     Displays log information for frames where the name starts with the target prefix.
 
     Usage::
@@ -35,8 +35,8 @@ class PrefixFilter(logging.Filter):
         """
         Args:
             prefix: The frame prefix.
-	        lower: True for case-insensitive matching; False for case-sensitive.
-	        funcframe: True to filter function frames; False to filter file (module) frames.
+                lower: True for case-insensitive matching; False for case-sensitive.
+                funcframe: True to filter function frames; False to filter file (module) frames.
         """
         super().__init__()
         self.prefix = prefix
