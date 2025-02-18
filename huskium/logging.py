@@ -8,59 +8,65 @@ import inspect
 import logging
 import os
 
-from .config import Log
-
 
 # Filter
 class PrefixFilter(logging.Filter):
     """
-    A prefix filter for logging.
-    Displaying log information for frame where the name starts with Log.PREFIX.
+    A prefix filter for logging.  
+    Displays log information for frames where the name starts with the target prefix.
 
     Usage::
 
         import logging
+        from huskium import PrefixFilter
 
-        from huskium import Log
-        from huskium import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
+        # Create a filter object with prefix = 'test'
+        filter = PrefixFilter('test')
 
-        # Apply a filter to customize logging.
-        # PrefixFilter includes both FuncPrefixFilter and FilePrefixFilter.
-        # If Log.FUNCNAME = True, FuncPrefixFilter is used; otherwise, FilePrefixFilter is applied.
-        logging.getLogger().addFilter(PrefixFilter())
+        # Set up logging
+        logging.addFilter(filter)
 
-        # Use specific filters independently if needed, regardless of Log.FUNCNAME.
-        logging.getLogger().addFilter(FilePrefixFilter())
-
-        # It is recommended to configure logging per module for your structure.
-        # Huskium’s core modules already define LOGGER, so Log settings control behavior externally.
-        LOGGER = logging.getLogger(__name__)
-        PREFIX_FILTER = PrefixFilter()
-        LOGGER.addFilter(PREFIX_FILTER)
+        # All logging will follow the filter logic, recording logs from frames with the prefix 'test'.
+        logging.info(...)
 
     """
 
-    def __init__(self):
+    def __init__(self, prefix: str | None = None, lower: bool = True, funcframe: bool = True):
+        """
+        Args:
+            prefix: The frame prefix.
+	        lower: True for case-insensitive matching; False for case-sensitive.
+	        funcframe: True to filter function frames; False to filter file (module) frames.
+        """
         super().__init__()
+        self.prefix = prefix
+        self.lower = lower
+        self.funcframe = funcframe
         self._func = FuncPrefixFilter()
         self._file = FilePrefixFilter()
 
     def filter(self, record):
-        if Log.FUNCFRAME:
-            return self._func.filter(record)
-        return self._file.filter(record)
+        f = self._func if self.funcframe else self._file
+        f.prefix = self.prefix
+        f.lower = self.lower
+        return f.filter(record)
 
 
 class FuncPrefixFilter(logging.Filter):
 
+    def __init__(self, prefix: str | None = None, lower: bool = True):
+        super().__init__()
+        self.prefix = prefix
+        self.lower = lower
+
     def filter(self, record):
-        if Log.PREFIX:
-            prefix = Log.PREFIX.lower() if Log.LOWER else Log.PREFIX
+        if self.prefix:
+            prefix = self.prefix.lower() if self.lower else self.prefix
             # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
             frame = inspect.currentframe()
             while frame:
                 funcname = original_funcname = frame.f_code.co_name
-                if Log.LOWER:
+                if self.lower:
                     funcname = funcname.lower()
                 if funcname.startswith(prefix):
                     record.filename = os.path.basename(frame.f_code.co_filename)
@@ -73,14 +79,19 @@ class FuncPrefixFilter(logging.Filter):
 
 class FilePrefixFilter(logging.Filter):
 
+    def __init__(self, prefix: str | None = None, lower: bool = True):
+        super().__init__()
+        self.prefix = prefix
+        self.lower = lower
+
     def filter(self, record):
-        if Log.PREFIX:
-            prefix = Log.PREFIX.lower() if Log.LOWER else Log.PREFIX
+        if self.prefix:
+            prefix = self.prefix.lower() if self.lower else self.prefix
             # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
             frame = inspect.currentframe()
             while frame:
                 filename = original_filename = os.path.basename(frame.f_code.co_filename)
-                if Log.LOWER:
+                if self.lower:
                     filename = filename.lower()
                 if filename.startswith(prefix):
                     record.filename = original_filename

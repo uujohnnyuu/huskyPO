@@ -6,12 +6,8 @@
 
 from selenium.common.exceptions import StaleElementReferenceException
 
-from .logging import PrefixFilter
 from .exception import NoSuchCacheException
 
-
-# logging
-PREFIX_FILTER = PrefixFilter()
 
 # exception
 ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)

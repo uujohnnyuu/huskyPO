@@ -23,16 +23,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from . import ec_extension as ecex
 from .by import ByAttribute
-from .config import Cache, Timeout, Offset, Area
+from .config import Log, Cache, Timeout, Offset, Area
 from .logging import PageElementLoggerAdapter
 from .page import Page
 from .exception import NoSuchCacheException
 from .types import SeleniumWebElement, WebDriver, WebElement, Coordinate
-from .shared import PREFIX_FILTER, ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name
+from .shared import ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name
 
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.addFilter(PREFIX_FILTER)
+LOGGER.addFilter(Log.PREFIX_FILTER)
 
 
 class Element:

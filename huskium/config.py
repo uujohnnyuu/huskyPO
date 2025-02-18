@@ -8,32 +8,28 @@ from __future__ import annotations
 
 import logging
 
+from .logging import PrefixFilter
+
 
 class Log:
     """
     General log settings.
 
-    Class Attributes of `PrefixFilter` (`from huskium import PrefixFilter`):
-        - PREFIX:
-            - `str` (default: `"test"`): If `PrefixFilter` is set in the logging filter,
-                it records the first frame whose name starts with `"test"`.
-            - `None`: Behaves the same as basic logging.
-        - LOWER:
-            - `True` (default): `PREFIX` and frame names are case-insensitive.
-            - `False`: `PREFIX` and frame names are case-sensitive.
+    `PREFIX_FILTER` object settings for huskium internal debug logging:
+    - `Log.PREFIX_FILTER.prefix = 'test'`: Finds frames with the prefix "test".
+    - `Log.PREFIX_FILTER.lower = True`: Case-insensitive; otherwise, case-sensitive.
+    - `Log.PREFIX_FILTER.funcframe = True`: Finds the function frame; otherwise, finds the file (module) frame.
 
-    Class Attributes of `logging.basicConfig()`:
-        - FILENAME: `'./log.log'`
-        - FILEMODE: `'w'`
-        - FORMAT: `'%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'`
-        - DATEFMT: `'%Y-%m-%d %H:%M:%S'`
-        - LEVEL: `logging.DEBUG`
-        - BASIC_CONFIG: A dictionary containing the above parameters.
+    Attributes of `logging.basicConfig()`:
+    - FILENAME: `'./log.log'`
+    - FILEMODE: `'w'`
+    - FORMAT: `'%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'`
+    - DATEFMT: `'%Y-%m-%d %H:%M:%S'`
+    - LEVEL: `logging.DEBUG`
+    - BASIC_CONFIG: A dictionary containing the above parameters.
     """
-    # prefix
-    PREFIX: str | None = 'test'
-    FUNCFRAME: bool = True
-    LOWER: bool = True
+    # prefix filter object
+    PREFIX_FILTER = PrefixFilter('test')
 
     # basicConfig
     FILENAME = './log.log'

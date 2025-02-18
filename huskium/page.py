@@ -26,14 +26,14 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from . import ec_extension as ecex
-from .config import Timeout, Offset, Area
+from .config import Log, Timeout, Offset, Area
 from .logging import PageElementLoggerAdapter
 from .types import WebDriver, WebElement, TupleCoordinate, Coordinate
-from .shared import PREFIX_FILTER, _Name
+from .shared import _Name
 
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.addFilter(PREFIX_FILTER)
+LOGGER.addFilter(Log.PREFIX_FILTER)
 
 
 class Page:
