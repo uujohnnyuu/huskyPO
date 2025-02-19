@@ -17,7 +17,7 @@ def dynamic(func):
     Applies to any dynamic elements that return an Element or Elements.
 
     Args:
-        func: The dynamic `Element` or `Elements`.
+        func: The dynamic element function of `Element` or `Elements`.
 
     Examples:
     ::
