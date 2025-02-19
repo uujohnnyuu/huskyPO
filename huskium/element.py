@@ -65,10 +65,10 @@ class Element:
             index: Default `None` to use the `find_element()` strategy.
                 If `int`, uses the `find_elements()[index]` strategy.
             timeout: The maximum time in seconds to find the element.
-                If `None`, use `Timeout.DEFAULT`. 
-            remark: Custom remark for identification or logging. If `None`, 
+                If `None`, use `Timeout.DEFAULT`.
+            remark: Custom remark for identification or logging. If `None`,
                 record as `(by="{by}", value="{value}", index={index})`.
-            cache: `True` to cache the located WebElement for reuse; otherwise, 
+            cache: `True` to cache the located WebElement for reuse; otherwise,
                 locate the element every time. If `None`, use `Cache.Element`.
         """
         self._verify_data(by, value, index, timeout, remark, cache)
@@ -196,7 +196,7 @@ class Element:
 
     def _cache_try(self, name: str) -> Any:
         """
-        Return `getattr(self, name)`, 
+        Return `getattr(self, name)`,
         or raise `NoSuchCacheException` if no cache is available.
         """
         if self.cache and hasattr(self, name):
@@ -237,7 +237,7 @@ class Element:
     @property
     def remark(self) -> str:
         """
-        If initial remark is `None`, 
+        If initial remark is `None`,
         return `(by="{by}", value="{value}", index={index})`.
         """
         return self._remark or f'(by="{self._by}", value="{self._value}", index={self._index})'
@@ -280,11 +280,11 @@ class Element:
         Get an object of WebDriverWait.
 
         Args:
-            timeout: The maximum time in seconds to wait for the 
-                expected condition. 
+            timeout: The maximum time in seconds to wait for the
+                expected condition.
                 If `None`, it initializes with the element timeout.
-            ignored_exceptions: iterable structure of exception classes 
-                ignored during calls. 
+            ignored_exceptions: iterable structure of exception classes
+                ignored during calls.
                 If `None`, it contains `NoSuchElementException` only.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
@@ -337,11 +337,11 @@ class Element:
                 If `int | float`, follows P1 this value.
             reraise (when the element state is not as expected):
                 If `None`, follows P2 `Timeout.RERAISE`.
-                If `bool`, follows P1 this value, `True` to raise a 
+                If `bool`, follows P1 this value, `True` to raise a
                     `TimeoutException`; `False` to return `False`.
 
         Returns:
-            (WebElement | False): `WebElement` if present within the timeout; 
+            (WebElement | False): `WebElement` if present within the timeout;
                 otherwise, `False` if `reraise` is `False`.
 
         Raises:

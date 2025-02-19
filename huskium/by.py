@@ -19,7 +19,7 @@ class By(AppiumBy):
 class ByAttribute:
     """
     This is mainly used for internal validation of `By`.
-    You can also use this class attribute to check which valid `By` 
+    You can also use this class attribute to check which valid `By`
     attributes are available in your current selenium and appium version.
 
     Attributes:

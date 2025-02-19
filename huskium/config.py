@@ -28,7 +28,7 @@ class Log:
         PREFIX_FILTER.lower = True
 
         # Finds the file (module) frame using the prefix "run".
-        PREFIX_FILTER.funcframe = False  
+        PREFIX_FILTER.funcframe = False
 
     """
     # prefix filter object
@@ -69,7 +69,7 @@ class Timeout:
 
     Attributes:
         DEFAULT (int, float): Default is 30 seconds.
-        RERAISE (bool): When a timeout occurs, 
+        RERAISE (bool): When a timeout occurs,
             True (default) raises a TimeoutException; otherwise, returns False.
     """
     DEFAULT: int | float = 30
@@ -83,7 +83,7 @@ class Timeout:
         Typically used in wait-related methods within Element or Elements.
 
         Args:
-            switch (bool, None): When a timeout occurs, `True` (default) raises 
+            switch (bool, None): When a timeout occurs, `True` (default) raises
                 a `TimeoutException`; otherwise, returns `False`.
                 If `None`, it follows `Timeout.RERAISE`.
         """
@@ -102,7 +102,7 @@ class Appium:
 class Offset:
     """
     All Offset attributes store `(start_x, start_y, end_x, end_y)`.
-    Used in `Page` and `Element` to set the `offset` action for 
+    Used in `Page` and `Element` to set the `offset` action for
     `swipe_by` and `flick_by`.
     """
     UP: tuple = (0.5, 0.75, 0.5, 0.25)
@@ -118,7 +118,7 @@ class Offset:
 class Area:
     """
     All Area attributes store `(x, y, width, height)`.
-    Used in `Page` and `Element` to set the `area` action for 
+    Used in `Page` and `Element` to set the `area` action for
     `swipe_by` and `flick_by`.
     """
     FULL: tuple = (0.0, 0.0, 1.0, 1.0)
