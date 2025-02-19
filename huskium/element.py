@@ -60,26 +60,16 @@ class Element:
         Initial Element attributes.
 
         Args:
-            - by:
-                - None (default): Initialize an empty descriptor.
-                - str: Use `from huskium import By` for Selenium and Appium locators.
-            - value:
-                - None (default): Initialize an empty descriptor.
-                - str: The locator value.
-            - index:
-                - None (default): Uses the `find_element()` strategy.
-                - int: Uses the `find_elements()[index]` strategy.
-            - timeout:
-                - None (default): Uses `Timeout.DEFAULT` in seconds.
-                - int, float: Explicit wait time in seconds.
-            - remark:
-                - None (default): Auto-generates remark info as
-                    `(by="{by}", value="{value}", index={index})`.
-                - str: Custom remark for identification or logging.
-            - cache:
-                - None (default): Uses `Cache.Element`, with the default set to True.
-                - True: Cache the located WebElement for reuse.
-                - False: Do not cache and locate the element every time.
+            by: Use `from huskium import By` for all locators.
+            value: The locator value.
+            index: Default `None` to use the `find_element()` strategy.
+                If `int`, uses the `find_elements()[index]` strategy.
+            timeout: The maximum time in seconds to find the element.
+                If `None`, use `Timeout.DEFAULT`. 
+            remark: Custom remark for identification or logging. If `None`, 
+                record as `(by="{by}", value="{value}", index={index})`.
+            cache: `True` to cache the located WebElement for reuse; otherwise, 
+                locate the element every time. If `None`, use `Cache.Element`.
         """
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
@@ -92,7 +82,8 @@ class Element:
             raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
         # If the stored _page differs from the current value,
         # it indicates the driver has been updated.
-        # Assign the current value to _page and clear all caches to avoid InvalidSessionIdException.
+        # Assign the current value to _page and
+        # clear all caches to avoid InvalidSessionIdException.
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
@@ -108,10 +99,10 @@ class Element:
         """
         if not isinstance(value, Element):
             raise TypeError('Only "Element" objects are allowed to be assigned.')
-        # Avoid using self.__init__() here, as it may reset the descriptor.
-        # It’s better not to call dynamic, as it will duplicate the verification.
+        # Avoid using __init__() here, as it may reset the descriptor.
+        # Do not call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
-        self._if_clear_caches('[__set__]')  # dynamic element should clear caches.
+        self._if_clear_caches('[__set__]')  # dynamic should clear caches.
         self._logger.debug('[__set__] Dynamic element set.')
 
     def dynamic(
@@ -125,10 +116,14 @@ class Element:
         cache: bool | None = None
     ) -> Self:
         """
-        In a Page subclass, use a data descriptor to define dynamic elements.
-        This is a simplified version of the __set__ method.
+        Set dynamic elements as `page.element.dynamic(...)` pattern.
+        All the args logic are the same as Element.
 
-        Usage::
+        Returns:
+            Self: The Element object.
+
+        Examples:
+        ::
 
             # my_page.py
             class MyPage(Page):
@@ -137,26 +132,27 @@ class Element:
 
                 def my_dynamic_element(self, id_):
                     return self.my_static_element.dynamic(
-                        By.ID, id_,
-                        remark="Dynamically set my_static_element."
+                        By.ID, id_, remark="dynamic_elem"
                     )
 
             # my_testcase.py
             class MyTestCase:
-                ...
+
                 my_page = MyPage(driver)
+
                 # The element ID is dynamic.
                 id_ = Server.get_id()
+
                 # Dynamically retrieve the element using any method.
                 my_page.my_dynamic_element(id_).text
+
                 # The static element can be used after the dynamic one is set.
                 my_page.my_static_element.click()
 
         """
-        # Avoid using self.__init__() here, as it will reset the descriptor.
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
-        self._if_clear_caches('[dynamic]')  # dynamic element should clear caches.
+        self._if_clear_caches('[dynamic]')  # dynamic should clear caches.
         self._logger.debug('[dynamic] Dynamic element set.')
         return self
 
@@ -165,17 +161,17 @@ class Element:
         Verify basic attributes.
         """
         if by not in ByAttribute.VALUES_WITH_NONE:
-            raise ValueError(f'The locator strategy "{by}" is undefined.')
+            raise ValueError(f'The "by" strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
-            raise TypeError(f'The locator value type should be "str", not "{type(value).__name__}".')
+            raise TypeError(f'The "value" type must be "str", not "{type(value).__name__}".')
         if not isinstance(index, (int, type(None))):
-            raise TypeError(f'The index type should be "int", not "{type(index).__name__}".')
+            raise TypeError(f'The "index" type must be "int", not "{type(index).__name__}".')
         if not isinstance(timeout, (int, float, type(None))):
-            raise TypeError(f'The timeout type should be "int" or "float", not "{type(timeout).__name__}".')
+            raise TypeError(f'The "timeout" type must be "int" or "float", not "{type(timeout).__name__}".')
         if not isinstance(remark, (str, type(None))):
-            raise TypeError(f'The remark type should be "str", not "{type(remark).__name__}".')
+            raise TypeError(f'The "remark" type must be "str", not "{type(remark).__name__}".')
         if not isinstance(cache, (bool, type(None))):
-            raise TypeError(f'The cache type should be "bool", not "{type(cache).__name__}".')
+            raise TypeError(f'The "cache" type must be "bool", not "{type(cache).__name__}".')
 
     def _set_data(self, by, value, index, timeout, remark, cache) -> None:
         """
@@ -200,7 +196,8 @@ class Element:
 
     def _cache_try(self, name: str) -> Any:
         """
-        Return `getattr(self, name)`, or raise `NoSuchCacheException` if no cache is available.
+        Return `getattr(self, name)`, 
+        or raise `NoSuchCacheException` if no cache is available.
         """
         if self.cache and hasattr(self, name):
             cache = getattr(self, name)
@@ -224,10 +221,7 @@ class Element:
         """
         if self._by and self._value:
             return (self._by, self._value)
-        raise ValueError(
-            '"by" and "value" cannot be None when performing element operations. '
-            'Please ensure both are provided with valid values.'
-        )
+        raise ValueError('"by" and "value" cannot be None when performing element operations.')
 
     @property
     def index(self) -> int | None:
@@ -236,21 +230,22 @@ class Element:
     @property
     def timeout(self) -> int | float:
         """
-        If initial timeout is None, return `Timeout.DEFAULT`.
+        If initial timeout is `None`, return `Timeout.DEFAULT`.
         """
         return Timeout.DEFAULT if self._timeout is None else self._timeout
 
     @property
     def remark(self) -> str:
         """
-        If initial remark is None, return (by="{by}", value="{value}", index={index}).
+        If initial remark is `None`, 
+        return `(by="{by}", value="{value}", index={index})`.
         """
         return self._remark or f'(by="{self._by}", value="{self._value}", index={self._index})'
 
     @property
     def cache(self) -> bool:
         """
-        If initial cache is None, return `Cache.ELEMENT`.
+        If initial cache is `None`, return `Cache.ELEMENT`.
         """
         return Cache.ELEMENT if self._cache is None else self._cache
 
@@ -285,10 +280,12 @@ class Element:
         Get an object of WebDriverWait.
 
         Args:
-            - timeout: The maximum time in seconds to wait for the expected condition.
-                By default, it initializes with the element timeout.
-            - ignored_exceptions: iterable structure of exception classes ignored during calls.
-                By default, it contains NoSuchElementException only.
+            timeout: The maximum time in seconds to wait for the 
+                expected condition. 
+                If `None`, it initializes with the element timeout.
+            ignored_exceptions: iterable structure of exception classes 
+                ignored during calls. 
+                If `None`, it contains `NoSuchElementException` only.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
         return WebDriverWait(
@@ -335,19 +332,21 @@ class Element:
         Wait for the element to become present.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout (maximum wait time in seconds to reach the expected state):
+                If `None`, follows P2 `self.timeout` or P3 `Timeout.DEFAULT`.
+                If `int | float`, follows P1 this value.
+            reraise (when the element state is not as expected):
+                If `None`, follows P2 `Timeout.RERAISE`.
+                If `bool`, follows P1 this value, `True` to raise a 
+                    `TimeoutException`; `False` to return `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
+            (WebElement | False): `WebElement` if present within the timeout; 
+                otherwise, `False` if `reraise` is `False`.
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if `reraise` is `True` and
+                the element is still absent within the timeout.
         """
         try:
             element = self.wait(timeout).until(
@@ -355,9 +354,7 @@ class Element:
             )
             if self.cache:
                 self._present_cache = element
-                self._logger.debug(f'locator -> present_cache : {self._present_cache}')
-            else:
-                self._logger.debug(f'locator -> present_element : {element}')
+            self._logger.debug(f'locator -> present -> {element}')
             return element
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)

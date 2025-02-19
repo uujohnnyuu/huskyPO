@@ -28,8 +28,8 @@ def dynamic(func):
         def my_element(self, par):
             return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 
-        # You can NOT set the dynamic element without using the dynamic decorator,
-        # as it will not trigger the descriptor method. The following is incorrect:
+        # You can NOT set the dynamic element without the dynamic decorator,
+        # as it will not trigger the descriptor. The following is incorrect:
         def my_element(self, par):
             return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 
@@ -41,8 +41,7 @@ def dynamic(func):
         if isinstance(target, (Element, Elements)):
             return target.__get__(self)
         raise TypeError(
-            f'The decorated function "{func.__name__}" must returns an '
-            'Element or Elements instance.'
+            f'The decorated function "{func.__name__}" must returns an Element or Elements object.'
         )
 
     return wrapper

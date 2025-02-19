@@ -7,9 +7,11 @@
 Everything You Need to Know About Expected Conditions Extension (ECEX):
     1.	ECEX extends all methods related to element states.
     2.	`locator` follows the same structure as EC.
-    3.	`index` is an extended feature, allowing the `find_elements(*locator)[index]` pattern.
+    3.	`index` is an extended feature, allowing the 
+        `find_elements(*locator)[index]` pattern.
     4.	If `index` is `None`, `find_element(*locator)` is used instead.
-    5.	Separates methods for locators and WebElements to enable more robust exception handling.
+    5.	Separates methods for locators and WebElements to 
+        enable more robust exception handling.
 """
 
 
@@ -31,7 +33,6 @@ def _find_element_by(
     Internal `find_element` using the `index` pattern.
     If an `IndexError` occurs, handle it as a `NoSuchElementException`.
     """
-
     if index is None:
         return driver.find_element(*locator)
     try:
@@ -62,8 +63,8 @@ def presence_of_element_located(
     Checks whether the element can be found using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`.
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
+        locator: `(by, value)`.
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
         WebElement: The `WebElement` if found.
@@ -86,10 +87,11 @@ def presence_of_all_elements_located(
     Checks whether at least one element can be found by locator.
 
     Args:
-        locator (tuple): `(by, value)`.
+        locator: `(by, value)`.
 
     Returns:
-        list[WebElement]: The list of `WebElement` if found, or the empty list `[]` if not found.
+        list[WebElement]: The list of `WebElement` if found, 
+            or the empty list `[]` if not found.
     """
 
     def _predicate(driver: WebDriver):
@@ -106,8 +108,8 @@ def absence_of_element_located(
     Checks Whether the element **CANNOT be found** using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
         bool: `True` if the element **CANNOT be found**; otherwise, `False`.
@@ -130,7 +132,7 @@ def absence_of_all_elements_located(
     Checks Whether all elements **CANNOT be found** using the locator.
 
     Args:
-        locator (tuple): `(by, value)`
+        locator: `(by, value)`
 
     Returns:
         bool: `True` if all elements **CANNOT be found**; otherwise, `False`.
@@ -150,11 +152,12 @@ def visibility_of_element_located(
     Checks Whether the element can be visible using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): `WebElement` if the found element is visible; otherwise, `False`.
+        (WebElement | False): `WebElement` if the found element is visible; 
+            otherwise, `False`.
 
     Raises:
         NoSuchElementException: Raised if the element cannot be found.
@@ -177,10 +180,11 @@ def visibility_of_element(
     Checks Whether the element can be visible using the present element.
 
     Args:
-        element (WebElement): The present element.
+        element: The present element.
 
     Returns:
-        (WebElement | False): `WebElement` if the present element is visible; otherwise, `False`.
+        (WebElement | False): `WebElement` if the present element is visible; 
+            otherwise, `False`.
 
     Raises:
         StaleElementReferenceException: Raised if the present element is stale.
@@ -204,13 +208,14 @@ def visibility_of_any_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]: The list of `WebElement` if at least one element is visible; otherwise,
+        list[WebElement]: The list of `WebElement` 
+            if at least one element is visible; otherwise, 
             the empty list `[]` if all elements are invisible.
 
     Raises:
         NoSuchElementException: Raised if all elements cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if any element is found but stale.
+        StaleElementReferenceException: Raised if any found element is stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -234,13 +239,14 @@ def visibility_of_all_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]: The list of `WebElement` if all elements are visible; otherwise,
+        list[WebElement]: The list of `WebElement` 
+            if all elements are visible; otherwise,
             the empty list `[]` if at least one element is invisible.
 
     Raises:
         NoSuchElementException: Raised if all elements cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if any element is found but stale.
+        StaleElementReferenceException: Raised if any found element is stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -260,21 +266,23 @@ def invisibility_of_element_located(
     present: bool = True
 ) -> Callable[[WebDriver], WebElement | bool]:
     """
-    Checks Whether the element can be **invisible or absent** using the locator and index.
+    Checks Whether the element can be **invisible or absent** 
+    using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
-        present: `True` for the element must be present; otherwise, it can be absent.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
+        present: `True` for the element must be present; 
+            otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool):
-            - `WebElement`: If the element is invisible.
-            - `True`: If the element is absent and `present` is `False`.
-            - `False`: If the element is still visible.
+        (WebElement | bool): `WebElement` if the element is invisible.
+            If `True`, the element is absent and `present` is `False`.
+            If `False`, the element is still visible.
 
     Raises:
-        NoSuchElementException: Raised if the element is absent and `present` is `True`.
+        NoSuchElementException: Raised if the element is 
+            absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
         StaleElementReferenceException: Raised if the found element is stale.
             Optionally Ignored in `WebDriverWait`.
@@ -297,17 +305,18 @@ def invisibility_of_element(
     present: bool = True
 ) -> Callable[[WebDriver], WebElement | bool]:
     """
-    Checks Whether the element can be **invisible or absent** using the present element.
+    Checks Whether the element can be **invisible or absent** 
+    using the present element.
 
     Args:
         element (WebElement): The present element.
-        present: `True` for the element must be present; otherwise, it can be absent.
+        present: `True` for the element must be present; 
+            otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool):
-            - `WebElement`: If the element is invisible.
-            - `True`: If the element is stale and `present` is `False`.
-            - `False`: If the element is still visible.
+        (WebElement | bool): `WebElement` if the element is invisible.
+            If `True`, the element is stale and `present` is `False`.
+            If `False`, the element is still visible.
 
     Raises:
         StaleElementReferenceException: Raised if the found element is stale.
@@ -334,11 +343,12 @@ def element_located_to_be_clickable(
     Checks Whether the element can be clickable using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): `WebElement` if the found element is clickable; otherwise, `False`.
+        (WebElement | False): `WebElement` if the found element is clickable; 
+            otherwise, `False`.
 
     Raises:
         NoSuchElementException: Raised if the element cannot be found.
@@ -364,7 +374,8 @@ def element_to_be_clickable(
         element (WebElement): The present element.
 
     Returns:
-        (WebElement | False): `WebElement` if the present element is clickable; otherwise, `False`.
+        (WebElement | False): `WebElement` if the present element is clickable; 
+            otherwise, `False`.
 
     Raises:
         StaleElementReferenceException: Raised if the present element is stale.
@@ -384,21 +395,23 @@ def element_located_to_be_unclickable(
     present: bool = True
 ) -> Callable[[WebDriver], WebElement | bool]:
     """
-    Checks Whether the element can be **unclickable or absent** using the locator and index.
+    Checks Whether the element can be **unclickable or absent** 
+    using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
-        present: `True` for the element must be present; otherwise, it can be absent.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
+        present: `True` for the element must be present; 
+            otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool):
-            - `WebElement`: If the element is unclickable.
-            - `True`: If the element is absent and `present` is `False`.
-            - `False`: If the element is still clickable.
+        (WebElement | bool): WebElement` if the element is unclickable.
+            If `True`, the element is absent and `present` is `False`.
+            If `False`, the element is still clickable.
 
     Raises:
-        NoSuchElementException: Raised if the element is absent and `present` is `True`.
+        NoSuchElementException: Raised if the element is 
+            absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
         StaleElementReferenceException: Raised if the found element is stale.
             Optionally Ignored in `WebDriverWait`.
@@ -421,17 +434,18 @@ def element_to_be_unclickable(
     present: bool = True
 ) -> Callable[[WebDriver], WebElement | bool]:
     """
-    Checks Whether the element can be **unclickable or absent** using the present element.
+    Checks Whether the element can be **unclickable or absent** 
+    using the present element.
 
     Args:
         element (WebElement): The present element.
-        present: `True` for the element must be present; otherwise, it can be absent.
+        present: `True` for the element must be present; 
+            otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool):
-            - `WebElement`: If the element is unclickable.
-            - `True`: If the element is stale and `present` is `False`.
-            - `False`: If the element is still clickable.
+        (WebElement | bool): `WebElement` if the element is unclickable.
+            If `True`, the element is stale and `present` is `False`.
+            If `False`, the element is still clickable.
 
     Raises:
         StaleElementReferenceException: Raised if the found element is stale.
@@ -458,11 +472,12 @@ def element_located_to_be_selected(
     Checks Whether the element can be selected using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): `WebElement` if the found element is selected; Otherwise, `False`.
+        (WebElement | False): `WebElement` if the found element is selected; 
+            Otherwise, `False`.
 
     Raises:
         NoSuchElementException: Raised if the element cannot be found.
@@ -488,7 +503,8 @@ def element_to_be_selected(
         element (WebElement): The present element.
 
     Returns:
-        (WebElement | False): `WebElement` if the present element is selected; otherwise, `False`.
+        (WebElement | False): `WebElement` if the present element is selected; 
+            otherwise, `False`.
 
     Raises:
         StaleElementReferenceException: Raised if the present element is stale.
@@ -510,11 +526,12 @@ def element_located_to_be_unselected(
     Checks Whether the element can be unselected using the locator and index.
 
     Args:
-        locator (tuple): `(by, value)`
-        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
+        locator: `(by, value)`
+        index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): WebElement` if the found element is unselected; otherwise, `False`.
+        (WebElement | False): WebElement` if the found element is unselected; 
+            otherwise, `False`.
 
     Raises:
         NoSuchElementException: Raised if the element cannot be found.
@@ -537,10 +554,11 @@ def element_to_be_unselected(
     Checks Whether the element can be unselected using the present element.
 
     Args:
-        element (WebElement): The present element.
+        element: The present element.
 
     Returns:
-        (WebElement | False): `WebElement` if the present element is unselected; otherwise, `False`.
+        (WebElement | False): `WebElement` if the present element is unselected; 
+            otherwise, `False`.
 
     Raises:
         StaleElementReferenceException: Raised if the present element is stale.
@@ -562,12 +580,14 @@ def webview_is_present(
     Whether `WEBVIEW` context is present.
 
     Args:
-        switch: Switch to the `WEBVIEW` context when it exists and `switch` is `True`.
-        index: Switch to the specified context index, defaulting to the most recently appeared.
+        switch: Switch to the `WEBVIEW` context 
+            when it exists and `switch` is `True`.
+        index: Switch to the specified context index, 
+            defaulting to the most recently appeared.
 
     Returns:
-        (list[str] | False): All current contexts `list[str]` when a `WEBVIEW` exists; otherwise,
-            `False` when no `WEBVIEW` exists.
+        (list[str] | False): All current contexts `list[str]` when a 
+            `WEBVIEW` exists; otherwise, `False` when no `WEBVIEW` exists.
     """
 
     def _predicate(driver: AppiumWebDriver):
