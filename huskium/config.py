@@ -19,12 +19,12 @@ class Log:
         PREFIX_FILTER (PrefixFilter): Internal debug logging filter.
 
     Examples:
-        You can control the debug logging display:
-        ```python
+    ::
+
         PREFIX_FILTER.prefix = 'run'  # Finds frames with the prefix "run".
         PREFIX_FILTER.lower = True  # Makes the prefix "run" case-insensitive.
         PREFIX_FILTER.funcframe = False  # Finds the file (module) frame using the prefix "run".
-        ```
+
     """
     # prefix filter object
     PREFIX_FILTER = PrefixFilter('test')

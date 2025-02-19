@@ -18,9 +18,9 @@ class By(AppiumBy):
 
 class ByAttribute:
     """
-    This class is used for internal validation of the correctness of `By`.
-    Although it is not set as an inner or private method, users can also utilize this class
-    to check which methods are available in their current version.
+    This class is mainly used for internal validation of the correctness of `By`.
+    You can also use this class attribute to check 
+    which valid `By` attributes are available in your current selenium and appium version.
 
     Attributes:
         NAMES (list): A list of all `By` attribute names as strings.
