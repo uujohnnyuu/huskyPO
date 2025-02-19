@@ -17,7 +17,7 @@ def dynamic(func):
     Applies to any dynamic elements that return an Element or Elements.
 
     Examples:
-
+        ```python
         from huskium import dynamic
 
         @dynamic
@@ -28,7 +28,7 @@ def dynamic(func):
         # as it will not trigger the descriptor method. The following is incorrect:
         def my_element(self, par):
             return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
-
+        ```
     """
 
     @wraps(func)
@@ -36,9 +36,6 @@ def dynamic(func):
         target = func(self, *args, **kwargs)
         if isinstance(target, (Element, Elements)):
             return target.__get__(self)
-        raise TypeError(
-            f'The decorated function "{func.__name__}" must return '
-            'an Element or Elements instance.'
-        )
+        raise TypeError(f'The decorated function "{func.__name__}" must return an Element or Elements instance.')
 
     return wrapper

@@ -4,11 +4,12 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 """
-All you need to know about this Expected Conditions Extension (ECEX):
-1. ECEX extends all methods related to element states.
-2. Allows explicit waits using `find_elements(*locator)[index]`.
-   You can set the `index` parameter in each method.
-3. Separates methods for locators and WebElements to enable more robust exception management.
+Everything You Need to Know About Expected Conditions Extension (ECEX):
+	1.	ECEX extends all methods related to element states.
+	2.	`locator` follows the same structure as EC.
+	3.	`index` is an extended feature, allowing the `find_elements(*locator)[index]` pattern.
+	4.	If `index` is `None`, `find_element(*locator)` is used instead.
+	5.	Separates methods for locators and WebElements to enable more robust exception handling.
 """
 
 
@@ -27,12 +28,10 @@ def _find_element_by(
     index: int | None
 ) -> WebElement:
     """
-    Args:
-        index:
-            - None: `driver.find_element(*locator)`
-            - int: `driver.find_elements(*locator)[index]`,
-                and treat `IndexError` as `NoSuchElementException`.
+    Internal `find_element` using the `index` pattern.  
+    If an `IndexError` occurs, handle it as a `NoSuchElementException`.
     """
+
     if index is None:
         return driver.find_element(*locator)
     try:
@@ -46,8 +45,8 @@ def _find_elements_by(
     locator: tuple[str, str]
 ) -> list[WebElement]:
     """
-    Return driver.find_elements(*locator).
-    if elements == []: raise NoSuchElementException
+    Internal `find_elements` using the `NoSuchElementException` pattern.  
+    If the returned elements list is `[]`, raise `NoSuchElementException`.
     """
     elements = driver.find_elements(*locator)
     if elements == []:
@@ -60,22 +59,17 @@ def presence_of_element_located(
     index: int | None
 ) -> Callable[[WebDriver], WebElement]:
     """
-    Whether the element is present.
+    Checks whether the element can be found using the locator and index.
 
     Args:
-        locator: (by, value)
-        index:
-            - None: driver.find_element(*locator)
-            - int: driver.find_elements(*locator)[index]
+        locator (tuple): `(by, value)`.
+        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        WebElement: The element is present.
+        WebElement: The `WebElement` if found. 
 
-    Notes:
-        WebDriverWait ignored exceptions:
-            - NoSuchElementException (default)
-        External exception handling:
-            - Unnecessary
+    Raises:
+        NoSuchElementException: Raised if the element can not be found. Ignored by default in `WebDriverWait`.
     """
 
     def _predicate(driver: WebDriver):
@@ -88,22 +82,15 @@ def presence_of_all_elements_located(
     locator: tuple[str, str]
 ) -> Callable[[WebDriver], list[WebElement]]:
     """
-    Whether there are at least one elements can be found by the locator.
-    Note that "all" here means "at least one"
-    for the logic of "find_elements" is to find "at least one matched elements".
+    Checks whether at least one element can be found by locator.
 
     Args:
-        - locator: (by, value)
+        locator (tuple): `(by, value)`.
 
-    Return:
-        - list[WebElement]: WebElements.
-        - []: No any elements are found.
-
-    WebDriverWait ignored exceptions:
-        - Unnecessary
-
-    External exception handling:
-        - Unnecessary
+    Returns:
+        list[WebElement]: 
+            - list[WebElement]: The list of `WebElement` if found.
+            - []: The empty list if not found.
     """
 
     def _predicate(driver: WebDriver):
@@ -117,23 +104,14 @@ def absence_of_element_located(
     index: int | None
 ) -> Callable[[WebDriver], bool]:
     """
-    Whether the element is absent.
+    Checks Whether the element **CANNOT** be found using the locator and index.
 
     Args:
-        - locator: (by, value)
-        - index:
-            - None: driver.find_element(*locator)
-            - int: driver.find_elements(*locator)[index]
+        locator (tuple): `(by, value)`
+        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
 
-    Return:
-        - True: The element is absent.
-        - False: The element is present.
-
-    WebDriverWait ignored exceptions:
-        - Unnecessary
-
-    External exception handling:
-        - Unnecessary
+    Returns:
+        bool: `True` if the element **CANNOT** be found; otherwise, `False`.
     """
 
     def _predicate(driver: WebDriver):
@@ -150,21 +128,13 @@ def absence_of_all_elements_located(
     locator: tuple[str, str]
 ) -> Callable[[WebDriver], bool]:
     """
-    Whether all the elements are absent by the locator.
-    This is completely opposite to `presence_of_all_elements_located`.
+    Checks Whether all elements **CANNOT** be found using the locator.
 
     Args:
-        - locator: (by, value)
+        locator (tuple): `(by, value)`
 
-    Return:
-        - True: All the elements are absent.
-        - False: At least one element is present.
-
-    WebDriverWait ignored exceptions:
-        - Unnecessary
-
-    External exception handling:
-        - Unnecessary
+    Returns:
+        bool: `True` if all elements **CANNOT** be found; otherwise, `False`.
     """
 
     def _predicate(driver: WebDriver):
@@ -178,24 +148,20 @@ def visibility_of_element_located(
     index: int | None
 ) -> Callable[[WebDriver], WebElement | Literal[False]]:
     """
-    Whether the element is visible.
+    Checks Whether the element can be visible using the locator and index.
 
     Args:
-        - locator: (by, value)
-        - index:
-            - None: driver.find_element(*locator)
-            - int: driver.find_elements(*locator)[index]
+        locator (tuple): `(by, value)`
+        index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
 
-    Return:
-        - WebElement: The element is visible.
-        - False: The element is present and invisible.
+    Returns:
+        (WebElement | False):
+            - `WebElement`: If the element found is visible.
+            - `False`: If the element found is invisible.
 
-    WebDriverWait ignored exceptions:
-        - NoSuchElementException (default)
-        - StaleElementReferenceException (optional)
-
-    External exception handling:
-        - Unnecessary
+    Raises:
+        NoSuchElementException: Raised if the element can not be found. Ignored by default in `WebDriverWait`.
+        StaleElementReferenceException: Raised if the element is stale. Optionally Ignored in `WebDriverWait`.
     """
 
     def _predicate(driver: WebDriver):
@@ -209,20 +175,13 @@ def visibility_of_element(
     element: WebElement
 ) -> Callable[[WebDriver], WebElement | Literal[False]]:
     """
-    Whether the element is visible.
+    Whether the present element is visible.
 
     Args:
-        - element: WebElement
+        element (WebElement): _description_
 
-    Return:
-        - WebElement: The element is visible.
-        - False: The element is present and invisible.
-
-    WebDriverWait ignored exceptions:
-        - Unnecessary
-
-    External exception handling:
-        - StaleElementReferenceException (optional): retry by `visibility_of_element_located`.
+    Returns:
+        Callable[[WebDriver], WebElement | Literal[False]]: _description_
     """
 
     def _predicate(_):
