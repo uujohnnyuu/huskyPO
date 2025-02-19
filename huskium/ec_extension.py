@@ -5,11 +5,11 @@
 
 """
 Everything You Need to Know About Expected Conditions Extension (ECEX):
-	1.	ECEX extends all methods related to element states.
-	2.	`locator` follows the same structure as EC.
-	3.	`index` is an extended feature, allowing the `find_elements(*locator)[index]` pattern.
-	4.	If `index` is `None`, `find_element(*locator)` is used instead.
-	5.	Separates methods for locators and WebElements to enable more robust exception handling.
+    1.	ECEX extends all methods related to element states.
+    2.	`locator` follows the same structure as EC.
+    3.	`index` is an extended feature, allowing the `find_elements(*locator)[index]` pattern.
+    4.	If `index` is `None`, `find_element(*locator)` is used instead.
+    5.	Separates methods for locators and WebElements to enable more robust exception handling.
 """
 
 
@@ -69,7 +69,7 @@ def presence_of_element_located(
         WebElement: The `WebElement` if found. 
 
     Raises:
-        NoSuchElementException: Raised if the element can not be found. Ignored by default in `WebDriverWait`.
+        NoSuchElementException: Raised if the element cannot be found. Ignored by default in `WebDriverWait`.
     """
 
     def _predicate(driver: WebDriver):
@@ -160,8 +160,8 @@ def visibility_of_element_located(
             - `False`: If the element found is invisible.
 
     Raises:
-        NoSuchElementException: Raised if the element can not be found. Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the element is stale. Optionally Ignored in `WebDriverWait`.
+        NoSuchElementException: Raised if the element cannot be found. Ignored by default in `WebDriverWait`.
+        StaleElementReferenceException: Raised if the element is found but stale. Optionally Ignored in `WebDriverWait`.
     """
 
     def _predicate(driver: WebDriver):
