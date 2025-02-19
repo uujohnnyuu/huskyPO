@@ -69,7 +69,7 @@ def presence_of_element_located(
         WebElement: The `WebElement` if found.
 
     Raises:
-        NoSuchElementException: Raised if the element cannot be found. 
+        NoSuchElementException: Raised if the element cannot be found.
             Ignored by default in `WebDriverWait`.
     """
 
@@ -157,9 +157,9 @@ def visibility_of_element_located(
         (WebElement | False): `WebElement` if the found element is visible; otherwise, `False`.
 
     Raises:
-        NoSuchElementException: Raised if the element cannot be found. 
+        NoSuchElementException: Raised if the element cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is stale. 
+        StaleElementReferenceException: Raised if the found element is stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -204,13 +204,13 @@ def visibility_of_any_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]: The list of `WebElement` if at least one element is visible; otherwise, 
+        list[WebElement]: The list of `WebElement` if at least one element is visible; otherwise,
             the empty list `[]` if all elements are invisible.
 
     Raises:
-        NoSuchElementException: Raised if all elements cannot be found. 
+        NoSuchElementException: Raised if all elements cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if any element is found but stale. 
+        StaleElementReferenceException: Raised if any element is found but stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -234,13 +234,13 @@ def visibility_of_all_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]: The list of `WebElement` if all elements are visible; otherwise, 
+        list[WebElement]: The list of `WebElement` if all elements are visible; otherwise,
             the empty list `[]` if at least one element is invisible.
 
     Raises:
-        NoSuchElementException: Raised if all elements cannot be found. 
+        NoSuchElementException: Raised if all elements cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if any element is found but stale. 
+        StaleElementReferenceException: Raised if any element is found but stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -341,9 +341,9 @@ def element_located_to_be_clickable(
         (WebElement | False): `WebElement` if the found element is clickable; otherwise, `False`.
 
     Raises:
-        NoSuchElementException: Raised if the element cannot be found. 
+        NoSuchElementException: Raised if the element cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is stale. 
+        StaleElementReferenceException: Raised if the found element is stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -465,9 +465,9 @@ def element_located_to_be_selected(
         (WebElement | False): `WebElement` if the found element is selected; Otherwise, `False`.
 
     Raises:
-        NoSuchElementException: Raised if the element cannot be found. 
+        NoSuchElementException: Raised if the element cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is stale. 
+        StaleElementReferenceException: Raised if the found element is stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -517,9 +517,9 @@ def element_located_to_be_unselected(
         (WebElement | False): WebElement` if the found element is unselected; otherwise, `False`.
 
     Raises:
-        NoSuchElementException: Raised if the element cannot be found. 
+        NoSuchElementException: Raised if the element cannot be found.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is stale. 
+        StaleElementReferenceException: Raised if the found element is stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
