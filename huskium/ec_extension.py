@@ -28,7 +28,7 @@ def _find_element_by(
     index: int | None
 ) -> WebElement:
     """
-    Internal `find_element` using the `index` pattern.  
+    Internal `find_element` using the `index` pattern.
     If an `IndexError` occurs, handle it as a `NoSuchElementException`.
     """
 
@@ -45,7 +45,7 @@ def _find_elements_by(
     locator: tuple[str, str]
 ) -> list[WebElement]:
     """
-    Internal `find_elements` using the `NoSuchElementException` pattern.  
+    Internal `find_elements` using the `NoSuchElementException` pattern.
     If the returned elements list is `[]`, raise `NoSuchElementException`.
     """
     elements = driver.find_elements(*locator)
@@ -66,7 +66,7 @@ def presence_of_element_located(
         index (int | None): `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        WebElement: The `WebElement` if found. 
+        WebElement: The `WebElement` if found.
 
     Raises:
         NoSuchElementException: Raised if the element cannot be found. Ignored by default in `WebDriverWait`.
@@ -88,7 +88,7 @@ def presence_of_all_elements_located(
         locator (tuple): `(by, value)`.
 
     Returns:
-        list[WebElement]: 
+        list[WebElement]:
             - list[WebElement]: The list of `WebElement` if found.
             - []: The empty list if not found.
     """
