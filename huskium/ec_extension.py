@@ -186,8 +186,8 @@ def visibility_of_element(
             - `False`: If the present element is invisible.
 
     Raises:
-        StaleElementReferenceException: Raised if the present element is stale. 
-            Can be optionally caught and handled by relocating it using 
+        StaleElementReferenceException: Raised if the present element is stale.
+            Can be optionally caught and handled by relocating it using
             `visibility_of_element_located()` in an external process.
     """
 
@@ -275,9 +275,9 @@ def invisibility_of_element_located(
             - `False`: If the element is still visible.
 
     Raises:
-        NoSuchElementException: Raised if the element is absent and `present` is `True`. 
+        NoSuchElementException: Raised if the element is absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the element is found but stale. 
+        StaleElementReferenceException: Raised if the element is found but stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -312,7 +312,7 @@ def invisibility_of_element(
 
     Raises:
         StaleElementReferenceException: Raised if the element is found but stale.
-            Can be optionally caught and handled by relocating it using 
+            Can be optionally caught and handled by relocating it using
             `invisibility_of_element_located()` in an external process.
     """
 
@@ -370,8 +370,8 @@ def element_to_be_clickable(
             - `False`: If the present element is unclickable.
 
     Raises:
-        StaleElementReferenceException: Raised if the present element is stale. 
-            Can be optionally caught and handled by relocating it using 
+        StaleElementReferenceException: Raised if the present element is stale.
+            Can be optionally caught and handled by relocating it using
             `element_located_to_be_clickable()` in an external process.
     """
 
@@ -401,9 +401,9 @@ def element_located_to_be_unclickable(
             - `False`: If the element is still clickable.
 
     Raises:
-        NoSuchElementException: Raised if the element is absent and `present` is `True`. 
+        NoSuchElementException: Raised if the element is absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the element is found but stale. 
+        StaleElementReferenceException: Raised if the element is found but stale.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -438,7 +438,7 @@ def element_to_be_unclickable(
 
     Raises:
         StaleElementReferenceException: Raised if the element is found but stale.
-            Can be optionally caught and handled by relocating it using 
+            Can be optionally caught and handled by relocating it using
             `element_located_to_be_unclickable()` in an external process.
     """
 
@@ -496,8 +496,8 @@ def element_to_be_selected(
             - `False`: If the present element is still unselected.
 
     Raises:
-        StaleElementReferenceException: Raised if the present element is stale. 
-            Can be optionally caught and handled by relocating it using 
+        StaleElementReferenceException: Raised if the present element is stale.
+            Can be optionally caught and handled by relocating it using
             `element_located_to_be_selected()` in an external process.
     """
 
@@ -550,8 +550,8 @@ def element_to_be_unselected(
             - `False`: If the present element is still selected.
 
     Raises:
-        StaleElementReferenceException: Raised if the present element is stale. 
-            Can be optionally caught and handled by relocating it using 
+        StaleElementReferenceException: Raised if the present element is stale.
+            Can be optionally caught and handled by relocating it using
             `element_located_to_be_selected()` in an external process.
     """
 
