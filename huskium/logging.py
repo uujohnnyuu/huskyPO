@@ -13,9 +13,16 @@ import os
 class PrefixFilter(logging.Filter):
     """
     A prefix filter for logging.
-    Displays log information for frames where the name starts with the target prefix.
+    Displays logs of frame whose names start with the target prefix.
 
-    Usage::
+    Attributes:
+        prefix: The frame prefix.
+        lower: `True` for case-insensitive; `False` for case-sensitive.
+        funcframe: `True` to filter function frames; 
+            `False` to filter file (module) frames.
+
+    Examples:
+    ::
 
         import logging
         from huskium import PrefixFilter
@@ -26,7 +33,8 @@ class PrefixFilter(logging.Filter):
         # Set up logging
         logging.addFilter(filter)
 
-        # All logging will follow the filter logic, recording logs from frames with the prefix 'test'.
+        # All logging will follow the filter logic, 
+        # recording logs from frames with the prefix 'test'.
         logging.info(...)
 
     """
@@ -35,8 +43,9 @@ class PrefixFilter(logging.Filter):
         """
         Args:
             prefix: The frame prefix.
-                lower: True for case-insensitive matching; False for case-sensitive.
-                funcframe: True to filter function frames; False to filter file (module) frames.
+            lower: `True` for case-insensitive; `False` for case-sensitive.
+            funcframe: `True` to filter function frames; 
+                `False` to filter file (module) frames.
         """
         super().__init__()
         self.prefix = prefix
@@ -53,6 +62,10 @@ class PrefixFilter(logging.Filter):
 
 
 class FuncPrefixFilter(logging.Filter):
+    """
+    A function prefix filter for logging.
+    Displays logs of function frame whose names start with the target prefix.
+    """
 
     def __init__(self, prefix: str | None = None, lower: bool = True):
         super().__init__()
@@ -78,6 +91,10 @@ class FuncPrefixFilter(logging.Filter):
 
 
 class FilePrefixFilter(logging.Filter):
+    """
+    A file (module) prefix filter for logging.
+    Displays logs of file frame whose names start with the target prefix.
+    """
 
     def __init__(self, prefix: str | None = None, lower: bool = True):
         super().__init__()

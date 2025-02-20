@@ -11,8 +11,5 @@ class NoSuchCacheException(Exception):
     """
 
     def __init__(self, message: str = "No cache available, please relocate the element in except."):
-        """
-        Default message: No cache available, please relocate the element in except.
-        """
         self.message = message
         super().__init__(self.message)
