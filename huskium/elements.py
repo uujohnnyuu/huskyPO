@@ -5,7 +5,7 @@
 
 # NOTE
 # We do not implement a cache mechanism in Elements, for obvious reasons.
-# The state of multiple elements is unpredictable, 
+# The state of multiple elements is unpredictable,
 # and caching may not improve performance.
 # To ensure stability, elements are re-located on every method call.
 
@@ -222,12 +222,12 @@ class Elements:
                 If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
-        Returns: 
+        Returns:
             (list[WebElement] | WebElement | False):
-                The `list[WebElement]` for `index=None`; 
-                the `WebElement` for `index=int`; 
+                The `list[WebElement]` for `index=None`;
+                the `WebElement` for `index=int`;
                 `False` if no any element.
-                
+
         """
         elements = self.wait_all_present(timeout, reraise)
         if isinstance(elements, list) and isinstance(index, int):
@@ -300,12 +300,12 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            (list[WebElement] | False): A list of `WebElement` if all are 
-                present within the timeout. `False` if all remain absent 
+            (list[WebElement] | False): A list of `WebElement` if all are
+                present within the timeout. `False` if all remain absent
                 after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if all remain absent 
+            TimeoutException: Raised if all remain absent
                 after the timeout(`reraise=True`).
         """
         try:
@@ -335,11 +335,11 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            bool: `True` if all are absent within the timeout. `False` if 
+            bool: `True` if all are absent within the timeout. `False` if
                 at least one is present after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if at least one remain present 
+            TimeoutException: Raised if at least one remain present
                 after the timeout(`reraise=True`).
         """
         try:
@@ -369,12 +369,12 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            (list[WebElement] | False): A list of `WebElement` if all are 
+            (list[WebElement] | False): A list of `WebElement` if all are
                 visible within the timeout. `False` if at least one remain
                 invisible or absent after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if at least one remain invisible or absent 
+            TimeoutException: Raised if at least one remain invisible or absent
                 after the timeout(`reraise=True`).
         """
         try:
@@ -404,7 +404,7 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            (list[WebElement] | False): A list of `WebElement` if at least one 
+            (list[WebElement] | False): A list of `WebElement` if at least one
                 is visible within the timeout. `False` if all remain
                 invisible or absent after the timeout(`reraise=False`).
 
@@ -450,7 +450,7 @@ class Elements:
             timeout: Maximum wait time in seconds.
 
         Returns:
-            bool: `True` if all are present within the timeout; 
+            bool: `True` if all are present within the timeout;
                 otherwise, `False`.
         """
         return True if self.wait_all_present(timeout, False) else False
@@ -463,7 +463,7 @@ class Elements:
             timeout: Maximum wait time in seconds.
 
         Returns:
-            bool: `True` if all are visible within the timeout; 
+            bool: `True` if all are visible within the timeout;
                 otherwise, `False`.
         """
         elements = self.all_present
@@ -482,7 +482,7 @@ class Elements:
             timeout: Maximum wait time in seconds.
 
         Returns:
-            bool: `True` if at least one is visible within the timeout; 
+            bool: `True` if at least one is visible within the timeout;
                 otherwise, `False`.
         """
         elements = self.all_present
@@ -578,8 +578,8 @@ class Elements:
 
     def get_dom_attributes(self, name: str) -> list[str]:
         """
-        Gets the given attributes of all present elements. Unlike 
-        `selenium.webdriver.remote.BaseWebElement.get_attribute`, this method 
+        Gets the given attributes of all present elements. Unlike
+        `selenium.webdriver.remote.BaseWebElement.get_attribute`, this method
         only returns attributes declared in the element's HTML markup.
 
         Args:
