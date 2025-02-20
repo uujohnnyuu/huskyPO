@@ -355,9 +355,9 @@ class Element:
             )
             if self.cache:
                 self._present_cache = element
-                self._logger.debug(f'locator -> present = {self._present_cache}')
+                self._logger.debug(f'Locator -> PresentC = {self._present_cache}')
             else:
-                self._logger.debug(f'locator -> element = {element}')
+                self._logger.debug(f'Locator -> PresentE = {element}')
             return element
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
@@ -392,7 +392,7 @@ class Element:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_element_located(self.locator, self.index)
             )
-            self._logger.debug(f'locator -> absent = {true}')
+            self._logger.debug(f'Locator -> Absent = {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('absent', exc, reraise)
@@ -429,7 +429,7 @@ class Element:
                 self._visible_cache = self.wait(timeout).until(
                     ecex.visibility_of_element(self.present_try)
                 )
-                self._logger.debug(f'present_cache -> visible_cache : {self._visible_cache}')
+                self._logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -437,9 +437,9 @@ class Element:
                 )
                 if self.cache:
                     self._visible_cache = self._present_cache = element
-                    self._logger.debug(f'locator -> present_cache -> visible_cache : {self._visible_cache}')
+                    self._logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
                 else:
-                    self._logger.debug(f'locator -> visible_element : {element}')
+                    self._logger.debug(f'Locator -> VisibleE : {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('visible', exc, reraise)
@@ -480,7 +480,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.invisibility_of_element(self.present_try, present)
                 )
-                self._logger.debug(f'present_cache -> invisible(present={present}) : {element_or_true}')
+                self._logger.debug(f'PresentC -> Invisible(P={present}) = {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -488,12 +488,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._logger.debug(
-                        f'locator -> present_cache -> invisible(present={present}) : '
-                        f'{self._present_cache}'
-                    )
+                    self._logger.debug(f'Locator -> PresentC -> Invisible(P={present}) = {self._present_cache}')
                 else:
-                    self._logger.debug(f'locator -> invisible(present={present}) : {element_or_true}')
+                    self._logger.debug(f'Locator -> Invisible(P={present}) = {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
@@ -530,7 +527,7 @@ class Element:
                 self._clickable_cache = self._visible_cache = self.wait(timeout).until(
                     ecex.element_to_be_clickable(self.present_try)
                 )
-                self._logger.debug(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
+                self._logger.debug(f'PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -538,12 +535,9 @@ class Element:
                 )
                 if self.cache:
                     self._clickable_cache = self._visible_cache = self._present_cache = element
-                    self._logger.debug(
-                        'locator -> present_cache -> visible_cache -> clickable_cache : '
-                        f'{self._clickable_cache}'
-                    )
+                    self._logger.debug(f'Locator -> PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
                 else:
-                    self._logger.debug(f'locator -> clickable_element : {element}')
+                    self._logger.debug(f'Locator -> ClickableE = {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('clickable', exc, reraise)
@@ -584,7 +578,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.element_to_be_unclickable(self.present_try, present)
                 )
-                self._logger.debug(f'present_cache -> unclickable(present={present}) : {element_or_true}')
+                self._logger.debug(f'PresentC -> Unclickable(P={present}) = {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -592,12 +586,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._logger.debug(
-                        f'locator -> present_cache -> unclickable(present={present}) : '
-                        f'{self._present_cache}'
-                    )
+                    self._logger.debug(f'Locator -> PresentC -> Unclickable(P={present}) = {self._present_cache}')
                 else:
-                    self._logger.debug(f'locator -> unclickable(present={present}) : {element_or_true}')
+                    self._logger.debug(f'locator -> Unclickable(P={present}) = {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
@@ -634,7 +625,7 @@ class Element:
                 element = self.wait(timeout).until(
                     ecex.element_to_be_selected(self.present_try)
                 )
-                self._logger.debug(f'present_cache -> selected : {element}')
+                self._logger.debug(f'PresentC -> Selected = {element}')
                 return element
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -642,9 +633,9 @@ class Element:
                 )
                 if self.cache:
                     self._present_cache = element
-                    self._logger.debug(f'locator -> present_cache -> selected : {self._present_cache}')
+                    self._logger.debug(f'Locator -> PresentC -> Selected = {self._present_cache}')
                 else:
-                    self._logger.debug(f'locator -> selected : {element}')
+                    self._logger.debug(f'Locator -> Selected = {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('selected', exc, reraise)
@@ -681,7 +672,7 @@ class Element:
                 element = self.wait(timeout).until(
                     ecex.element_to_be_unselected(self.present_try)
                 )
-                self._logger.debug(f'present_cache -> unselected : {element}')
+                self._logger.debug(f'PresentC -> Unselected = {element}')
                 return element
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -689,9 +680,9 @@ class Element:
                 )
                 if self.cache:
                     self._present_cache = element
-                    self._logger.debug(f'locator -> present_cache -> unselected : {self._present_cache}')
+                    self._logger.debug(f'Locator -> PresentC -> Unselected = {self._present_cache}')
                 else:
-                    self._logger.debug(f'locator -> unselected : {element}')
+                    self._logger.debug(f'Locator -> Unselected = {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('unselected', exc, reraise)
@@ -721,9 +712,18 @@ class Element:
     def present_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `present_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute doesn't exist.
-        Construct the except block to relocate the element and execute its method.
+
+        Returns:
+            WebElement: If there is present cache.
+        
+        Examples:
+        ::
+
+            try:
+                self.present_try.text
+            except ELEMENT_REFERENCE_EXCEPTIONS:
+                self.present.text
+
         """
         return self._cache_try(_Name._present_cache)
 
@@ -731,9 +731,18 @@ class Element:
     def visible_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `visible_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute doesn't present.
-        Construct the except block to relocate the element and execute its method.
+
+        Returns:
+            WebElement: If there is visible cache.
+        
+        Examples:
+        ::
+
+            try:
+                self.visible_try.text
+            except ELEMENT_REFERENCE_EXCEPTIONS:
+                self.visible.text
+
         """
         return self._cache_try(_Name._visible_cache)
 
@@ -741,53 +750,51 @@ class Element:
     def clickable_try(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `clickable_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute doesn't exist.
-        Construct the except block to relocate the element and execute its method.
+
+        Returns:
+            WebElement: If there is clickable cache.
+        
+        Examples:
+        ::
+
+            try:
+                self.clickable_try.text
+            except ELEMENT_REFERENCE_EXCEPTIONS:
+                self.clickable.text
+
         """
         return self._cache_try(_Name._clickable_cache)
 
     @property
     def present_cache(self) -> WebElement | None:
         """
-        Retrieve the stored WebElement if it is present.
-        If the element has not been searched for, return None.
+        Retrieves the stored present element; otherwise, returns `None`.
         """
         return getattr(self, _Name._present_cache, None)
 
     @property
     def visible_cache(self) -> WebElement | None:
         """
-        Retrieve the stored WebElement if it is visible.
-        If the element has not been searched for, return None.
+        Retrieves the stored visible element; otherwise, returns `None`.
         """
         return getattr(self, _Name._visible_cache, None)
 
     @property
     def clickable_cache(self) -> WebElement | None:
         """
-        Retrieve the stored WebElement if it is clickable.
-        If the element has not been searched for, return None.
+        Retrieves the stored clickable element; otherwise, returns `None`.
         """
         return getattr(self, _Name._clickable_cache, None)
 
     def is_present(self, timeout: int | float | None = None) -> bool:
         """
-        Whether the element is present.
-
-        Args:
-            - timeout: Maximum time in seconds to wait for the element to become present.
-
-        Returns:
-            - True: The element is present before timeout.
-            - False: The element is still not present after timeout.
+        Whether the element is present within the timeout.
         """
         return True if self.wait_present(timeout, False) else False
 
     def is_visible(self) -> bool:
         """
-        Whether the element is visible.
-        It is the same as the official `is_displayed()` method.
+        Whether the element is visible (displayed).
         """
         try:
             result = self.present_try.is_displayed()
@@ -795,7 +802,7 @@ class Element:
             result = self.present.is_displayed()
         if result and self.cache:
             self._visible_cache = self._present_cache
-            self._logger.debug(f'present_cache -> visible_cache : {self._visible_cache}')
+            self._logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
         self._logger.debug(f'is_visible: {result}')
         return result
 
@@ -812,7 +819,7 @@ class Element:
 
     def is_clickable(self) -> bool:
         """
-        Whether the element is clickable.
+        Whether the element is clickable (displayed and enabled).
         """
         try:
             cache = self.present_try
@@ -822,7 +829,7 @@ class Element:
             result = element.is_displayed() and element.is_enabled()
         if result and self.cache:
             self._clickable_cache = self._visible_cache = self._present_cache
-            self._logger.debug(f'present_cache -> visible_cache -> clickable_cache : {self._clickable_cache}')
+            self._logger.debug(f'PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
         self._logger.debug(f'is_clickable: {result}')
         return result
 
@@ -843,7 +850,7 @@ class Element:
         Returns False if there is any IOError, else returns True.
 
         Args:
-            - filename: The full path you wish to save your screenshot to.
+            filename: The **full path** you wish to save your screenshot to.
                 This should end with a `.png` extension.
         """
         try:
@@ -874,12 +881,8 @@ class Element:
     @property
     def rect(self) -> dict:
         """
-        A dictionary with the size and location of the element when it is present.
-
-        Note that the official rect may have decimals,
-        we remain consistent with the official standards.
-
-        Return example: {'x': 10, 'y': 15, 'width': 100, 'height': 200}
+        A dictionary with the size and location of the element.
+        For example: `{'x': 10, 'y': 15, 'width': 100, 'height': 200}`.
         """
         try:
             rect = self.present_try.rect
@@ -894,14 +897,10 @@ class Element:
         }
 
     @property
-    def location(self) -> dict[str, int]:
+    def location(self) -> dict:
         """
-        The location of the element when it is present in the renderable canvas.
-
-        Note that the official location has been rounded,
-        so the x, y may be different with rect.
-
-        Return example: {'x': 200, 'y': 300}
+        The location of the element when it is in the renderable canvas.
+        For example: `{'x': 200, 'y': 300}`.
         """
         try:
             return self.present_try.location
@@ -909,14 +908,10 @@ class Element:
             return self.present.location
 
     @property
-    def size(self) -> dict[str, int]:
+    def size(self) -> dict:
         """
-        The size of the element when it is present.
-
-        Note that the official size may have decimals;
-        We remain consistent with the official standards.
-
-        Return example: {'width': 200, 'height': 100}
+        The size of the element.
+        For example: `{'width': 200, 'height': 100}`.
         """
         try:
             size = self.present_try.size
@@ -929,12 +924,10 @@ class Element:
         }
 
     @property
-    def border(self) -> dict[str, int]:
+    def border(self) -> dict:
         """
-        The border of the element when it is present.
-
-        Return is rounded down, for example:
-        {'left': 150, 'right': 250, 'top': 200, 'bottom': 400}
+        The border of the element.
+        For example: `{'left': 150, 'right': 250, 'top': 200, 'bottom': 400}`.
         """
         try:
             rect = self.present_try.rect
@@ -948,12 +941,10 @@ class Element:
         }
 
     @property
-    def center(self) -> dict[str, int]:
+    def center(self) -> dict:
         """
-        The center location of the element when it is present.
-
-        Return is rounded down, for example:
-        {'x': 80, 'y': 190}
+        The center location of the element.
+        For example: `{'x': 80, 'y': 190}`.
         """
         try:
             rect = self.present_try.rect
@@ -975,10 +966,8 @@ class Element:
 
     def delayed_click(self, sleep: int | float = 0.5) -> None:
         """
-        Waits until the element is clickable, then delays for a specified time before clicking.
-
-        Args:
-            - sleep: Delay in seconds before clicking.
+        Delays for a specified time (sleep) in seconds
+        after the element becomes clickable, then clicks.
         """
         try:
             cache = self.clickable_try
@@ -992,14 +981,9 @@ class Element:
     @property
     def shadow_root(self) -> ShadowRoot:
         """
-        Returns a shadow root of the element if there is one or an error.
+        Returns a ShadowRoot object of the element if there is one or an error.
         Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.
-
-        Returns:
-            - ShadowRoot object
-
-        Exception:
-            - NoSuchShadowRoot: If no shadow root was attached to element.
+        If no shadow root was attached, raises `NoSuchShadowRoot`.
         """
         try:
             return self.present_try.shadow_root
@@ -1009,10 +993,10 @@ class Element:
     @property
     def location_once_scrolled_into_view(self) -> dict:
         """
-        THIS PROPERTY MAY CHANGE WITHOUT WARNING.
-        Use this to discover where on the screen an element is so that we can click it.
+        THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where 
+        on the screen an element is that we can click it. 
         This method should cause the element to be scrolled into view.
-        Returns the top lefthand corner location on the screen,
+        Returns the top lefthand corner location on the screen, 
         or zero coordinates if the element is not visible.
         """
         try:
@@ -1033,7 +1017,7 @@ class Element:
     @property
     def accessible_name(self) -> str:
         """
-        Returns the ARIA Level of the current webelement.
+        Returns the ARIA Level of the current web element.
         """
         try:
             return self.present_try.accessible_name
@@ -1047,7 +1031,7 @@ class Element:
         This method can be used when `click()` fails.
 
         Args:
-            - duration: Length of time to tap, in ms.
+            duration: Length of time to tap, in ms.
         """
         self.driver.tap([tuple(self.center.values())], duration)  # type: ignore[attr-defined]
         return self
@@ -1063,7 +1047,8 @@ class Element:
 
         Args:
             target: The element to drag to.
-            pause: How long the action pauses before moving after the tap and hold in seconds.
+            pause: How long the action pauses before moving after 
+                the tap and hold in seconds.
         """
         try:
             self.driver.drag_and_drop(self.present_try, target.present_try, pause)  # type: ignore[attr-defined]
@@ -1077,8 +1062,8 @@ class Element:
         Scrolls from one element to another
 
         Args:
-            - target: The element to scroll to (center of element).
-            - duration: Defines speed of scroll action when moving to target.
+            target: The element to scroll to (center of element).
+            duration: Defines speed of scroll action when moving to target.
                 Default is 600 ms for W3C spec.
         """
         try:
@@ -1090,19 +1075,16 @@ class Element:
     def is_viewable(self, timeout: int | float | None = None) -> bool:
         """
         Appium API.
-        For native iOS and Android,
-        access the element status whether it is in view border.
-
-        Args:
-            - timeout: Maximum time in seconds to wait for the element to become present.
+        This method is typically used with swipe-based element searching.
+        Checks if the current element is visible on the mobile screen.
         """
         element = self.wait_present(timeout, False)
         if element and element.is_displayed():
             if self.cache:
                 self._visible_cache = element
-                self._logger.debug(f'locator -> visible_cache : {self._visible_cache}')
+                self._logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
             else:
-                self._logger.debug(f'locator -> visible_element : {element}')
+                self._logger.debug(f'Locator -> VisibleE = {element}')
             self._logger.debug('Finding one is viewable.')
             return True
         self._logger.debug('Finding one is unviewable.')
@@ -1120,63 +1102,47 @@ class Element:
     ) -> Self:
         """
         Appium API.
-        For native iOS and Android apps, it swipes the screen until the element becomes visible
-        within the specified area.
+        For native iOS and Android apps, it swipes the screen until 
+        the element becomes visible within the specified area.
 
         Args:
-            - offset: Please refer to the Usage.
-            - area: Please refer to the Usage.
-            - timeout: The maximum time in seconds to wait for the element to become visible.
-            - max_round: The maximum number of swipes allowed.
-            - max_adjustment: The maximum number of adjustments
+            offset: `(start_x, start_y, end_x, end_y)`.
+            area: `(x, y, width, height)`.
+            timeout: Maximum wait time in seconds.
+            max_round: The maximum number of swipes allowed.
+            max_adjustment: The maximum number of adjustments
                 to align all borders of the element within the view border.
-            - min_distance: The minimum swipe distance to avoid being mistaken for a click.
-            - duration: The duration of the swipe and adjustment in milliseconds.
+            min_distance: Minimum swipe distance to avoid misinterpretation 
+                as a click. Should be considered along with `duration`.
+            duration: Swipe duration in ms; if too short, it may be mistaken 
+                as a click. Should be considered along with `min_distance`.
 
-        Note on Args "min_distance" and "duration":
-            - Both parameters are used to adjust the element position with a swipe
-                when the element is visible but not within the desired area.
-            - The default settings are based on sliding at a rate of 100 pixels per second,
-                which has been found to be stable.
-            - It is recommended not to change these parameter values
-                unless you have specific testing scenarios.
+        Examples:
+        ::
 
-        Usage::
-
-            # Swipe parameters. Refer to the Class notes for details.
             from huskium import Offset, Area
 
-            # Swipe down.
-            my_page.target_element.swipe_by(Offset.DOWN)
-
-            # Swipe to the right.
-            my_page.target_element.swipe_by(Offset.RIGHT)
-
-            # Swipe to the upper left.
-            my_page.target_element.swipe_by(Offset.UPPER_LEFT)
-
-            # Default is swiping up.
-            # offset = Offset.UP = (0.5, 0.75, 0.5, 0.25)
-            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
-            # offset y: From 75% (0.75) to 25% (0.25) of 100% (1.0) current window height.
+            # Swipe by default.
+            # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
+            # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
+            # offset x: Fixed 0.5 of current window width.
+            # offset y: From 0.75 to 0.25 of current window height.
             my_page.target_element.swipe_by()
 
-            # This is the most recommended method to swipe within a swipeable range.
-            # Get the absolute area coordinates using the scrollable element's rect.
+            # Swipe to the direction using Offset.
+            my_page.target_element.swipe_by(Offset.DOWN)
+            my_page.target_element.swipe_by(Offset.UPPER_LEFT)
+
+            # Swipe with customize relative offset.
+            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
+
+            # Swipe within a swipeable range.
+            # Get the absolute area rect using the scrollable element.
             area = my_page.scrollable_element.rect
             my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), area)
 
             # Swipe with customize absolute offset.
-            # Note that the area parameter will affect the adjusting process.
-            # We recommend not setting the area in this case,
-            # unless you have a specific testing scenario.
-            # ex. Swiping range is not within the area,
-            # and the target element should be inside the area after swiping.
             my_page.target_element.swipe_by((250, 300, 400, 700))
-
-            # Swipe with customize relative offset of current window size.
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
 
             # Swipe with customize relative offset of customize relative area.
             # The area is relative to current window rect, for example:
@@ -1186,10 +1152,14 @@ class Element:
             # area_y = 20 + 1000 x 0.2 = 220
             # area_width = 500 x 0.6 = 300
             # area_height = 1000 x 0.7 = 700
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
+            my_page.target_element.swipe_by(
+                (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
+            )
 
             # Swipe with customize relative offset of customize absolute area.
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
+            my_page.target_element.swipe_by(
+                (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
+            )
 
         """
         area = self._page._get_area(area)
@@ -1210,76 +1180,66 @@ class Element:
     ) -> Self:
         """
         Appium API.
-        For native iOS and Android apps, it flicks the screen until the element becomes visible
-        within the specified area.
+        For native iOS and Android apps, it flicks the screen until 
+        the element becomes visible within the specified area.
 
         Args:
-            - offset: Please refer to the Usage.
-            - area: Please refer to the Usage.
-            - timeout: The maximum time in seconds to wait for the element to become visible.
-            - max_round: The maximum number of flicks allowed.
-            - max_adjustment: The maximum number of adjustments
+            offset: `(start_x, start_y, end_x, end_y)`.
+            area: `(x, y, width, height)`.
+            timeout: Maximum wait time in seconds.
+            max_round: The maximum number of flicks allowed.
+            max_adjustment: The maximum number of adjustments
                 to align all borders of the element within the view border.
-            - min_distance: The minimum flick distance to avoid being mistaken for a click.
-            - duration: The duration of the adjustment (not flick) in milliseconds.
+            min_distance: Minimum swipe (not flick) distance to avoid 
+                misinterpretation as a click. This will be considered along 
+                with `duration` in adjustment process.
+            duration: Swipe (not flick) duration in ms; if too short, 
+                it may be mistaken as a click. This will be considered along 
+                with `min_distance` in adjustment process.
 
-        Note on Args "min_distance" and "duration":
-            - Both parameters are used to adjust the element position with a flick
-                when the element is visible but not within the desired area.
-            - The default settings are based on sliding at a rate of 100 pixels per second,
-                which has been found to be stable.
-            - It is recommended not to change these parameter values
-                unless you have specific testing scenarios.
+        Examples:
+        ::
 
-        Usage::
-
-            # Flick parameters. Refer to the Class notes for details.
             from huskium import Offset, Area
 
-            # Flick down.
-            my_page.target_element.flick_by(Offset.DOWN)
+            # Filck by default.
+            # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
+            # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
+            # offset x: Fixed 0.5 of current window width.
+            # offset y: From 0.75 to 0.25 of current window height.
+            my_page.target_element.filck_by()
 
-            # Flick to the right.
-            my_page.target_element.flick_by(Offset.RIGHT)
+            # Filck to the direction using Offset.
+            my_page.target_element.filck_by(Offset.DOWN)
+            my_page.target_element.filck_by(Offset.UPPER_LEFT)
 
-            # Flick to the upper left.
-            my_page.target_element.flick_by(Offset.UPPER_LEFT)
+            # Filck with customize relative offset.
+            my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35))
 
-            # Default is flicking up.
-            # offset = Offset.UP = (0.5, 0.75, 0.5, 0.25)
-            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
-            # offset y: From 75% (0.75) to 25% (0.25) of 100% (1.0) current window height.
-            my_page.target_element.flick_by()
-
-            # This is the most recommended method to flick within a swipeable range.
-            # Get the absolute area coordinates using the scrollable element's rect.
+            # Filck within a filckable range.
+            # Get the absolute area rect using the scrollable element.
             area = my_page.scrollable_element.rect
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), area)
+            my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35), area)
 
-            # Flick with customize absolute offset.
-            # Note that the area parameter will affect the adjusting process.
-            # We recommend not setting the area in this case,
-            # unless you have a specific testing scenario.
-            # ex. Swiping range is not within the area,
-            # and the target element should be inside the area after flicking.
-            my_page.target_element.flick_by((250, 300, 400, 700))
+            # Filck with customize absolute offset.
+            my_page.target_element.filck_by((250, 300, 400, 700))
 
-            # Flick with customize relative offset of current window size.
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35))
-
-            # Flick with customize relative offset of customize relative area.
+            # Filck with customize relative offset of customize relative area.
             # The area is relative to current window rect, for example:
             # current window rect = (10, 20, 500, 1000)
             # area = (0.1, 0.2, 0.6, 0.7)
-            # area x = 10 + 500 x 0.1 = 60
-            # area y = 20 + 1000 x 0.2 = 220
-            # area width = 500 x 0.6 = 300
-            # area height = 1000 x 0.7 = 700
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
+            # area_x = 10 + 500 x 0.1 = 60
+            # area_y = 20 + 1000 x 0.2 = 220
+            # area_width = 500 x 0.6 = 300
+            # area_height = 1000 x 0.7 = 700
+            my_page.target_element.filck_by(
+                (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
+            )
 
-            # Flick with customize relative offset of customize absolute area.
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
+            # Filck with customize relative offset of customize absolute area.
+            my_page.target_element.filck_by(
+                (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
+            )
 
         """
         area = self._page._get_area(area)
@@ -1426,11 +1386,15 @@ class Element:
         """
         Clear the text of the field type element.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.clear()
-            my_page.my_element.clear().send_keys('my_text')
-            my_page.my_element.click().clear().send_keys('my_text')
+            my_page.my_element.clear().send_keys('my text')
+            my_page.my_element.click().clear().send_keys('my text')
 
         """
         try:
@@ -1444,9 +1408,13 @@ class Element:
         Simulates typing into the element.
 
         Args:
-            - value: The texts or keys to typing.
+            value: The texts or keys to typing.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.send_keys('my_text')
             my_page.my_element.clear().send_keys('my_text')
@@ -1462,13 +1430,14 @@ class Element:
     def get_dom_attribute(self, name: str) -> str:
         """
         Gets the given attribute of the element. Unlike
-        `selenium.webdriver.remote.BaseWebElement.get_attribute`,
-        this method only returns attributes declared in the element's HTML markup.
+        `selenium.webdriver.remote.BaseWebElement.get_attribute`, this method 
+        only returns attributes declared in the element's HTML markup.
 
         Args:
-            - name: Name of the attribute to retrieve.
+            name: Name of the attribute to retrieve.
 
-        Usage::
+        Examples:
+        ::
 
             text_length = element.get_dom_attribute("class")
 
@@ -1490,14 +1459,15 @@ class Element:
         as strings.  For attributes or properties which do not exist, `None`
         is returned.
 
-        To obtain the exact value of the attribute or property,
-        use `selenium.webdriver.remote.BaseWebElement.get_dom_attribute` or
-        `selenium.webdriver.remote.BaseWebElement.get_property` methods respectively.
+        To obtain the exact value of the attribute or property, use 
+        `selenium.webdriver.remote.BaseWebElement.get_dom_attribute` or
+        `selenium.webdriver.remote.BaseWebElement.get_property`.
 
         Args:
-            - name: Name of the attribute or property to retrieve.
+            name: Name of the attribute or property to retrieve.
 
-        Usage::
+        Examples:
+        ::
 
             # Check if the "active" CSS class is applied to an element.
             is_active = "active" in target_element.get_attribute("class")
@@ -1513,9 +1483,10 @@ class Element:
         Gets the given property of the element.
 
         Args:
-            - name: Name of the property to retrieve.
+            name: Name of the property to retrieve.
 
-        Usage::
+        Examples:
+        ::
 
             text_length = target_element.get_property("text_length")
 
@@ -1527,7 +1498,6 @@ class Element:
 
     def submit(self) -> None:
         """
-        Selenium API.
         Submits a form.
         """
         try:
@@ -1538,7 +1508,6 @@ class Element:
     @property
     def tag_name(self) -> str:
         """
-        Selenium API.
         This element's tagName property.
         """
         try:
@@ -1548,7 +1517,6 @@ class Element:
 
     def value_of_css_property(self, property_name: Any) -> str:
         """
-        Selenium API.
         The value of a CSS property.
         """
         try:
@@ -1558,7 +1526,6 @@ class Element:
 
     def visible_value_of_css_property(self, property_name: Any) -> str:
         """
-        Selenium API.
         The visible value of a CSS property.
         """
         try:
@@ -1572,8 +1539,8 @@ class Element:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
-        If the frame is available it switches the given driver to the specified frame.
+        If the frame is available 
+        it switches the given driver to the specified frame.
         """
         try:
             return self.wait(timeout).until(
@@ -1584,55 +1551,64 @@ class Element:
 
     def perform(self) -> None:
         """
-        Selenium ActionChains API.
-        Performs all stored actions.
-        once called, it will execute all stored actions in page.
+        ActionChains API. Performs all stored actions.
 
-        Usage::
+        Returns:
+            None: It should not chain any actions after performed.
+
+        Examples:
+        ::
 
             # Basic usage. Execute element actions.
-            my_page.my_element.scroll_to_element().action_click().perform()
+            page.element.scroll_to_element().action_click().perform()
 
             # Multiple actions to call, set perform to the last action.
-            # This will execute all actions in my_page not just my_page.my_element2.
-            my_page.my_element1.scroll_to_element().action_click()
-            my_page.my_element2.drag_and_drop(my_page.element3).perform()
+            # This will execute all actions in page not just page.element2.
+            page.element1.scroll_to_element().action_click()
+            page.element2.drag_and_drop(page.element3).perform()
 
-            # As above, it is the same to call perform by page, which is more clear:
-            my_page.my_element1.scroll_to_element().action_click()
-            my_page.my_element2.drag_and_drop(my_page.element3)
-            my_page.perform()
+            # As above, it is the same to call perform by page:
+            page.element1.scroll_to_element().action_click()
+            page.element2.drag_and_drop(page.element3)
+            page.perform()
 
         """
         self.action.perform()
 
     def reset_actions(self) -> None:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Clears actions that are already stored in object of Page.
         once called, it will reset all stored actions in page.
 
-        Usage::
+        Returns:
+            None: It should not chain any actions after reset.
+
+        Examples:
+        ::
 
             # Reset the stored actions by the last reset_actions.
-            my_page.my_element1.scroll_to_element().action_click()
-            my_page.my_element2.click_and_hold().reset_actions()
+            page.element1.scroll_to_element().action_click()
+            page.element2.click_and_hold().reset_actions()
 
             # There is a better one structure,
-            # reset all action calls made by my_page.
-            my_page.my_element1.scroll_to_element().action_click()
-            my_page.my_element2.click_and_hold()
-            my_page.reset_actions()
+            # reset all action calls made by page.
+            page.element1.scroll_to_element().action_click()
+            page.element2.click_and_hold()
+            page.reset_actions()
 
         """
         self.action.reset_actions()
 
     def action_click(self) -> Self:
         """
-        Selenium ActionChains API.
-        Clicks an element.
+        ActionChains API. Clicks an element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
             my_page.my_element.action_click().perform()
@@ -1654,10 +1630,13 @@ class Element:
 
     def click_and_hold(self) -> Self:
         """
-        Selenium ActionChains API.
-        Holds down the left mouse button on an element.
+        ActionChains API. Holds down the left mouse button on an element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
             my_page.my_element.click_and_hold().perform()
@@ -1679,10 +1658,13 @@ class Element:
 
     def context_click(self) -> Self:
         """
-        Selenium ActionChains API.
-        Performs a context-click (right click) on an element.
+        ActionChains API. Performs a context-click (right click) on an element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
             my_page.my_element.context_click().perform()
@@ -1704,10 +1686,13 @@ class Element:
 
     def double_click(self) -> Self:
         """
-        Selenium ActionChains API.
-        Double-clicks an element.
+        ActionChains API. Double-clicks an element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
             my_page.my_element.double_click()
@@ -1729,25 +1714,29 @@ class Element:
 
     def drag_and_drop(self, target: Element) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Holds down the left mouse button on the source element,
         then moves to the target element and releases the mouse button.
 
         Args:
-        - target: The element to mouse up. Allowing Element or WebElement type.
+            target: The element to mouse up.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element1.drag_and_drop(my_page.my_element2).perform()
+            page.element1.drag_and_drop(page.element2).perform()
 
             # Chain with another method
-            my_page.my_element1.scroll_to_element().drag_and_drop(my_page.my_element2).perform()
+            page.element1.scroll_to_element().drag_and_drop(page.element2).perform()
 
             # or
-            my_page.my_element1.scroll_to_element().drag_and_drop(my_page.my_element2)
+            page.element1.scroll_to_element().drag_and_drop(page.element2)
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -1758,26 +1747,30 @@ class Element:
 
     def drag_and_drop_by_offset(self, xoffset: int, yoffset: int) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Holds down the left mouse button on the source element,
         then moves to the target offset and releases the mouse button.
 
         Args:
-            - xoffset: X offset to move to, as a positive or negative integer.
-            - yoffset: Y offset to move to, as a positive or negative integer.
+            xoffset: X offset to move to, as a positive or negative integer.
+            yoffset: Y offset to move to, as a positive or negative integer.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.drag_and_drop_by_offset(100, 200).perform()
+            page.element.drag_and_drop_by_offset(100, 200).perform()
 
             # Chain with another method
-            my_page.my_element.scroll_to_element().drag_and_drop_by_offset(100, 200).perform()
+            page.element.scroll_to_element().drag_and_drop_by_offset(100, 200).perform()
 
             # or
-            my_page.my_element.scroll_to_element().drag_and_drop_by_offset(100, 200)
+            page.element.scroll_to_element().drag_and_drop_by_offset(100, 200)
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -1788,19 +1781,22 @@ class Element:
 
     def hotkey(self, *value: str) -> Self:
         """
-        Selenium ActionChains API.
-        Sends hotkey to target element.
+        ActionChains API. Sends hotkey to target element.
 
         Args:
-            - value: The combination of hotkey.
+            value: The combination of hotkey.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # copy(control+c)
-            my_page.my_element.hotkey(Keys.CONTROL, 'c').perform()
+            page.element.hotkey(Keys.CONTROL, 'c').perform()
 
             # switch to previous application(command+shift+tab)
-            my_page.my_element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
+            page.element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
 
         """
         # key_down, first to focus target element.
@@ -1819,20 +1815,25 @@ class Element:
 
     def key_down(self, value: str, focus: bool = True) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Sends a key press only, without releasing it.
         Should only be used with modifier keys (Control, Alt and Shift).
         If you want to perform a hotkey process,
         it is recommended to use hotkey() instead.
 
         Args:
-            - value: The modifier key to send. Values are defined in Keys class.
-            - focus: Whether to focus element or not. Default to focus current element.
+            value: The modifier key to send. Values are defined in Keys class.
+            focus: Whether to focus element or not. 
+                Default to focus current element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # copy(control+c)
-            my_page.my_element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+            page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
 
         """
         if focus:
@@ -1846,22 +1847,26 @@ class Element:
 
     def key_up(self, value: str, focus: bool = False) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Releases a modifier key.
         Should only be used with modifier keys (Control, Alt and Shift).
         If you want to perform a hotkey process,
         it is recommended to use hotkey() instead.
 
         Args:
-            - value: The modifier key to send. Values are defined in Keys class.
-            - focus: Whether to focus on the element or not.
+            value: The modifier key to send. Values are defined in Keys class.
+            focus: Whether to focus on the element or not.
                 The default is NOT to focus on the current element
                 as this is generally not the first action.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # copy(control+c)
-            my_page.my_element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+            page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
 
         """
         if focus:
@@ -1875,23 +1880,27 @@ class Element:
 
     def action_send_keys(self, *keys_to_send: str) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Sends keys to current focused element.
         Note that it should have focused element first.
 
         Args:
-            - keys_to_send: The keys to send.
+            keys_to_send: The keys to send.
                 Modifier keys constants can be found in the 'Keys' class.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Combine with key_down and key_up method
-            my_page.my_element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
+            page.element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
 
             # Send keys to focused element
             # This is recommend to use send_keys_to_element() instead.
-            my_page.my_element.action_click()  # Need to have focused element first.
-            my_page.my_element.action_send_keys('my_keys').perform()
+            page.element.action_click()  # Need to have focused element first.
+            page.element.action_send_keys('my_keys').perform()
 
         """
         self.action.send_keys(*keys_to_send)
@@ -1899,25 +1908,28 @@ class Element:
 
     def send_keys_to_element(self, *keys_to_send: str) -> Self:
         """
-        Selenium ActionChains API.
-        Sends keys to an element.
+        ActionChains API. Sends keys to an element.
 
         Args:
-            - keys_to_send: The keys to send.
+            keys_to_send: The keys to send.
                 Modifier keys constants can be found in the 'Keys' class.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.send_keys_to_element(Keys.ENTER)
+            page.element.send_keys_to_element(Keys.ENTER)
 
             # Chain with another method
-            my_page.my_element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
+            page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
 
             # or
-            my_page.my_element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
+            page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -1928,21 +1940,25 @@ class Element:
 
     def move_to_element(self) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Moving the mouse to the middle of an element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.move_to_element().perform()
+            page.element.move_to_element().perform()
 
             # Chain with another method
-            my_page.my_element.scroll_to_element().move_to_element().perform()
+            page.element.scroll_to_element().move_to_element().perform()
 
             # or
-            my_page.my_element.scroll_to_element().move_to_element()
+            page.element.scroll_to_element().move_to_element()
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -1957,26 +1973,30 @@ class Element:
         yoffset: int,
     ) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Move the mouse by an offset of the specified element.
         Offsets are relative to the in-view center point of the element.
 
         Args:
-            - xoffset: X offset to move to, as a positive or negative integer.
-            - yoffset: Y offset to move to, as a positive or negative integer.
+            xoffset: X offset to move to, as a positive or negative integer.
+            yoffset: Y offset to move to, as a positive or negative integer.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.move_to_element_with_offset(100, 200).perform()
+            page.element.move_to_element_with_offset(100, 200).perform()
 
             # Chain with another method
-            my_page.my_element.scroll_to_element().move_to_element_with_offset(100, 200).perform()
+            page.element.scroll_to_element().move_to_element_with_offset(100, 200).perform()
 
             # or
-            my_page.my_element.scroll_to_element().move_to_element_with_offset(100, 200)
+            page.element.scroll_to_element().move_to_element_with_offset(100, 200)
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -1987,21 +2007,24 @@ class Element:
 
     def release(self) -> Self:
         """
-        Selenium ActionChains API.
-        Releasing a held mouse button on an element.
+        ActionChains API. Releasing a held mouse button on an element.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.release().perform()
+            page.element.release().perform()
 
             # Chain with another method
-            my_page.my_element.click_and_hold().release().perform()
+            page.element.click_and_hold().release().perform()
 
             # or
-            my_page.my_element.click_and_hold().release()
+            page.element.click_and_hold().release()
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -2012,7 +2035,7 @@ class Element:
 
     def pause(self, seconds: int | float) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Pause all inputs for the specified duration in seconds.
         """
         self.action.pause(seconds)
@@ -2020,22 +2043,26 @@ class Element:
 
     def scroll_to_element(self) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         If the element is outside the viewport,
         scrolls the bottom of the element to the bottom of the viewport.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.scroll_to_element().perform()
+            page.element.scroll_to_element().perform()
 
             # Chain with another method
-            my_page.my_element.scroll_to_element().action_click().perform()
+            page.element.scroll_to_element().action_click().perform()
 
             # or
-            my_page.my_element1.scroll_to_element().action_click()
+            page.element1.scroll_to_element().action_click()
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -2052,34 +2079,38 @@ class Element:
         delta_y: int = 0
     ) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
+
         Set the origin to the center of the element with an offset,
         and perform the swipe with the specified delta.
-        If the element is not in the viewport,
-        the bottom of the element will first be scrolled to the bottom of the viewport.
+
+        If the element is not in the viewport, the bottom of the element will 
+        first be scrolled to the bottom of the viewport.
 
         Args:
-            - x_offset: From origin element center, a negative value offset left.
-            - y_offset: From origin element center, a negative value offset up.
-            - delta_x: Distance along X axis to scroll using the wheel,
+            x_offset: From origin element center, a negative value offset left.
+            y_offset: From origin element center, a negative value offset up.
+            delta_x: Distance along X axis to scroll using the wheel,
                 a negative value scrolls left.
-            - delta_y: Distance along Y axis to scroll using the wheel,
+            delta_y: Distance along Y axis to scroll using the wheel,
                 a negative value scrolls up.
-            - perform: Default is True to perform the stored action immediately;
-                otherwise, store the action to be performed later.
 
-        Usage::
+        Returns:
+            Element: It can chain relative actions.
+
+        Examples:
+        ::
 
             # Basic usage
-            my_page.my_element.scroll_from_element(100, 200, -50, -100).perform()
+            page.element.scroll_from_element(100, 200, -50, -100).perform()
 
             # Chain with another method
-            my_page.my_element.scroll_from_element(-30, -50, 150, 100).action_click().perform()
+            page.element.scroll_from_element(-30, -50, 150, 100).action_click().perform()
 
             # or
-            my_page.my_element.scroll_from_element(-30, -50, 150, 100).action_click()
+            page.element.scroll_from_element(-30, -50, 150, 100).action_click()
             ...  # other process
-            my_page.perform()
+            page.perform()
 
         """
         try:
@@ -2110,9 +2141,18 @@ class Element:
     def select_try(self) -> Select:
         """
         This attribute must be used with `try-except`.
-        Returns the inner `present_cache`, or raises `NoSuchCacheException`
-        if caching is not required or the cache attribute doesn't exist.
-        Construct the except block to relocate the element and execute its method.
+
+        Returns:
+            Select: If there is select cache.
+        
+        Examples:
+        ::
+
+            try:
+                self.select_try.options
+            except ELEMENT_REFERENCE_EXCEPTIONS:
+                self.select.options
+
         """
         return self._cache_try(_Name._select_cache)
 
@@ -2126,7 +2166,7 @@ class Element:
     @property
     def options(self) -> list[SeleniumWebElement]:
         """
-        Selenium Select API.
+        Select API.
         Returns a list of all options belonging to this select tag.
         """
         try:
@@ -2137,7 +2177,7 @@ class Element:
     @property
     def all_selected_options(self) -> list[SeleniumWebElement]:
         """
-        Selenium Select API.
+        Select API.
         Returns a list of all selected options belonging to this select tag.
         """
         try:
@@ -2148,7 +2188,7 @@ class Element:
     @property
     def first_selected_option(self) -> SeleniumWebElement:
         """
-        Selenium Select API.
+        Select API.
         The first selected option in this select tag,
         or the currently selected option in a normal select.
         """
@@ -2159,14 +2199,14 @@ class Element:
 
     def select_by_value(self, value: str) -> None:
         """
-        Selenium Select API.
+        Select API.
         Select all options that have a value matching the argument.
 
         That is, when given "foo" this would select an option like:
-        <option value="foo">Bar</option>
+        `<option value="foo">Bar</option>`
 
         Args:
-            - value: The value to match against.
+            value: The value to match against.
         """
         try:
             self.select_try.select_by_value(value)
@@ -2175,14 +2215,16 @@ class Element:
 
     def select_by_index(self, index: int) -> None:
         """
-        Selenium Select API.
+        Select API.
         Select the option at the given index.
 
-        This is done by examining the "index" attribute of an element, and not merely by counting.
+        This is done by examining the "index" attribute of an element, 
+        and not merely by counting.
 
         Args:
-            - index: The option at this index will be selected,
-                throws NoSuchElementException if there is no option with specified index in SELECT.
+            index: The option at this index will be selected,
+                throws `NoSuchElementException` if there is no option 
+                with specified index in SELECT.
         """
         try:
             self.select_try.select_by_index(index)
@@ -2191,15 +2233,16 @@ class Element:
 
     def select_by_visible_text(self, text: str) -> None:
         """
-        Selenium Select API.
+        Select API.
         Select all options that display text matching the argument.
 
         That is, when given "Bar" this would select an option like:
-        <option value="foo">Bar</option>
+        `<option value="foo">Bar</option>`
 
         Args:
-            - text: The visible text to match against,
-                throws NoSuchElementException if there is no option with specified text in SELECT.
+            text: The visible text to match against,
+                throws `NoSuchElementException` if there is no option 
+                with specified text in SELECT.
         """
         try:
             self.select_try.select_by_visible_text(text)
@@ -2208,8 +2251,7 @@ class Element:
 
     def deselect_all(self) -> None:
         """
-        Selenium Select API.
-        Clear all selected entries.
+        Select API. Clear all selected entries.
         This is only valid when the SELECT supports multiple selections.
         """
         try:
@@ -2219,13 +2261,13 @@ class Element:
 
     def deselect_by_value(self, value: str) -> None:
         """
-        Selenium Select API.
+        Select API.
         Deselect all options that have a value matching the argument.
         That is, when given "foo" this would deselect an option like:
-        <option value="foo">Bar</option>
+        `<option value="foo">Bar</option>`.
 
         Args:
-            - value: The value to match against.
+            value: The value to match against.
         """
         try:
             self.select_try.deselect_by_value(value)
@@ -2234,13 +2276,13 @@ class Element:
 
     def deselect_by_index(self, index: int) -> None:
         """
-        Selenium Select API.
+        Select API.
         Deselect the option at the given index.
         This is done by examining the "index" attribute of an element,
         and not merely by counting.
 
         Args:
-            - index: The option at this index will be deselected.
+            index: The option at this index will be deselected.
         """
         try:
             self.select_try.deselect_by_index(index)
@@ -2249,13 +2291,13 @@ class Element:
 
     def deselect_by_visible_text(self, text: str) -> None:
         """
-        Selenium Select API.
+        Select API.
         Deselect all options that display text matching the argument.
         That is, when given "Bar" this would deselect an option like:
-        <option value="foo">Bar</option>
+        `<option value="foo">Bar</option>`.
 
         Args:
-            - text: The visible text to match against.
+            text: The visible text to match against.
         """
         try:
             self.select_try.deselect_by_visible_text(text)
@@ -2268,8 +2310,7 @@ class Element:
         Appium API.
         Retrieve the location (coordination) of the element
         relative to the view when it is present.
-
-        Return example: {'x': 100, 'y': 250}
+        For example: `{'x': 100, 'y': 250}`.
         """
         try:
             return self.present_try.location_in_view  # type: ignore[attr-defined]
@@ -2278,13 +2319,16 @@ class Element:
 
     def input(self, text: str = '', times: int = 1) -> Self:
         """
-        Selenium API
         Input text to the element.
 
-        Args:
-            - text: The text to input.
+        Returns:
+            Element: It can chain the relative actions.
 
-        Usage::
+        Args:
+            text: The text to input.
+
+        Examples:
+        ::
 
             my_page.my_element.input('123 456')
             my_page.my_element.input('123').space().input('456')
@@ -2299,10 +2343,13 @@ class Element:
 
     def enter(self) -> Self:
         """
-        Selenium API
         Send keys ENTER to the element.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.input('123 456').enter()
 
@@ -2315,10 +2362,14 @@ class Element:
 
     def select_all(self) -> Self:
         """
-        Selenium API, this is NOT Select relative function.
+        **This is NOT Select relative function.**
         Send keys "COMMAND/CONTROL + A" to the element.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.select_all().copy()
 
@@ -2332,10 +2383,13 @@ class Element:
 
     def cut(self) -> Self:
         """
-        Selenium API
         Send keys "COMMAND/CONTROL + X" to the element.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element1.cut()
             my_page.my_element2.paste()
@@ -2350,10 +2404,13 @@ class Element:
 
     def copy(self) -> Self:
         """
-        Selenium API
         Send keys "COMMAND/CONTROL + C" to the element.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
@@ -2368,10 +2425,13 @@ class Element:
 
     def paste(self) -> Self:
         """
-        Selenium API
         Send keys "COMMAND/CONTROL + V" to the element.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
@@ -2386,13 +2446,16 @@ class Element:
 
     def arrow_left(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys "ARROW_LEFT" to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.arrow_left(3)
 
@@ -2409,9 +2472,13 @@ class Element:
         Send keys "ARROW_RIGHT" to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.arrow_right(3)
 
@@ -2424,13 +2491,16 @@ class Element:
 
     def arrow_up(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys "ARROW_UP" to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.arrow_up(3)
 
@@ -2443,13 +2513,16 @@ class Element:
 
     def arrow_down(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys "ARROW_DOWN" to the element.
 
         Args:
             - times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.arrow_down(3)
 
@@ -2462,13 +2535,16 @@ class Element:
 
     def backspace(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys BACKSPACE to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.backspace(3).input('123456').enter()
 
@@ -2481,13 +2557,16 @@ class Element:
 
     def delete(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys DELETE to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.delete(3)
 
@@ -2500,13 +2579,16 @@ class Element:
 
     def tab(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys TAB to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.tab(2)
 
@@ -2519,13 +2601,16 @@ class Element:
 
     def space(self, times: int = 1) -> Self:
         """
-        Selenium API
         Send keys SPACE to the element.
 
         Args:
-            - times: The input times of key.
+            times: The input times of key.
 
-        Usage::
+        Returns:
+            Element: It can chain the relative actions.
+
+        Examples:
+        ::
 
             my_page.my_element.space(4)
 
