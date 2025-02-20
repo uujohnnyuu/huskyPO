@@ -43,9 +43,9 @@ class Page:
 
     def __init__(self, driver: WebDriver, remark: str = 'Page') -> None:
         if not isinstance(driver, WebDriver):
-            raise TypeError(f'The driver type should be "WebDriver", not {type(driver).__name__}.')
+            raise TypeError(f'The "driver" must be "WebDriver", not {type(driver).__name__}.')
         if not isinstance(remark, str):
-            raise TypeError(f'The remark type should be "str", not {type(remark).__name__}.')
+            raise TypeError(f'The "remark" must be "str", not {type(remark).__name__}.')
         self._driver = driver
         self._remark = remark
         self._action = ActionChains(driver)
@@ -63,21 +63,16 @@ class Page:
     def action(self) -> ActionChains:
         """
         Calling instance of ActionChains.
-        You can use it to perform an ActionChains method.
-
-        Usage::
-
-            my_page.action.scroll_to_element(element).click(element)
         """
         return self._action
 
     def wait(self, timeout: int | float | None = None) -> WebDriverWait:
         """
-        Selenium and Appium API.
-        Packing WebDriverWait(driver, timeout) to accept only the timeout parameter.
+        Get an object of WebDriverWait.
 
         Args:
-            - timeout: Maximum time in seconds to wait for the expected condition.
+            timeout: The maximum time in seconds to wait for the expected 
+                condition. If `None`, it initializes with `Timeout.DEFAULT`.
         """
         self._wait_timeout = Timeout.DEFAULT if timeout is None else timeout
         return WebDriverWait(self.driver, self._wait_timeout)
@@ -85,12 +80,19 @@ class Page:
     @property
     def wait_timeout(self) -> int | float | None:
         """
-        Get the final waiting timeout of the page function which executed with explicit wait.
-        If no relevant function has been executed yet, it will return None.
+        Get the final waiting timeout.
         """
         return getattr(self, _Name._wait_timeout, None)
 
-    def _timeout_process(self, status: str, exc: TimeoutException, reraise: bool | None) -> Literal[False]:
+    def _timeout_process(
+        self, 
+        status: str, 
+        exc: TimeoutException, 
+        reraise: bool | None
+    ) -> Literal[False]:
+        """
+        Handling a TimeoutException after it occurs.
+        """
         exc.msg = status
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg, stacklevel=2)
@@ -101,7 +103,8 @@ class Page:
     @property
     def log_types(self) -> Any:
         """
-        Gets a list of the available log types. This only works with w3c compliant browsers.
+        Gets a list of the available log types.
+        This only works with w3c compliant browsers.
         """
         return self.driver.log_types
 
@@ -110,9 +113,10 @@ class Page:
         Gets the log for a given log type.
 
         Args:
-            - log_type: Type of log that which will be returned.
+            log_type: Type of log that which will be returned.
 
-        Usage::
+        Examples:
+        ::
 
             page.get_log('browser')
             page.get_log('driver')
@@ -124,7 +128,8 @@ class Page:
 
     def get_downloadable_files(self) -> dict:
         """
-        Retrieves the downloadable files as a map of file names and their corresponding URLs.
+        Retrieves the downloadable files as a map of file names and 
+        their corresponding URLs.
         """
         return self.driver.get_downloadable_files()
 
@@ -133,8 +138,9 @@ class Page:
         Downloads a file with the specified file name to the target directory.
 
         Args:
-            - file_name: The name of the file to download.
-            - target_directory: The path to the directory to save the downloaded file.
+            file_name: The name of the file to download.
+            target_directory: The path to the directory to 
+                save the downloaded file.
         """
         self.driver.download_file(file_name, target_directory)
 
@@ -150,7 +156,11 @@ class Page:
         Returns an object providing access to all
         Federated Credential Management (FedCM) dialog commands.
 
-        Usage::
+        Returns:
+            FedCM: The FedCM object to trigger its attributes.
+
+        Examples:
+        ::
 
             title = page.fedcm.title
             subtitle = page.fedcm.subtitle
@@ -190,16 +200,16 @@ class Page:
         Waits for and returns the FedCM dialog.
 
         Args:
-            - timeout: How long to wait for the dialog
-            - poll_frequency: How frequently to poll
-            - ignored_exceptions: Exceptions to ignore while waiting
+            timeout: How long to wait for the dialog.
+            poll_frequency: How frequently to poll.
+            ignored_exceptions: Exceptions to ignore while waiting.
 
         Returns:
-            - The FedCM dialog object if found.
+            Dialog: The FedCM dialog object if found.
 
         Raises:
-            - TimeoutException If dialog doesn't appear.
-            - WebDriverException If FedCM not supported.
+            TimeoutException: If dialog doesn't appear.
+            WebDriverException: If FedCM not supported.
         """
         return self.driver.fedcm_dialog(timeout, poll_frequency, ignored_exceptions)
 
@@ -234,7 +244,6 @@ class Page:
     @property
     def url(self) -> str:
         """
-        Selenium API.
         Gets the URL of the current page.
         It is the same as driver.current_url.
         """
@@ -247,10 +256,7 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
-        An expectation for checking the current url,
-        url is the expected url,
-        which must be an exact match returns True if the url matches, False otherwise.
+        An expectation for checking the current url.
         """
         try:
             return self.wait(timeout).until(ec.url_to_be(url))
@@ -269,10 +275,8 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
-        An expectation for checking that the current url contains a case-sensitive substring,
-        url is the fragment of url expected,
-        returns True when the url matches, False otherwise.
+        An expectation for checking that the current url contains a 
+        case-sensitive substring.
         """
         try:
             return self.wait(timeout).until(ec.url_contains(url))
@@ -291,11 +295,7 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
-        An expectation for checking the current url,
-        pattern is the expected pattern.
-        This finds the first occurrence of pattern in the current url
-        and as such does not require an exact full match.
+        An expectation for checking the current url.
         """
         try:
             return self.wait(timeout).until(ec.url_matches(pattern))
@@ -314,10 +314,8 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
-        An expectation for checking the current url,
-        url is the expected url,
-        which must not be an exact match returns True if the url is different, false otherwise.
+        An expectation for checking the current url is different 
+        than a given string.
         """
         try:
             return self.wait(timeout).until(ec.url_changes(url))
@@ -332,7 +330,6 @@ class Page:
     @property
     def title(self) -> str:
         """
-        Selenium API.
         Returns the title of the current page.
         """
         return self.driver.title
@@ -344,10 +341,7 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
         An expectation for checking the title of a page.
-        title is the expected title,
-        which must be an exact match returns True if the title matches, false otherwise.
         """
         try:
             return self.wait(timeout).until(ec.title_is(title))
@@ -366,9 +360,8 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        Selenium API.
-        An expectation for checking that the title contains a case-sensitive substring.
-        title is the fragment of title expected returns True when the title matches, False otherwise
+        An expectation for checking that the title contains a 
+        case-sensitive substring.
         """
         try:
             return self.wait(timeout).until(ec.title_contains(title))
@@ -382,35 +375,30 @@ class Page:
 
     def refresh(self) -> None:
         """
-        Selenium API.
         Refreshes the current page.
         """
         self.driver.refresh()
 
     def back(self) -> None:
         """
-        Selenium API.
         Goes one step backward in the browser history.
         """
         self.driver.back()
 
     def forward(self) -> None:
         """
-        Selenium API.
         Goes one step forward in the browser history.
         """
         self.driver.forward()
 
     def close(self) -> None:
         """
-        Selenium API, driver method.
         Closes the current window.
         """
         self.driver.close()
 
     def quit(self) -> None:
         """
-        Driver method.
         Quits the driver and closes every associated window.
         """
         self.driver.quit()
@@ -455,11 +443,13 @@ class Page:
         height: int | None = None
     ) -> dict | None:
         """
-        Sets the x, y coordinates of the window as well as height and width of the current window.
+        Sets the x, y coordinates of the window 
+        as well as height and width of the current window.
         This method is only supported for W3C compatible browsers;
         other browsers should use set_window_position and set_window_size.
 
-        Usage::
+        Examples:
+        ::
 
             page.set_window_rect(x=10, y=10)
             page.set_window_rect(width=100, height=200)
@@ -468,16 +458,14 @@ class Page:
         """
         if all(v is None for v in (x, y, width, height)):
             self.driver.maximize_window()
-            return None
-        else:
-            return self.driver.set_window_rect(x, y, width, height)
+            return
+        return self.driver.set_window_rect(x, y, width, height)
 
     def get_window_rect(self) -> dict:
         """
-        Gets the x, y coordinates of the window as well as height and width of the current window.
-
-        Return example:
-        {'x': 0, 'y': 0, 'width': 500, 'height': 250}
+        Gets the x, y coordinates of the window 
+        as well as height and width of the current window.
+        For example: `{'x': 0, 'y': 0, 'width': 500, 'height': 250}`.
         """
         rect = self.driver.get_window_rect()
         # rearragged
@@ -496,23 +484,13 @@ class Page:
     ) -> dict:
         """
         Sets the x,y position of the current window. (window.moveTo)
-
-        Args:
-            - x: the x-coordinate in pixels to set the window position
-            - y: the y-coordinate in pixels to set the window position
-
-        Usage::
-
-            page.set_window_position(0,0)
-
         """
         return self.driver.set_window_position(x, y, windowHandle)
 
     def get_window_position(self, windowHandle: str = "current") -> dict:
         """
-        Gets the x, y coordinates of the window as well as height and width of the current window.
-
-        Return example: {'x': 0, 'y': 0}
+        Gets the x, y coordinates of the window.
+        For example: `{'x': 0, 'y': 0}`.
         """
         return self.driver.get_window_position(windowHandle)
 
@@ -523,12 +501,7 @@ class Page:
         windowHandle: str = 'current'
     ) -> None:
         """
-        selenium API
         Sets the width and height of the current window.
-
-        Args:
-            - width: the width in pixels to set the window to
-            - height: the height in pixels to set the window to
         """
         if width is None and height is None:
             self.driver.maximize_window()
@@ -538,8 +511,7 @@ class Page:
     def get_window_size(self, windowHandle: str = 'current') -> dict:
         """
         Gets the width and height of the current window.
-
-        Return example: {'width': 430, 'height': 920}
+        For example: `{'width': 430, 'height': 920}`.
         """
         return self.driver.get_window_size(windowHandle)
 
@@ -606,13 +578,13 @@ class Page:
     def print_page(self, print_options: PrintOptions | None = None) -> str:
         """
         Takes PDF of the current page.
-        The driver makes a best effort to return a PDF based on the provided parameters.
         """
         return self.driver.print_page(print_options)
 
     def pin_script(self, script: str, script_key: Any | None = None) -> ScriptKey:
         """
-        Store common javascript scripts to be executed later by a unique hashable ID.
+        Store common javascript scripts to be executed later 
+        by a unique hashable ID.
         """
         return self.driver.pin_script(script, script_key)
 
@@ -641,10 +613,11 @@ class Page:
         Synchronously Executes JavaScript in the current window or frame.
 
         Args:
-            - script: The JavaScript to execute.
-            - *args: Any applicable arguments for your JavaScript.
+            script: The JavaScript to execute.
+            *args: Any applicable arguments for your JavaScript.
 
-        Usage::
+        Examples:
+        ::
 
             driver.execute_script('return document.title;')
 
@@ -656,13 +629,16 @@ class Page:
         Asynchronously Executes JavaScript in the current window/frame.
 
         Args:
-            - script: The JavaScript to execute.
-            - *args: Any applicable arguments for your JavaScript.
+            script: The JavaScript to execute.
+            *args: Any applicable arguments for your JavaScript.
 
-        Usage::
+        Example:
+        ::
 
-            script = "var callback = arguments[arguments.length - 1]; " \\
-                     "window.setTimeout(function(){ callback('timeout') }, 3000);"
+            script = (
+                "var callback = arguments[arguments.length - 1]; "
+                "window.setTimeout(function(){ callback('timeout') }, 3000);"
+            )
             driver.execute_async_script(script)
 
         """
@@ -670,11 +646,11 @@ class Page:
 
     def perform(self) -> None:
         """
-        Selenium ActionChains API.
         Performs all stored actions.
         once called, it will execute all stored actions in page.
 
-        Usage::
+        Examples:
+        ::
 
             # Perform all saved actions:
             my_page.my_element1.scroll_to_element().action_click()
@@ -686,11 +662,11 @@ class Page:
 
     def reset_actions(self) -> None:
         """
-        Selenium ActionChains API.
         Clears actions that are already stored in object of Page.
         once called, it will reset all stored actions in page.
 
-        Usage::
+        Examples:
+        ::
 
             # Reset all saved actions:
             my_page.my_element1.scroll_to_element().action_click()
@@ -702,7 +678,6 @@ class Page:
 
     def click(self) -> Self:
         """
-        Selenium ActionChains API.
         clicks on current mouse position.
         """
         self._action.click()
@@ -710,7 +685,6 @@ class Page:
 
     def click_and_hold(self) -> Self:
         """
-        Selenium ActionChains API.
         Holds down the left mouse button on current mouse position.
         """
         self._action.click_and_hold()
@@ -718,7 +692,6 @@ class Page:
 
     def context_click(self) -> Self:
         """
-        Selenium ActionChains API.
         Performs a context-click (right click) on current mouse position.
         """
         self._action.context_click()
@@ -726,7 +699,6 @@ class Page:
 
     def double_click(self) -> Self:
         """
-        Selenium ActionChains API.
         Double-clicks on current mouse position.
         """
         self._action.double_click()
@@ -734,42 +706,38 @@ class Page:
 
     def key_down(self, value: str) -> Self:
         """
-        Selenium ActionChains API.
         Sends a key press only to a focused element, without releasing it.
         Should only be used with modifier keys (Control, Alt and Shift).
 
         Args:
-            - value: The modifier key to send. Values are defined in Keys class.
+            value: The modifier key to send. Values are defined in Keys class.
         """
         self._action.key_down(value)
         return self
 
     def key_up(self, value: str) -> Self:
         """
-        Selenium ActionChains API.
         Releases a modifier key on a focused element.
 
         Args:
-            - value: The modifier key to send. Values are defined in Keys class.
+            value: The modifier key to send. Values are defined in Keys class.
         """
         self._action.key_up(value)
         return self
 
     def move_by_offset(self, xoffset: int, yoffset: int) -> Self:
         """
-        Selenium ActionChains API.
         Moving the mouse to an offset from current mouse position.
 
         Args:
-            - xoffset: X offset to move to, as a positive or negative integer.
-            - yoffset: Y offset to move to, as a positive or negative integer.
+            xoffset: X offset to move to, as a positive or negative integer.
+            yoffset: Y offset to move to, as a positive or negative integer.
         """
         self._action.move_by_offset(xoffset, yoffset)
         return self
 
     def pause(self, seconds: int | float) -> Self:
         """
-        Selenium ActionChains API.
         Pause all inputs for the specified duration in seconds.
         """
         self._action.pause(seconds)
@@ -777,7 +745,6 @@ class Page:
 
     def release(self) -> Self:
         """
-        Selenium ActionChains API.
         Releasing a held mouse button on current mouse position.
         """
         self._action.release()
@@ -785,7 +752,6 @@ class Page:
 
     def send_keys(self, *keys_to_send: str) -> Self:
         """
-        Selenium ActionChains API.
         Sends keys to current focused element.
         """
         self._action.send_keys(*keys_to_send)
@@ -793,13 +759,13 @@ class Page:
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
         """
-        Selenium ActionChains API.
-        Scrolls by provided amounts with the origin in the top left corner of the viewport.
+        Scrolls by provided amounts with the origin 
+        in the top left corner of the viewport.
 
         Args:
-            - delta_x: Distance along X axis to scroll using the wheel.
+            delta_x: Distance along X axis to scroll using the wheel.
                 A negative value scrolls left.
-            - delta_y: Distance along Y axis to scroll using the wheel.
+            delta_y: Distance along Y axis to scroll using the wheel.
                 A negative value scrolls up.
         """
         self._action.scroll_by_amount(delta_x, delta_y)
@@ -818,15 +784,16 @@ class Page:
         The scroll origin is the upper left of the viewport plus any offsets.
 
         Args:
-            - x_offset: from origin viewport, a negative value offset left.
-            - y_offset: from origin viewport, a negative value offset up.
-            - delta_x: Distance along X axis to scroll using the wheel.
+            x_offset: from origin viewport, a negative value offset left.
+            y_offset: from origin viewport, a negative value offset up.
+            delta_x: Distance along X axis to scroll using the wheel.
                 A negative value scrolls left.
-            - delta_y: Distance along Y axis to scroll using the wheel.
+            delta_y: Distance along Y axis to scroll using the wheel.
                 A negative value scrolls up.
 
-        Exceptions: If the origin with offset is outside the viewport.
-            - MoveTargetOutOfBoundsException: If the origin with offset is outside the viewport.
+        Raises: 
+            MoveTargetOutOfBoundsException: If the origin with offset is 
+                outside the viewport.
         """
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
         self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
@@ -839,14 +806,16 @@ class Page:
     ) -> Self:
         """
         Appium API.
-        Taps on an particular place with up to five fingers, holding for a certain time
+        Taps on an particular place with up to five fingers, 
+        holding for a certain time.
 
         Args:
-            - positions: an array of tuples representing the x/y coordinates of
+            positions: an array of tuples representing the x/y coordinates of
                 the fingers to tap. Length can be up to five.
-            - duration: length of time to tap, in ms. Default value is 100 ms.
+            duration: length of time to tap, in ms. Default value is 100 ms.
 
-        Usage::
+        Examples:
+        ::
 
             page.tap([(100, 20), (100, 60), (100, 100)], 500)
 
@@ -859,7 +828,7 @@ class Page:
         Tap window center coordination.
 
         Args:
-            - duration: length of time to tap, in ms. Default value is 100 ms.
+            duration: length of time to tap, in ms. Default value is 100 ms.
         """
         window_center = [tuple(self.get_window_center().values())]
         self.driver.tap(window_center, duration)  # type: ignore[attr-defined]
@@ -877,15 +846,16 @@ class Page:
         Swipe from one point to another point, for an optional duration.
 
         Args:
-            - start_x: x-coordinate at which to start
-            - start_y: y-coordinate at which to start
-            - end_x: x-coordinate at which to stop
-            - end_y: y-coordinate at which to stop
-            - duration: defines the swipe speed as time taken
+            start_x: x-coordinate at which to start
+            start_y: y-coordinate at which to start
+            end_x: x-coordinate at which to stop
+            end_y: y-coordinate at which to stop
+            duration: defines the swipe speed as time taken
                 to swipe from point a to point b, in ms,
                 note that default set to 250 by ActionBuilder.
 
-        Usage::
+        Examples:
+        ::
 
             page.swipe(100, 100, 100, 400)
 
@@ -901,17 +871,19 @@ class Page:
         times: int = 1
     ) -> Self:
         """
-        Swipe from one point to another, allowing customization of the offset and border settings.
+        Swipe from one point to another, 
+        allowing customization of the offset and border settings.
 
         Args:
-            - offset: Please refer to the Usage.
-            - area: Please refer to the Usage.
-            - duration: Defines the swipe speed as the time
+            offset: Please refer to the Examples.
+            area: Please refer to the Examples.
+            duration: Defines the swipe speed as the time
                 taken to swipe from point A to point B, in milliseconds.
                 The default is set to 250 by ActionBuilder.
-            - times: The number of times to perform the swipe.
+            times: The number of times to perform the swipe.
 
-        Usage::
+        Examples:
+        ::
 
             # Swipe parameters. Refer to the Class notes for details.
             from huskium import Offset, Area
@@ -928,17 +900,15 @@ class Page:
             # Default is swiping up.
             # offset = Offset.UP = (0.5, 0.75, 0.5, 0.25)
             # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
-            # offset y: From 75% (0.75) to 25% (0.25) of 100% (1.0) current window height.
+            # offset x: Fixed 0.5 of current window width.
+            # offset y: From 0.75 to 0.25 of current window height.
             my_page.swipe_by()
 
-            # This is the most recommended method to swipe within a swipeable range.
-            # Get the absolute area coordinates using the scrollable element's rect.
+            # Swipe within a swipeable range.
             area = my_page.scrollable_element.rect
             my_page.swipe_by((0.3, 0.85, 0.5, 0.35), area)
 
             # Swipe with customize absolute offset.
-            # This is the same as official driver.swipe() method.
             my_page.swipe_by((250, 300, 400, 700))
 
             # Swipe with customize relative offset of current window size.
@@ -976,12 +946,13 @@ class Page:
         Flick from one point to another point.
 
         Args:
-        - start_x: x-coordinate at which to start
-        - start_y: y-coordinate at which to start
-        - end_x: x-coordinate at which to stop
-        - end_y: y-coordinate at which to stop
+            start_x: x-coordinate at which to start
+            start_y: y-coordinate at which to start
+            end_x: x-coordinate at which to stop
+            end_y: y-coordinate at which to stop
 
-        Usage::
+        Examples:
+        ::
 
             page.flick(100, 100, 100, 400)
 
@@ -999,9 +970,9 @@ class Page:
         Flick from one point to another, allowing customization of the offset and border settings.
 
         Args:
-            - offset: Please refer to the Usage.
-            - area: Please refer to the Usage.
-            - times: The number of times to perform the flick.
+            offset: Please refer to the Examples.
+            area: Please refer to the Examples.
+            times: The number of times to perform the flick.
 
         Usage::
 
@@ -1020,12 +991,11 @@ class Page:
             # Default is flicking up.
             # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
             # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 50% (0.5) of 100% (1.0) current window width.
-            # offset y: From 75% (0.75) to 25% (0.25) of 100% (1.0) current window height.
+            # offset x: Fixed 0.5 of current window width.
+            # offset y: From 0.75 to 0.25 of current window height.
             my_page.flick_by()
 
-            # This is the most recommended method to flick within a swipeable range.
-            # Get the absolute area coordinates using the scrollable element's rect.
+            # Flick within a swipeable range.
             area = my_page.scrollable_element.rect
             my_page.flick_by((0.3, 0.85, 0.5, 0.35), area)
 
@@ -1125,13 +1095,12 @@ class Page:
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:
         """
-        Appium 2.0 API.
-        Draw lines by dots in given order.
+        Appium 2.0 API. Draw lines by dots in given order.
 
         Args:
-            - dots: A list of coordinates for the target dots,
-                e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 200}, {'x': 300, 'y': 100}, ...].
-            - duration: The time taken to draw between two points.
+            dots: A list of coordinates for the target dots,
+                e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 200}, ...].
+            duration: The time taken to draw between two points.
         """
         touch_input = PointerInput(interaction.POINTER_TOUCH, 'touch')
         actions = ActionChains(self.driver)
@@ -1156,19 +1125,13 @@ class Page:
 
     def draw_gesture(self, dots: list[dict[str, int]], gesture: str, duration: int = 1000) -> None:
         """
-        Appium 2.0 API.
-        Nine-box Gesture Drawing.
-
-        Dot position:
-            - 1, 2, 3
-            - 4, 5, 6
-            - 7, 8, 9
+        Appium 2.0 API. Nine-box Gesture Drawing.
 
         Args:
-            - dots: Define dots in order [1, 2, 3, …, 9],
+            dots: Define dots in order [1, 2, 3, …, 9],
                 e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 100}, ...].
                 If dots are elements, use `page.elements.centers`.
-            - gesture: A string containing the actual positions of the nine dots,
+            gesture: A string containing the actual positions of the nine dots,
                 such as '1235789' for drawing a Z shape.
         """
         touch_input = PointerInput(interaction.POINTER_TOUCH, 'touch')
@@ -1238,15 +1201,13 @@ class Page:
 
     def switch_to_window(self, window: str | int = 0) -> None:
         """
-        selenium API
         Switches focus to the specified window.
 
         Args:
-            - window:
-                - str: Window name.
-                - int: Window index.
+            window: `str` for Window name; `int` for Window index.
 
-        Usage::
+        Examples:
+        ::
 
             page.switch_to_window('main')
             page.switch_to_window(1)
@@ -1258,13 +1219,13 @@ class Page:
 
     def get_status(self) -> dict:
         """
-        Appium API.
-        Get the Appium server status
+        Appium API. Get the Appium server status.
 
         Returns:
-            - Dict: The status information
+            Dict: The status information.
 
-        Usage::
+        Examples:
+        ::
 
             page.get_status()
 
@@ -1274,15 +1235,13 @@ class Page:
     @property
     def contexts(self) -> Any | list[str]:
         """
-        appium API.
-        Get current all contexts.
+        Appium API. Get current all contexts.
         """
         return self.driver.contexts  # type: ignore[attr-defined]
 
     def switch_to_context(self, context) -> Self:
         """
-        appium API.
-        Switch to NATIVE_APP or WEBVIEW.
+        Appium API. Switch to NATIVE_APP or WEBVIEW.
         """
         self.driver.switch_to.context(context)  # type: ignore[attr-defined]
         return self
@@ -1299,15 +1258,15 @@ class Page:
         Wait for the webview is present and determine whether switch to it.
 
         Args:
-            - switch: If True, switches to WEBVIEW when it becomes available.
-            - index: Context index, defaulting to `-1` which targets the latest WEBVIEW.
-            - timeout: The timeout duration in seconds for explicit wait.
-            - reraise: If True, re-raises a TimeoutException upon timeout;
+            switch: If True, switches to WEBVIEW when it becomes available.
+            index: Defaulting to `-1` which targets the latest WEBVIEW.
+            timeout: The timeout duration in seconds for explicit wait.
+            reraise: If True, re-raises a TimeoutException upon timeout;
                 if False, returns False upon timeout.
 
-        Returns:
-            - contexts: ['NATIVE_APP', 'WEBVIEW_XXX', ...]
-            - False: There is no any WEBVIEW in contexts.
+        Returns: 
+            (list | False): `list` for `['NATIVE_APP', 'WEBVIEW_XXX', ...]`;
+                `False` for no any WEBVIEW in contexts.
         """
         try:
             return self.wait(timeout).until(ecex.webview_is_present(switch, index))
@@ -1328,18 +1287,16 @@ class Page:
 
     def terminate_app(self, app_id: str, **options: Any) -> bool:
         """
-        Appium API.
-        Terminates the application if it is running.
+        Appium API. Terminates the application if it is running.
 
         Args:
-            - app_id: the application id to be terminates
-
-        Keyword Args:
-            - timeout (int): [Android only] how much time to wait for the uninstall to complete.
+            app_id: the application id to be terminates.
+            **options: timeout (int), [Android only] 
+                how much time to wait for the uninstall to complete.
                 500ms by default.
 
         Returns:
-            - True if the app has been successfully terminated.
+            bool: `True` if the app has been successfully terminated.
         """
         return self.driver.terminate_app(app_id, **options)  # type: ignore[attr-defined]
 
@@ -1350,7 +1307,7 @@ class Page:
         or is running in the background.
 
         Args:
-            - app_id: The application id to be activated.
+            app_id: The application id to be activated.
         """
         self.driver.activate_app(app_id)  # type: ignore[attr-defined]
         return self
@@ -1362,10 +1319,11 @@ class Page:
         Use full paths in your filename.
 
         Args:
-            - filename: The full path you wish to save your screenshot to.
-                This should end with a .png extension.
+            filename: The **full path** you wish to save your screenshot to.
+                This should end with a `.png` extension.
 
-        Usage::
+        Examples:
+        ::
 
             driver.save_screenshot('/Screenshots/foo.png')
 
@@ -1378,12 +1336,12 @@ class Page:
         If you want to switch to an iframe WebElement,
         use `xxx_page.my_element.switch_to_frame()` instead.
 
-
         Args:
-            - reference: The name of the window to switch to,
+            reference: The name of the window to switch to,
                 or an integer representing the index.
 
-        Usage::
+        Examples:
+        ::
 
             xxx_page.switch_to_frame('name')
             xxx_page.switch_to_frame(1)
@@ -1393,7 +1351,8 @@ class Page:
 
     def get_cookies(self) -> list[dict]:
         """
-        Returns a set of dictionaries, corresponding to cookies visible in the current session.
+        Returns a set of dictionaries, 
+        corresponding to cookies visible in the current session.
         """
         return self.driver.get_cookies()
 
@@ -1408,16 +1367,18 @@ class Page:
         Adds a cookie to your current session.
 
         Args:
-            - cookie: A dictionary object
-                - Required keys: "name" and "value"
-                - optional keys: "path", "domain", "secure", "httpOnly", "expiry", "sameSite"
+            cookie: A dictionary object. 
+                Required keys: "name" and "value";
+                optional keys: "path", "domain", "secure", "httpOnly", 
+                    "expiry", "sameSite".
 
-        Usage::
+        Examples:
+        ::
 
-            page.add_cookie({'name' : 'foo', 'value' : 'bar'})
-            page.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
-            page.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure' : True})
-            page.add_cookie({'name' : 'foo', 'value' : 'bar', 'sameSite' : 'Strict'})
+            page.add_cookie({'name': 'foo', 'value': 'bar'})
+            page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/'})
+            page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/', 'secure': True})
+            page.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
 
         """
         self.driver.add_cookie(cookie)
@@ -1426,7 +1387,11 @@ class Page:
         """
         Adds cookies to your current session.
 
-        Usage::
+        Args:
+            cookies: list[dict]
+
+        Examples:
+        ::
 
             cookies = [
                 {'name' : 'foo', 'value' : 'bar'},
@@ -1502,7 +1467,8 @@ class Page:
         Set the amount of time that the script should wait during
         an execute_async_script call before throwing an error.
 
-        Usage::
+        Examples:
+        ::
 
             page.set_script_timeout(30)
 
@@ -1514,7 +1480,8 @@ class Page:
         Set the amount of time to wait for a page load to complete
         before throwing an error.
 
-        Usage::
+        Examples:
+        ::
 
             page.set_page_load_timeout(30)
 
