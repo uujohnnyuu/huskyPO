@@ -18,7 +18,7 @@ class PrefixFilter(logging.Filter):
     Attributes:
         prefix: The frame prefix.
         lower: `True` for case-insensitive; `False` for case-sensitive.
-        funcframe: `True` to filter function frames; 
+        funcframe: `True` to filter function frames;
             `False` to filter file (module) frames.
 
     Examples:
@@ -33,7 +33,7 @@ class PrefixFilter(logging.Filter):
         # Set up logging
         logging.addFilter(filter)
 
-        # All logging will follow the filter logic, 
+        # All logging will follow the filter logic,
         # recording logs from frames with the prefix 'test'.
         logging.info(...)
 
@@ -44,7 +44,7 @@ class PrefixFilter(logging.Filter):
         Args:
             prefix: The frame prefix.
             lower: `True` for case-insensitive; `False` for case-sensitive.
-            funcframe: `True` to filter function frames; 
+            funcframe: `True` to filter function frames;
                 `False` to filter file (module) frames.
         """
         super().__init__()
