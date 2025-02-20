@@ -329,24 +329,25 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Wait for the element to become present.
+        Waits for the element to become present.
 
         Args:
-            timeout (maximum wait time in seconds to reach the expected state):
-                If `None`, follows P2 `self.timeout` or P3 `Timeout.DEFAULT`.
-                If `int | float`, follows P1 this value.
-            reraise (when the element state is not as expected):
-                If `None`, follows P2 `Timeout.RERAISE`.
-                If `bool`, follows P1 this value, `True` to raise a
-                    `TimeoutException`; `False` to return `False`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            (WebElement | False): `WebElement` if present within the timeout;
-                otherwise, `False` if `reraise` is `False`.
+            (WebElement | False):
+                The `WebElement` if present within the timeout;
+                `False` if remains absent after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if `reraise` is `True` and
-                the element is still absent within the timeout.
+            TimeoutException: Raised if it remains absent 
+                after the timeout(`reraise=True`).
         """
         try:
             element = self.wait(timeout).until(
@@ -354,7 +355,9 @@ class Element:
             )
             if self.cache:
                 self._present_cache = element
-            self._logger.debug(f'locator -> present -> {element}')
+                self._logger.debug(f'locator -> present = {self._present_cache}')
+            else:
+                self._logger.debug(f'locator -> element = {element}')
             return element
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
@@ -365,28 +368,31 @@ class Element:
         reraise: bool | None = None
     ) -> bool:
         """
-        Wait for the element to become absent.
+        Waits for the element to become absent.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
+            bool:
+                `True` if absent within the timeout;
+                `False` if remains present after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains present 
+                after the timeout(`reraise=True`).
         """
         try:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_element_located(self.locator, self.index)
             )
-            self._logger.debug(f'locator -> absent : {true}')
+            self._logger.debug(f'locator -> absent = {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('absent', exc, reraise)
@@ -397,22 +403,26 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Wait for the element to become visible.
+        Waits for the element to become visible.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
+            (WebElement | False):
+                The `WebElement` if visible within the timeout;
+                `False` if remains invisible or absent 
+                    after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains invisible or absent 
+                after the timeout(`reraise=True`).
         """
         try:
             try:
@@ -441,28 +451,29 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | bool:
         """
-        Wait for the element to become invisible.
+        Waits for the element to become invisible (or absent).
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - present: Specifies whether the element should be present:
-                - True: The element must be present in the expected state.
-                - False: The element can be present in the expected state or absent.
-            - reraise: Defines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`, a boolean that defaults to True.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            present: Specifies whether the element must be present.
+                If `True`, the element must be present.
+                If `False`, the element can be absent.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - True: The element is absent within the timeout,
-                and `present` is False, allowing absence.
-            - False: The element failed to reach the expected state
-                within the timeout if `reraise` is False.
+            (WebElement | bool):
+                The `WebElement` if invisible within the timeout;
+                `True` if absent(`present=False`) within the timeout;
+                `False` if remains visible after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains visible 
+                after the timeout(`reraise=True`).
         """
         try:
             try:
@@ -493,22 +504,26 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Wait for the element to become clickable.
+        Waits for the element to become clickable.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
+            (WebElement | False):
+                The `WebElement` if clickable within the timeout;
+                `False` if remains unclickable or absent 
+                    after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains unclickable or absent 
+                after the timeout(`reraise=True`).
         """
         try:
             try:
@@ -540,28 +555,29 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | bool:
         """
-        Wait for the element to become unclickable.
+        Waits for the element to become unclickable (or absent).
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - present: Specifies whether the element should be present:
-                - True: The element must be present in the expected state.
-                - False: The element can be present in the expected state or absent.
-            - reraise: Defines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`, a boolean that defaults to True.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            present: Specifies whether the element must be present.
+                If `True`, the element must be present.
+                If `False`, the element can be absent.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - True: The element is absent within the timeout,
-                and `present` is False, allowing absence.
-            - False: The element failed to reach the expected state
-                within the timeout if `reraise` is False.
+            (WebElement | bool):
+                The `WebElement` if unclickable within the timeout;
+                `True` if absent(`present=False`) within the timeout;
+                `False` if remains clickable after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains clickable 
+                after the timeout(`reraise=True`).
         """
         try:
             try:
@@ -592,22 +608,26 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Wait for the element to become selected.
+        Waits for the element to become selected.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
+            (WebElement | False):
+                The `WebElement` if selected within the timeout;
+                `False` if remains unselected or absent 
+                    after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains unselected or absent 
+                after the timeout(`reraise=True`).
         """
         try:
             try:
@@ -635,28 +655,26 @@ class Element:
         reraise: bool | None = None
     ) -> WebElement | Literal[False]:
         """
-        Waiting for the element to become unselected.
-
-        Note:
-            - The behavior of "unselected" differs from "invisible" and "unclickable."
-            - The selection state is primarily influenced by user actions,
-                so the element must be present.
-            - As a result, absence is not considered an expected outcome.
+        Waits for the element to become unselected.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`; 
+                if `False`, returns `False`.
 
         Returns:
-            - WebElement: The element reached the expected state within the timeout.
-            - False: The element failed to reach the expected state if `reraise` is False.
+            (WebElement | False):
+                The `WebElement` if unselected within the timeout;
+                `False` if remains selected or absent 
+                    after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the element did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if it remains selected or absent 
+                after the timeout(`reraise=True`).
         """
         try:
             try:
