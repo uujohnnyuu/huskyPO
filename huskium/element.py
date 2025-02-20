@@ -715,7 +715,7 @@ class Element:
 
         Returns:
             WebElement: If there is present cache.
-        
+
         Examples:
         ::
 
@@ -734,7 +734,7 @@ class Element:
 
         Returns:
             WebElement: If there is visible cache.
-        
+
         Examples:
         ::
 
@@ -753,7 +753,7 @@ class Element:
 
         Returns:
             WebElement: If there is clickable cache.
-        
+
         Examples:
         ::
 
@@ -993,10 +993,10 @@ class Element:
     @property
     def location_once_scrolled_into_view(self) -> dict:
         """
-        THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where 
-        on the screen an element is that we can click it. 
+        THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where
+        on the screen an element is that we can click it.
         This method should cause the element to be scrolled into view.
-        Returns the top lefthand corner location on the screen, 
+        Returns the top lefthand corner location on the screen,
         or zero coordinates if the element is not visible.
         """
         try:
@@ -1047,7 +1047,7 @@ class Element:
 
         Args:
             target: The element to drag to.
-            pause: How long the action pauses before moving after 
+            pause: How long the action pauses before moving after
                 the tap and hold in seconds.
         """
         try:
@@ -1102,7 +1102,7 @@ class Element:
     ) -> Self:
         """
         Appium API.
-        For native iOS and Android apps, it swipes the screen until 
+        For native iOS and Android apps, it swipes the screen until
         the element becomes visible within the specified area.
 
         Args:
@@ -1112,9 +1112,9 @@ class Element:
             max_round: The maximum number of swipes allowed.
             max_adjustment: The maximum number of adjustments
                 to align all borders of the element within the view border.
-            min_distance: Minimum swipe distance to avoid misinterpretation 
+            min_distance: Minimum swipe distance to avoid misinterpretation
                 as a click. Should be considered along with `duration`.
-            duration: Swipe duration in ms; if too short, it may be mistaken 
+            duration: Swipe duration in ms; if too short, it may be mistaken
                 as a click. Should be considered along with `min_distance`.
 
         Examples:
@@ -1180,7 +1180,7 @@ class Element:
     ) -> Self:
         """
         Appium API.
-        For native iOS and Android apps, it flicks the screen until 
+        For native iOS and Android apps, it flicks the screen until
         the element becomes visible within the specified area.
 
         Args:
@@ -1190,11 +1190,11 @@ class Element:
             max_round: The maximum number of flicks allowed.
             max_adjustment: The maximum number of adjustments
                 to align all borders of the element within the view border.
-            min_distance: Minimum swipe (not flick) distance to avoid 
-                misinterpretation as a click. This will be considered along 
+            min_distance: Minimum swipe (not flick) distance to avoid
+                misinterpretation as a click. This will be considered along
                 with `duration` in adjustment process.
-            duration: Swipe (not flick) duration in ms; if too short, 
-                it may be mistaken as a click. This will be considered along 
+            duration: Swipe (not flick) duration in ms; if too short,
+                it may be mistaken as a click. This will be considered along
                 with `min_distance` in adjustment process.
 
         Examples:
@@ -1430,7 +1430,7 @@ class Element:
     def get_dom_attribute(self, name: str) -> str:
         """
         Gets the given attribute of the element. Unlike
-        `selenium.webdriver.remote.BaseWebElement.get_attribute`, this method 
+        `selenium.webdriver.remote.BaseWebElement.get_attribute`, this method
         only returns attributes declared in the element's HTML markup.
 
         Args:
@@ -1459,7 +1459,7 @@ class Element:
         as strings.  For attributes or properties which do not exist, `None`
         is returned.
 
-        To obtain the exact value of the attribute or property, use 
+        To obtain the exact value of the attribute or property, use
         `selenium.webdriver.remote.BaseWebElement.get_dom_attribute` or
         `selenium.webdriver.remote.BaseWebElement.get_property`.
 
@@ -1539,7 +1539,7 @@ class Element:
         reraise: bool | None = None
     ) -> bool:
         """
-        If the frame is available 
+        If the frame is available
         it switches the given driver to the specified frame.
         """
         try:
@@ -1823,7 +1823,7 @@ class Element:
 
         Args:
             value: The modifier key to send. Values are defined in Keys class.
-            focus: Whether to focus element or not. 
+            focus: Whether to focus element or not.
                 Default to focus current element.
 
         Returns:
@@ -2084,7 +2084,7 @@ class Element:
         Set the origin to the center of the element with an offset,
         and perform the swipe with the specified delta.
 
-        If the element is not in the viewport, the bottom of the element will 
+        If the element is not in the viewport, the bottom of the element will
         first be scrolled to the bottom of the viewport.
 
         Args:
@@ -2144,7 +2144,7 @@ class Element:
 
         Returns:
             Select: If there is select cache.
-        
+
         Examples:
         ::
 
@@ -2218,12 +2218,12 @@ class Element:
         Select API.
         Select the option at the given index.
 
-        This is done by examining the "index" attribute of an element, 
+        This is done by examining the "index" attribute of an element,
         and not merely by counting.
 
         Args:
             index: The option at this index will be selected,
-                throws `NoSuchElementException` if there is no option 
+                throws `NoSuchElementException` if there is no option
                 with specified index in SELECT.
         """
         try:
@@ -2241,7 +2241,7 @@ class Element:
 
         Args:
             text: The visible text to match against,
-                throws `NoSuchElementException` if there is no option 
+                throws `NoSuchElementException` if there is no option
                 with specified text in SELECT.
         """
         try:
