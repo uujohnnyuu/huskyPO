@@ -337,7 +337,7 @@ class Element:
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
@@ -346,7 +346,7 @@ class Element:
                 `False` if remains absent after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains absent 
+            TimeoutException: Raised if it remains absent
                 after the timeout(`reraise=True`).
         """
         try:
@@ -376,7 +376,7 @@ class Element:
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
@@ -385,7 +385,7 @@ class Element:
                 `False` if remains present after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains present 
+            TimeoutException: Raised if it remains present
                 after the timeout(`reraise=True`).
         """
         try:
@@ -411,17 +411,17 @@ class Element:
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
             (WebElement | False):
                 The `WebElement` if visible within the timeout;
-                `False` if remains invisible or absent 
+                `False` if remains invisible or absent
                     after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains invisible or absent 
+            TimeoutException: Raised if it remains invisible or absent
                 after the timeout(`reraise=True`).
         """
         try:
@@ -462,7 +462,7 @@ class Element:
                 If `False`, the element can be absent.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
@@ -472,7 +472,7 @@ class Element:
                 `False` if remains visible after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains visible 
+            TimeoutException: Raised if it remains visible
                 after the timeout(`reraise=True`).
         """
         try:
@@ -512,17 +512,17 @@ class Element:
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
             (WebElement | False):
                 The `WebElement` if clickable within the timeout;
-                `False` if remains unclickable or absent 
+                `False` if remains unclickable or absent
                     after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains unclickable or absent 
+            TimeoutException: Raised if it remains unclickable or absent
                 after the timeout(`reraise=True`).
         """
         try:
@@ -566,7 +566,7 @@ class Element:
                 If `False`, the element can be absent.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
@@ -576,7 +576,7 @@ class Element:
                 `False` if remains clickable after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains clickable 
+            TimeoutException: Raised if it remains clickable
                 after the timeout(`reraise=True`).
         """
         try:
@@ -616,17 +616,17 @@ class Element:
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
             (WebElement | False):
                 The `WebElement` if selected within the timeout;
-                `False` if remains unselected or absent 
+                `False` if remains unselected or absent
                     after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains unselected or absent 
+            TimeoutException: Raised if it remains unselected or absent
                 after the timeout(`reraise=True`).
         """
         try:
@@ -663,17 +663,17 @@ class Element:
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`; 
+                If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
         Returns:
             (WebElement | False):
                 The `WebElement` if unselected within the timeout;
-                `False` if remains selected or absent 
+                `False` if remains selected or absent
                     after the timeout(`reraise=False`).
 
         Raises:
-            TimeoutException: Raised if it remains selected or absent 
+            TimeoutException: Raised if it remains selected or absent
                 after the timeout(`reraise=True`).
         """
         try:
