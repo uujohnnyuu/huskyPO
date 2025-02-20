@@ -150,6 +150,7 @@ class Element:
                 my_page.my_static_element.click()
 
         """
+        # Avoid using __init__() here, as it will reset the descriptor.
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
         self._if_clear_caches('[dynamic]')  # dynamic should clear caches.
@@ -203,7 +204,7 @@ class Element:
             cache = getattr(self, name)
             self._logger.debug(f'Using {name}: {cache}', stacklevel=3)
             return cache
-        self._logger.debug(f'No {name}(cache={self.cache}): relocating the element directly.', stacklevel=3)
+        self._logger.debug(f'No {name}(c={self.cache}): relocating the element directly.', stacklevel=3)
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property

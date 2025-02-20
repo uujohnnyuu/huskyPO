@@ -3,12 +3,11 @@
 # PyPI: https://pypi.org/project/huskium/
 # GitHub: https://github.com/uujohnnyuu/huskium
 
-# We do not store found elements within the Elements class because
-# the results of find_elements can easily change due to platform or operational differences.
-# Therefore, searching again each time is more robust and can help avoid unexpected errors.
-# If there is a need for repeated use,
-# you can construct a custom function or
-# inherit from this class to define your own handling.
+# NOTE
+# We do not implement a cache mechanism in Elements, for obvious reasons.
+# The state of multiple elements is unpredictable, 
+# and caching may not improve performance.
+# To ensure stability, elements are re-located on every method call.
 
 
 from __future__ import annotations
@@ -53,19 +52,12 @@ class Elements:
         Initial Elements attributes.
 
         Args:
-            - by:
-                - None (default): Initialize an empty descriptor.
-                - str: Use `from huskium import By` for Selenium and Appium locators.
-            - value:
-                - None (default): Initialize an empty descriptor.
-                - str: The locator value.
-            - timeout:
-                - None (default): Uses `Timeout.DEFAULT` in seconds.
-                - int, float: Explicit wait time in seconds.
-            - remark:
-                - None (default): Auto-generates remark info as
-                    `(by="{by}", value="{value}")`.
-                - str: Custom remark for identification or logging.
+            by: Use `from huskium import By` for all locators.
+            value: The locator value.
+            timeout: The maximum time in seconds to find the element.
+                If `None`, use `Timeout.DEFAULT`.
+            remark: Custom remark for identification or logging. If `None`,
+                record as `(by="{by}", value="{value}")`.
         """
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
@@ -90,8 +82,8 @@ class Elements:
         """
         if not isinstance(value, Elements):
             raise TypeError('Only "Elements" objects are allowed to be assigned.')
-        # Avoid using self.__init__() here, as it may reset the descriptor.
-        # It’s better not to call dynamic, as it will duplicate the verification.
+        # Avoid using __init__() here, as it may reset the descriptor.
+        # Do not call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
         self._logger.debug('[__set__] Dynamic element set.')
 
@@ -104,10 +96,14 @@ class Elements:
         remark: str | None = None
     ) -> Self:
         """
-        In a Page subclass, use a data descriptor to define dynamic elements.
-        This is a simplified version of the __set__ method.
+        Set dynamic elements as `page.elements.dynamic(...)` pattern.
+        All the args logic are the same as Elements.
 
-        Usage::
+        Returns:
+            Self: The Elements object.
+
+        Examples:
+        ::
 
             # my_page.py
             class MyPage(Page):
@@ -132,7 +128,7 @@ class Elements:
                 my_page.my_static_elements.locations
 
         """
-        # Avoid using self.__init__() here, as it will reset the descriptor.
+        # Avoid using __init__() here, as it will reset the descriptor.
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
         self._logger.debug('[dynamic] Dynamic element set.')
@@ -143,13 +139,13 @@ class Elements:
         Verify basic attributes.
         """
         if by not in ByAttribute.VALUES_WITH_NONE:
-            raise ValueError(f'The locator strategy "{by}" is undefined.')
+            raise ValueError(f'The "by" strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
-            raise TypeError(f'The locator value type should be "str", not "{type(value).__name__}".')
+            raise TypeError(f'The "value" type must be "str", not "{type(value).__name__}".')
         if not isinstance(timeout, (int, float, type(None))):
-            raise TypeError(f'The timeout type should be "int" or "float", not "{type(timeout).__name__}".')
+            raise TypeError(f'The "timeout" type must be "int" or "float", not "{type(timeout).__name__}".')
         if not isinstance(remark, (str, type(None))):
-            raise TypeError(f'The remark type should be "str", not "{type(remark).__name__}".')
+            raise TypeError(f'The "remark" type must be "str", not "{type(remark).__name__}".')
 
     def _set_data(self, by, value, timeout, remark) -> None:
         """
@@ -176,10 +172,7 @@ class Elements:
         """
         if self._by and self._value:
             return (self._by, self._value)
-        raise ValueError(
-            '"by" and "value" cannot be None when performing elements operations. '
-            'Please ensure both are provided with valid values.'
-        )
+        raise ValueError('"by" and "value" cannot be None when performing element operations.')
 
     @property
     def timeout(self) -> int | float:
@@ -217,21 +210,24 @@ class Elements:
         reraise: bool | None = None
     ) -> list[WebElement] | WebElement | Literal[False]:
         """
-        Selenium and Appium API.
-        Wait for the element or elements to be `present`.
+        Waits for the element or elements to be present.
 
         Args:
-            - index:
-                - int: It will returns an element by list index of elements.
-                - None: It will returns all elements.
-            - timeout: Maximum time in seconds to wait for
-                the element or elements to become present.
-            - reraise: True means reraising TimeoutException; False means returning False.
+            index: `None` for all elemets.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`;
+                if `False`, returns `False`.
 
-        Returns:
-            - list[WebElement]: All elements when index is None.
-            - WebElement: Element by list index of elements when index is int.
-            - False: No any element is present.
+        Returns: 
+            (list[WebElement] | WebElement | False):
+                The `list[WebElement]` for `index=None`; 
+                the `WebElement` for `index=int`; 
+                `False` if no any element.
+                
         """
         elements = self.wait_all_present(timeout, reraise)
         if isinstance(elements, list) and isinstance(index, int):
@@ -246,14 +242,14 @@ class Elements:
     ) -> WebDriverWait:
         """
         Get an object of WebDriverWait.
-        The ignored exceptions include NoSuchElementException and StaleElementReferenceException
-        to capture their stacktrace when a TimeoutException occurs.
 
         Args:
-            - timeout: The maximum time in seconds to wait for the expected condition.
-                By default, it initializes with the element timeout.
-            - ignored_exceptions: iterable structure of exception classes ignored during calls.
-                By default, it contains NoSuchElementException only.
+            timeout: The maximum time in seconds to wait for the
+                expected condition.
+                If `None`, it initializes with the element timeout.
+            ignored_exceptions: iterable structure of exception classes
+                ignored during calls.
+                If `None`, it contains `NoSuchElementException` only.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
         return WebDriverWait(
@@ -282,7 +278,7 @@ class Elements:
         exc.msg = f'Timed out waiting {self._wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg, stacklevel=2)
-            raise exc  # No cache handling, do not suppress exception messages.
+            raise exc
         self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
@@ -292,32 +288,31 @@ class Elements:
         reraise: bool | None = None
     ) -> list[WebElement] | Literal[False]:
         """
-        Waiting for "any elements to become present".
-        Note that "all" here means "at least one (any)" for
-        the logic of find_elements is to find at least one matched elements.
+        Waits for all elements to become present.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`;
+                if `False`, returns `False`.
 
         Returns:
-            - list[WebElement] (Expected): The elements reached the expected status
-                before the timeout.
-            - False (Unexpected): The elements failed to reach the expected state
-                if `reraise` is False.
+            (list[WebElement] | False): A list of `WebElement` if all are 
+                present within the timeout. `False` if all remain absent 
+                after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the elements did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if all remain absent 
+                after the timeout(`reraise=True`).
         """
         try:
             elements = self.wait(timeout).until(
                 ecex.presence_of_all_elements_located(self.locator)
             )
-            self._logger.debug(f'locator -> all_present_elements : {elements}')
+            self._logger.debug(f'Locator -> AllPresentE = {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
@@ -328,29 +323,30 @@ class Elements:
         reraise: bool | None = None
     ) -> bool:
         """
-        Waiting for "all elements to become absent".
+        Waits for all elements to become absent.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`;
+                if `False`, returns `False`.
 
         Returns:
-            - True (Expected): The elements reached the expected status before the timeout.
-            - False (Unexpected): The elements failed to reach the expected state
-                if `reraise` is False.
+            bool: `True` if all are absent within the timeout. `False` if 
+                at least one is present after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the elements did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if at least one remain present 
+                after the timeout(`reraise=True`).
         """
         try:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_all_elements_located(self.locator)
             )
-            self._logger.debug(f'locator -> all_absent : {true}')
+            self._logger.debug(f'Locator -> AllAbsent = {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
@@ -361,24 +357,25 @@ class Elements:
         reraise: bool | None = None
     ) -> list[WebElement] | Literal[False]:
         """
-        Waiting for "all elements to become visible".
+        Waits for all elements to become visible.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`;
+                if `False`, returns `False`.
 
         Returns:
-            - list[WebElement] (Expected): The elements reached the expected status
-                before the timeout.
-            - False (Unexpected): The elements failed to reach the expected state
-                if `reraise` is False.
+            (list[WebElement] | False): A list of `WebElement` if all are 
+                visible within the timeout. `False` if at least one remain
+                invisible or absent after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the elements did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if at least one remain invisible or absent 
+                after the timeout(`reraise=True`).
         """
         try:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -395,24 +392,25 @@ class Elements:
         reraise: bool | None = None
     ) -> list[WebElement] | Literal[False]:
         """
-        Waiting for "any elements to become visible".
+        Waits for at least one element to become visible.
 
         Args:
-            - timeout: Maximum wait time (in seconds) for the element to reach the expected state.
-                Defaults to the element's timeout value if None.
-            - reraise: Determines behavior when the element state is not as expected:
-                - bool: True to raise a TimeoutException; False to return False.
-                - None: Follows `Timeout.RERAISE`.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `Timeout.RERAISE`.
+                If `True`, raises `TimeoutException`;
+                if `False`, returns `False`.
 
         Returns:
-            - list[WebElement] (Expected): The elements reached the expected status
-                before the timeout.
-            - False (Unexpected): The elements failed to reach the expected state
-                if `reraise` is False.
+            (list[WebElement] | False): A list of `WebElement` if at least one 
+                is visible within the timeout. `False` if all remain
+                invisible or absent after the timeout(`reraise=False`).
 
-        Exception:
-            - TimeoutException: Raised if `reraise` is True and
-                the elements did not reach the expected state within the timeout.
+        Raises:
+            TimeoutException: Raised if all remain invisible or absent
+                after the timeout(`reraise=True`).
         """
         try:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -446,26 +444,27 @@ class Elements:
 
     def are_all_present(self, timeout: int | float | None = None) -> bool:
         """
-        Selenium and Appium API.
         Whether the all elements are present.
 
         Args:
-            - timeout: Maximum time in seconds to wait for the element to become present.
+            timeout: Maximum wait time in seconds.
 
         Returns:
-            - True: All the elements are present before timeout.
-            - False: All the elements are still not present after timeout.
+            bool: `True` if all are present within the timeout; 
+                otherwise, `False`.
         """
         return True if self.wait_all_present(timeout, False) else False
 
     def are_all_visible(self) -> bool:
         """
-        Selenium and Appium API.
-        Whether all the elements are visible.
+        Whether all elements are visible.
+
+        Args:
+            timeout: Maximum wait time in seconds.
 
         Returns:
-            - True: All the elements are visible.
-            - False: At least one element is not visible.
+            bool: `True` if all are visible within the timeout; 
+                otherwise, `False`.
         """
         elements = self.all_present
         for index, element in enumerate(elements, 1):
@@ -477,12 +476,14 @@ class Elements:
 
     def are_any_visible(self) -> bool:
         """
-        Selenium and Appium API.
         Whether at least one element is visible.
 
+        Args:
+            timeout: Maximum wait time in seconds.
+
         Returns:
-            - True: At least one element is visible.
-            - False: All the elements are not visible.
+            bool: `True` if at least one is visible within the timeout; 
+                otherwise, `False`.
         """
         elements = self.all_present
         visible_elements = [element for element in elements if element.is_displayed()]
@@ -495,7 +496,6 @@ class Elements:
     @property
     def quantity(self) -> int:
         """
-        Selenium and Appium API.
         Get the quantity of all present elements.
         """
         try:
@@ -506,7 +506,6 @@ class Elements:
     @property
     def texts(self) -> list[str]:
         """
-        Selenium and Appium API.
         Gets texts of all present elements.
         """
         return [element.text for element in self.all_present]
@@ -514,7 +513,6 @@ class Elements:
     @property
     def all_visible_texts(self) -> list[str]:
         """
-        Selenium and Appium API.
         Gets texts of all elements until they are visible.
         """
         return [element.text for element in self.all_visible]
@@ -522,7 +520,6 @@ class Elements:
     @property
     def any_visible_texts(self) -> list[str]:
         """
-        Selenium and Appium API.
         Gets texts of the elements if at least one is visible.
         """
         return [element.text for element in self.any_visible]
@@ -530,7 +527,6 @@ class Elements:
     @property
     def rects(self) -> list[dict[str, int]]:
         """
-        Selenium and Appium API.
         Gets locations relative to the view and size of all present elements.
         """
         return [
@@ -547,17 +543,14 @@ class Elements:
     @property
     def locations(self) -> list[dict[str, int]]:
         """
-        Selenium and Appium API.
         Gets locations of all present elements.
         """
         return [element.location for element in self.all_present]
 
     @property
-    def sizes(self) -> list[dict[str, int]]:
+    def sizes(self) -> list[dict]:
         """
-        Selenium and Appium API.
         Gets sizes of all present elements.
-        Note that it will rearrange size to {'width': width, 'height': height}
         """
         return [
             {
@@ -569,7 +562,7 @@ class Elements:
         ]
 
     @property
-    def centers(self) -> list[dict[str, int]]:
+    def centers(self) -> list[dict]:
         """
         Selenium and Appium API.
         Gets center locations relative to the view of all present elements.
@@ -585,15 +578,15 @@ class Elements:
 
     def get_dom_attributes(self, name: str) -> list[str]:
         """
-        Selenium and Appium API.
-        Gets the given attributes of all present elements.
-        Unlike `selenium.webdriver.remote.BaseWebElement.get_attribute`,
-        this method only returns attributes declared in the element's HTML markup.
+        Gets the given attributes of all present elements. Unlike 
+        `selenium.webdriver.remote.BaseWebElement.get_attribute`, this method 
+        only returns attributes declared in the element's HTML markup.
 
         Args:
-            - name: Name of the attribute to retrieve.
+            name: Name of the attribute to retrieve.
 
-        Usage::
+        Examples:
+        ::
 
             text_length = page.element.get_dom_attributes("class")
 
@@ -602,14 +595,12 @@ class Elements:
 
     def get_attributes(self, name: str) -> list[str | dict | None]:
         """
-        Selenium and Appium API.
         Gets specific attributes or properties of all present elements.
         """
         return [element.get_attribute(name) for element in self.all_present]
 
     def get_properties(self, name: str) -> list[WebElement | bool | dict | str]:
         """
-        Selenium API.
         Gets specific properties of all present elements.
         """
         return [element.get_property(name) for element in self.all_present]
@@ -627,12 +618,7 @@ class Elements:
         """
         Returns shadow roots of the elements if there is one or an error.
         Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.
-
-        Returns:
-            - ShadowRoot object
-
-        Exception:
-            - NoSuchShadowRoot: If no shadow root was attached to element.
+        If no shadow root was attached, raises `NoSuchShadowRoot`.
         """
         return [element.shadow_root for element in self.all_present]
 
