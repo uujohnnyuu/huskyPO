@@ -71,7 +71,7 @@ class Page:
         Get an object of WebDriverWait.
 
         Args:
-            timeout: The maximum time in seconds to wait for the expected 
+            timeout: The maximum time in seconds to wait for the expected
                 condition. If `None`, it initializes with `Timeout.DEFAULT`.
         """
         self._wait_timeout = Timeout.DEFAULT if timeout is None else timeout
@@ -85,9 +85,9 @@ class Page:
         return getattr(self, _Name._wait_timeout, None)
 
     def _timeout_process(
-        self, 
-        status: str, 
-        exc: TimeoutException, 
+        self,
+        status: str,
+        exc: TimeoutException,
         reraise: bool | None
     ) -> Literal[False]:
         """
@@ -128,7 +128,7 @@ class Page:
 
     def get_downloadable_files(self) -> dict:
         """
-        Retrieves the downloadable files as a map of file names and 
+        Retrieves the downloadable files as a map of file names and
         their corresponding URLs.
         """
         return self.driver.get_downloadable_files()
@@ -139,7 +139,7 @@ class Page:
 
         Args:
             file_name: The name of the file to download.
-            target_directory: The path to the directory to 
+            target_directory: The path to the directory to
                 save the downloaded file.
         """
         self.driver.download_file(file_name, target_directory)
@@ -275,7 +275,7 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        An expectation for checking that the current url contains a 
+        An expectation for checking that the current url contains a
         case-sensitive substring.
         """
         try:
@@ -314,7 +314,7 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        An expectation for checking the current url is different 
+        An expectation for checking the current url is different
         than a given string.
         """
         try:
@@ -360,7 +360,7 @@ class Page:
         reraise: bool | None = None
     ) -> bool:
         """
-        An expectation for checking that the title contains a 
+        An expectation for checking that the title contains a
         case-sensitive substring.
         """
         try:
@@ -443,7 +443,7 @@ class Page:
         height: int | None = None
     ) -> dict | None:
         """
-        Sets the x, y coordinates of the window 
+        Sets the x, y coordinates of the window
         as well as height and width of the current window.
         This method is only supported for W3C compatible browsers;
         other browsers should use set_window_position and set_window_size.
@@ -458,12 +458,12 @@ class Page:
         """
         if all(v is None for v in (x, y, width, height)):
             self.driver.maximize_window()
-            return
+            return None
         return self.driver.set_window_rect(x, y, width, height)
 
     def get_window_rect(self) -> dict:
         """
-        Gets the x, y coordinates of the window 
+        Gets the x, y coordinates of the window
         as well as height and width of the current window.
         For example: `{'x': 0, 'y': 0, 'width': 500, 'height': 250}`.
         """
@@ -583,7 +583,7 @@ class Page:
 
     def pin_script(self, script: str, script_key: Any | None = None) -> ScriptKey:
         """
-        Store common javascript scripts to be executed later 
+        Store common javascript scripts to be executed later
         by a unique hashable ID.
         """
         return self.driver.pin_script(script, script_key)
@@ -759,7 +759,7 @@ class Page:
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
         """
-        Scrolls by provided amounts with the origin 
+        Scrolls by provided amounts with the origin
         in the top left corner of the viewport.
 
         Args:
@@ -791,8 +791,8 @@ class Page:
             delta_y: Distance along Y axis to scroll using the wheel.
                 A negative value scrolls up.
 
-        Raises: 
-            MoveTargetOutOfBoundsException: If the origin with offset is 
+        Raises:
+            MoveTargetOutOfBoundsException: If the origin with offset is
                 outside the viewport.
         """
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
@@ -806,7 +806,7 @@ class Page:
     ) -> Self:
         """
         Appium API.
-        Taps on an particular place with up to five fingers, 
+        Taps on an particular place with up to five fingers,
         holding for a certain time.
 
         Args:
@@ -871,7 +871,7 @@ class Page:
         times: int = 1
     ) -> Self:
         """
-        Swipe from one point to another, 
+        Swipe from one point to another,
         allowing customization of the offset and border settings.
 
         Args:
@@ -1264,7 +1264,7 @@ class Page:
             reraise: If True, re-raises a TimeoutException upon timeout;
                 if False, returns False upon timeout.
 
-        Returns: 
+        Returns:
             (list | False): `list` for `['NATIVE_APP', 'WEBVIEW_XXX', ...]`;
                 `False` for no any WEBVIEW in contexts.
         """
@@ -1291,7 +1291,7 @@ class Page:
 
         Args:
             app_id: the application id to be terminates.
-            **options: timeout (int), [Android only] 
+            **options: timeout (int), [Android only]
                 how much time to wait for the uninstall to complete.
                 500ms by default.
 
@@ -1351,7 +1351,7 @@ class Page:
 
     def get_cookies(self) -> list[dict]:
         """
-        Returns a set of dictionaries, 
+        Returns a set of dictionaries,
         corresponding to cookies visible in the current session.
         """
         return self.driver.get_cookies()
@@ -1367,9 +1367,9 @@ class Page:
         Adds a cookie to your current session.
 
         Args:
-            cookie: A dictionary object. 
+            cookie: A dictionary object.
                 Required keys: "name" and "value";
-                optional keys: "path", "domain", "secure", "httpOnly", 
+                optional keys: "path", "domain", "secure", "httpOnly",
                     "expiry", "sameSite".
 
         Examples:
