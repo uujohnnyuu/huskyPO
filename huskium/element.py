@@ -416,7 +416,7 @@ class Element:
             (WebElement | False):
                 The `WebElement` if visible within the timeout;
                 `False` if remains invisible or absent
-                    after the timeout(`reraise=False`).
+                after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if it remains invisible or absent
@@ -514,7 +514,7 @@ class Element:
             (WebElement | False):
                 The `WebElement` if clickable within the timeout;
                 `False` if remains unclickable or absent
-                    after the timeout(`reraise=False`).
+                after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if it remains unclickable or absent
@@ -612,7 +612,7 @@ class Element:
             (WebElement | False):
                 The `WebElement` if selected within the timeout;
                 `False` if remains unselected or absent
-                    after the timeout(`reraise=False`).
+                after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if it remains unselected or absent
@@ -659,7 +659,7 @@ class Element:
             (WebElement | False):
                 The `WebElement` if unselected within the timeout;
                 `False` if remains selected or absent
-                    after the timeout(`reraise=False`).
+                after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if it remains selected or absent

@@ -1364,7 +1364,7 @@ class Page:
             cookie: A dictionary object.
                 Required keys: "name" and "value";
                 optional keys: "path", "domain", "secure", "httpOnly",
-                    "expiry", "sameSite".
+                "expiry", "sameSite".
 
         Examples:
         ::

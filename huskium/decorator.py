@@ -17,7 +17,7 @@ def dynamic(func):
     Applies to any dynamic elements that return an Element or Elements.
 
     Examples:
-    .. code-block:: python
+    ::
 
         from huskium import dynamic
 
