@@ -5,14 +5,8 @@
 
 
 """
-`logstack` will be deprecated in huskium v1.1.0+. Use `huskium.logging.PrefixFilter()` instead.
-
-This is the logstack module for extending logging functionality,
-designed to record frame information with a specified prefix name.
-If you want to reference this logstack method to build your own model or extend it,
-make sure that `get_stackinfo()` and `get_stacklevel()` are
-encapsulated within the same function layer as `logging.method()`.
-Otherwise, discrepancies in stack levels may occur.
+`logstack` will be deprecated in huskium v1.1.0+. 
+Use `huskium.logging.PrefixFilter()` instead.
 """
 
 
@@ -48,15 +42,6 @@ def config(
     encoding=None,
     errors=None
 ) -> None:
-    """
-    Simply set `logging.basicConfig()`.
-
-    Usage::
-
-        from huskium import logstack
-        logstack.config('./xxx.log')
-
-    """
     if isinstance(filename, (str, type(None))):
         outputkv = {"filename": filename}
         if filename is not None:
@@ -90,23 +75,6 @@ def debug(
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None
 ) -> None:
-    """
-    Calls `logging.debug()` method, and finds the stack which prefix is `prefix`.
-
-    Args:
-        - message: The same as logging `msg`.
-        - prefix: The stack prefix that starts with it.
-            - For example, `test` means the log will be displayed
-                in the function `test_xxx()` or the module `test_xxx.py`.
-            - If prefix is None, it will use `Log.PREFIX`.
-                If both are None, it behaves the same as standard logging.
-        - excinfo: The same as logging `exc_info`.
-        - stacklevel: Essentially the same as the logging stacklevel.
-            - If a prefix is provided, this parameter specifies
-                the stack level from which the search begins.
-            - If the prefix is None, it behaves the same as the logging stacklevel.
-        - extra: The same as logging `extra`.
-    """
     logging.debug(
         message,
         exc_info=excinfo,
@@ -126,23 +94,6 @@ def info(
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None
 ) -> None:
-    """
-    Calls `logging.info()` method, and finds the stack which prefix is `prefix`.
-
-    Args:
-        - message: The same as logging `msg`.
-        - prefix: The stack prefix that starts with it.
-            - For example, `test` means the log will be displayed
-                in the function `test_xxx()` or the module `test_xxx.py`.
-            - If prefix is None, it will use `Log.PREFIX`.
-                If both are None, it behaves the same as standard logging.
-        - excinfo: The same as logging `exc_info`.
-        - stacklevel: Essentially the same as the logging stacklevel.
-            - If a prefix is provided, this parameter specifies
-                the stack level from which the search begins.
-            - If the prefix is None, it behaves the same as the logging stacklevel.
-        - extra: The same as logging `extra`.
-    """
     logging.info(
         message,
         exc_info=excinfo,
@@ -162,23 +113,6 @@ def warning(
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None
 ) -> None:
-    """
-    Calls `logging.warning()` method, and finds the stack which prefix is `prefix`.
-
-    Args:
-        - message: The same as logging `msg`.
-        - prefix: The stack prefix that starts with it.
-            - For example, `test` means the log will be displayed
-                in the function `test_xxx()` or the module `test_xxx.py`.
-            - If prefix is None, it will use `Log.PREFIX`.
-                If both are None, it behaves the same as standard logging.
-        - excinfo: The same as logging `exc_info`.
-        - stacklevel: Essentially the same as the logging stacklevel.
-            - If a prefix is provided, this parameter specifies
-                the stack level from which the search begins.
-            - If the prefix is None, it behaves the same as the logging stacklevel.
-        - extra: The same as logging `extra`.
-    """
     logging.warning(
         message,
         exc_info=excinfo,
@@ -198,23 +132,6 @@ def error(
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None
 ) -> None:
-    """
-    Calls `logging.error()` method, and finds the stack which prefix is `prefix`.
-
-    Args:
-        - message: The same as logging `msg`.
-        - prefix: The stack prefix that starts with it.
-            - For example, `test` means the log will be displayed
-                in the function `test_xxx()` or the module `test_xxx.py`.
-            - If prefix is None, it will use `Log.PREFIX`.
-                If both are None, it behaves the same as standard logging.
-        - excinfo: The same as logging `exc_info`.
-        - stacklevel: Essentially the same as the logging stacklevel.
-            - If a prefix is provided, this parameter specifies
-                the stack level from which the search begins.
-            - If the prefix is None, it behaves the same as the logging stacklevel.
-        - extra: The same as logging `extra`.
-    """
     logging.error(
         message,
         exc_info=excinfo,
@@ -234,23 +151,6 @@ def exception(
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None
 ) -> None:
-    """
-    Calls `logging.exception()` method, and finds the stack which prefix is `prefix`.
-
-    Args:
-        - message: The same as logging `msg`.
-        - prefix: The stack prefix that starts with it.
-            - For example, `test` means the log will be displayed
-                in the function `test_xxx()` or the module `test_xxx.py`.
-            - If prefix is None, it will use `Log.PREFIX`.
-                If both are None, it behaves the same as standard logging.
-        - excinfo: The same as logging `exc_info`.
-        - stacklevel: Essentially the same as the logging stacklevel.
-            - If a prefix is provided, this parameter specifies
-                the stack level from which the search begins.
-            - If the prefix is None, it behaves the same as the logging stacklevel.
-        - extra: The same as logging `extra`.
-    """
     logging.exception(
         message,
         exc_info=excinfo,
@@ -270,23 +170,6 @@ def critical(
     stacklevel: int = 1,
     extra: Mapping[str, object] | None = None
 ) -> None:
-    """
-    Calls `logging.critical()` method, and finds the stack which prefix is `prefix`.
-
-    Args:
-        - message: The same as logging `msg`.
-        - prefix: The stack prefix that starts with it.
-            - For example, `test` means the log will be displayed
-                in the function `test_xxx()` or the module `test_xxx.py`.
-            - If prefix is None, it will use `Log.PREFIX`.
-                If both are None, it behaves the same as standard logging.
-        - excinfo: The same as logging `exc_info`.
-        - stacklevel: Essentially the same as the logging stacklevel.
-            - If a prefix is provided, this parameter specifies
-                the stack level from which the search begins.
-            - If the prefix is None, it behaves the same as the logging stacklevel.
-        - extra: The same as logging `extra`.
-    """
     logging.critical(
         message,
         exc_info=excinfo,
@@ -302,41 +185,6 @@ def get_stacklevel(
     start: int = 1,
     outer: int = 1
 ) -> int:
-    """
-    Finds the stack level whose prefix is.
-
-    Args:
-        - prefix: The prefix of the target stack level.
-        - lower: If True, the prefix is case-insensitive.
-        - start: The stack level to start the search from.
-        - outer: The outermost wrapping level of this function used for logging.
-
-    Example of start and outer::
-
-        # Example 1: Using info() for logging, directly calling get_stacklevel().
-        def info():
-            # start = 1 -> Start searching from info().
-            # outer = 1 -> Search from the first wrapper of info(), treating it as logging.
-            # stacklevel = start + outer = 2 -> get_stacklevel() starts from the first wrapper of info().
-            get_stacklevel()
-
-        # Example 2: Using info() for logging, but wrapped_stacklevel() wraps get_stacklevel().
-        def info():
-            # stacklevel = start + outer = 1 + 2 = 3
-            # stacklevel = 1 -> wrapped_stacklevel().
-            # stacklevel = 2 -> info().
-            # stacklevel = 3 -> The module/function using info() for logging.
-            wrapped_stacklevel()
-
-        def wrapped_stacklevel():
-            ...
-            # wrapped_stacklevel() wraps get_stacklevel() for additional logic.
-            # start = 1 -> Start searching from wrapped_stacklevel().
-            # outer = 2 -> Search from the second wrapper, treating info() as logging.
-            # stacklevel = start + outer = 3 -> get_stacklevel() starts from the first wrapper of info().
-            get_stacklevel()
-
-    """
     # Adjust start to the first frame of the actual logging.
     start += outer
 
@@ -384,18 +232,6 @@ def get_stackinfo(
     start: int = 1,
     to_dict: bool = False
 ) -> str | dict[str, str]:
-    """
-    Finding the filename, lineno and funcname which the stack prefix is `prefix`.
-
-    Args:
-        - prefix: The prefix of the target stack level.
-        - start: The stack level to start the search from.
-        - to_dict: Determine the return type.
-
-    Return:
-        - to_dict is True: {'filename': 'xxx.py', 'lineno': '19', 'funcname': 'my_func'}
-        - to_dict is False: '|xxx.py:19|my_func|'
-    """
     frame = inspect.currentframe()
     if frame is None:
         raise RuntimeError("Cannot obtain the current frame.")
