@@ -5,7 +5,7 @@
 
 
 """
-`logstack` will be deprecated in huskium v1.1.0+. 
+`logstack` will be deprecated in huskium v1.1.0+.
 Use `huskium.logging.PrefixFilter()` instead.
 """
 
