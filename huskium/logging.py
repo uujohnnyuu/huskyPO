@@ -22,7 +22,7 @@ class PrefixFilter(logging.Filter):
             `False` to filter file (module) frames.
 
     Examples:
-    ::
+    .. code-block:: python
 
         import logging
         from huskium import PrefixFilter

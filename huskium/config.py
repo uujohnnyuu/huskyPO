@@ -19,13 +19,13 @@ class Log:
         PREFIX_FILTER (PrefixFilter): Internal debug logging filter.
 
     Examples:
-    ::
+    .. code-block:: python
 
         # Finds frames with the prefix "run".
         PREFIX_FILTER.prefix = 'run'
 
-        # Makes the prefix "run" case-insensitive.
-        PREFIX_FILTER.lower = True
+        # Makes the prefix "run" case-sensitive.
+        PREFIX_FILTER.lower = False
 
         # Finds the file (module) frame using the prefix "run".
         PREFIX_FILTER.funcframe = False
@@ -83,9 +83,10 @@ class Timeout:
         Typically used in wait-related methods within Element or Elements.
 
         Args:
-            switch (bool, None): When a timeout occurs, `True` (default) raises
-                a `TimeoutException`; otherwise, returns `False`.
-                If `None`, it follows `Timeout.RERAISE`.
+            switch (bool, None): When a timeout occurs,
+                `None`: Follows `Timeout.RERAISE`;
+                `True`: Raises a `TimeoutException`;
+                `False`: Returns `False`.
         """
         return cls.RERAISE if switch is None else switch
 

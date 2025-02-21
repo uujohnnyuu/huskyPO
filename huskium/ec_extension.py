@@ -3,15 +3,23 @@
 # PyPI: https://pypi.org/project/huskium/
 # GitHub: https://github.com/uujohnnyuu/huskium
 
+
 """
-Everything You Need to Know About Expected Conditions Extension (ECEX):
-    1.	ECEX extends all methods related to element states.
-    2.	`locator` follows the same structure as EC.
-    3.	`index` is an extended feature, allowing the
-        `find_elements(*locator)[index]` pattern.
-    4.	If `index` is `None`, `find_element(*locator)` is used instead.
-    5.	Separates methods for locators and WebElements to
-        enable more robust exception handling.
+Everything You Need to Know About Expected Conditions Extension (ECEX)
+
+Overview:
+    ECEX extends all methods related to element states.
+
+Locator Handling:
+    The `locator` follows the same structure as EC.
+
+Index Feature:
+    The `index` allows using the `find_elements(*locator)[index]` pattern.
+    If `index` is `None`, `find_element(*locator)` is used instead.
+
+Exception Handling:
+    ECEX separates methods for locators and WebElements to enable more robust
+    exception handling.
 """
 
 

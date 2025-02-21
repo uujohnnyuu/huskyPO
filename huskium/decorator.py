@@ -13,14 +13,11 @@ from . import Element, Elements
 
 def dynamic(func):
     """
-    Dynamic element decorator for page objects.
+    Dynamic element decorator for page objects. 
     Applies to any dynamic elements that return an Element or Elements.
 
-    Args:
-        func: The dynamic element function of `Element` or `Elements`.
-
     Examples:
-    ::
+    .. code-block:: python
 
         from huskium import dynamic
 

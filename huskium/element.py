@@ -119,11 +119,8 @@ class Element:
         Set dynamic elements as `page.element.dynamic(...)` pattern.
         All the args logic are the same as Element.
 
-        Returns:
-            Self: The Element object.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # my_page.py
             class MyPage(Page):
@@ -714,11 +711,8 @@ class Element:
         """
         This attribute must be used with `try-except`.
 
-        Returns:
-            WebElement: If there is present cache.
-
         Examples:
-        ::
+        .. code-block:: python
 
             try:
                 self.present_try.text
@@ -733,11 +727,8 @@ class Element:
         """
         This attribute must be used with `try-except`.
 
-        Returns:
-            WebElement: If there is visible cache.
-
         Examples:
-        ::
+        .. code-block:: python
 
             try:
                 self.visible_try.text
@@ -752,11 +743,8 @@ class Element:
         """
         This attribute must be used with `try-except`.
 
-        Returns:
-            WebElement: If there is clickable cache.
-
         Examples:
-        ::
+        .. code-block:: python
 
             try:
                 self.clickable_try.text
@@ -1119,7 +1107,7 @@ class Element:
                 as a click. Should be considered along with `min_distance`.
 
         Examples:
-        ::
+        .. code-block:: python
 
             from huskium import Offset, Area
 
@@ -1199,7 +1187,7 @@ class Element:
                 with `min_distance` in adjustment process.
 
         Examples:
-        ::
+        .. code-block:: python
 
             from huskium import Offset, Area
 
@@ -1387,11 +1375,8 @@ class Element:
         """
         Clear the text of the field type element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.clear()
             my_page.my_element.clear().send_keys('my text')
@@ -1409,13 +1394,10 @@ class Element:
         Simulates typing into the element.
 
         Args:
-            value: The texts or keys to typing.
-
-        Returns:
-            Element: It can chain the relative actions.
+            *value: The texts or keys to typing.
 
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.send_keys('my_text')
             my_page.my_element.clear().send_keys('my_text')
@@ -1438,7 +1420,7 @@ class Element:
             name: Name of the attribute to retrieve.
 
         Examples:
-        ::
+        .. code-block:: python
 
             text_length = element.get_dom_attribute("class")
 
@@ -1468,7 +1450,7 @@ class Element:
             name: Name of the attribute or property to retrieve.
 
         Examples:
-        ::
+        .. code-block:: python
 
             # Check if the "active" CSS class is applied to an element.
             is_active = "active" in target_element.get_attribute("class")
@@ -1487,7 +1469,7 @@ class Element:
             name: Name of the property to retrieve.
 
         Examples:
-        ::
+        .. code-block:: python
 
             text_length = target_element.get_property("text_length")
 
@@ -1554,11 +1536,8 @@ class Element:
         """
         ActionChains API. Performs all stored actions.
 
-        Returns:
-            None: It should not chain any actions after performed.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage. Execute element actions.
             page.element.scroll_to_element().action_click().perform()
@@ -1582,11 +1561,8 @@ class Element:
         Clears actions that are already stored in object of Page.
         once called, it will reset all stored actions in page.
 
-        Returns:
-            None: It should not chain any actions after reset.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Reset the stored actions by the last reset_actions.
             page.element1.scroll_to_element().action_click()
@@ -1605,11 +1581,8 @@ class Element:
         """
         ActionChains API. Clicks an element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             my_page.my_element.action_click().perform()
@@ -1633,11 +1606,8 @@ class Element:
         """
         ActionChains API. Holds down the left mouse button on an element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             my_page.my_element.click_and_hold().perform()
@@ -1661,11 +1631,8 @@ class Element:
         """
         ActionChains API. Performs a context-click (right click) on an element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             my_page.my_element.context_click().perform()
@@ -1689,11 +1656,8 @@ class Element:
         """
         ActionChains API. Double-clicks an element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             my_page.my_element.double_click()
@@ -1722,11 +1686,8 @@ class Element:
         Args:
             target: The element to mouse up.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element1.drag_and_drop(page.element2).perform()
@@ -1756,11 +1717,8 @@ class Element:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.drag_and_drop_by_offset(100, 200).perform()
@@ -1787,11 +1745,8 @@ class Element:
         Args:
             value: The combination of hotkey.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # copy(control+c)
             page.element.hotkey(Keys.CONTROL, 'c').perform()
@@ -1827,11 +1782,8 @@ class Element:
             focus: Whether to focus element or not.
                 Default to focus current element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # copy(control+c)
             page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
@@ -1860,11 +1812,8 @@ class Element:
                 The default is NOT to focus on the current element
                 as this is generally not the first action.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # copy(control+c)
             page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
@@ -1889,11 +1838,10 @@ class Element:
             keys_to_send: The keys to send.
                 Modifier keys constants can be found in the 'Keys' class.
 
-        Returns:
-            Element: It can chain relative actions.
+
 
         Examples:
-        ::
+        .. code-block:: python
 
             # Combine with key_down and key_up method
             page.element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
@@ -1915,11 +1863,8 @@ class Element:
             keys_to_send: The keys to send.
                 Modifier keys constants can be found in the 'Keys' class.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.send_keys_to_element(Keys.ENTER)
@@ -1944,11 +1889,8 @@ class Element:
         ActionChains API.
         Moving the mouse to the middle of an element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.move_to_element().perform()
@@ -1982,11 +1924,8 @@ class Element:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.move_to_element_with_offset(100, 200).perform()
@@ -2010,11 +1949,8 @@ class Element:
         """
         ActionChains API. Releasing a held mouse button on an element.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.release().perform()
@@ -2048,11 +1984,8 @@ class Element:
         If the element is outside the viewport,
         scrolls the bottom of the element to the bottom of the viewport.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.scroll_to_element().perform()
@@ -2096,11 +2029,8 @@ class Element:
             delta_y: Distance along Y axis to scroll using the wheel,
                 a negative value scrolls up.
 
-        Returns:
-            Element: It can chain relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             # Basic usage
             page.element.scroll_from_element(100, 200, -50, -100).perform()
@@ -2143,11 +2073,8 @@ class Element:
         """
         This attribute must be used with `try-except`.
 
-        Returns:
-            Select: If there is select cache.
-
         Examples:
-        ::
+        .. code-block:: python
 
             try:
                 self.select_try.options
@@ -2322,14 +2249,11 @@ class Element:
         """
         Input text to the element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Args:
             text: The text to input.
 
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.input('123 456')
             my_page.my_element.input('123').space().input('456')
@@ -2346,11 +2270,8 @@ class Element:
         """
         Send keys ENTER to the element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.input('123 456').enter()
 
@@ -2366,11 +2287,8 @@ class Element:
         **This is NOT Select relative function.**
         Send keys "COMMAND/CONTROL + A" to the element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.select_all().copy()
 
@@ -2386,11 +2304,8 @@ class Element:
         """
         Send keys "COMMAND/CONTROL + X" to the element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element1.cut()
             my_page.my_element2.paste()
@@ -2407,11 +2322,8 @@ class Element:
         """
         Send keys "COMMAND/CONTROL + C" to the element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
@@ -2428,11 +2340,8 @@ class Element:
         """
         Send keys "COMMAND/CONTROL + V" to the element.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
@@ -2452,11 +2361,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.arrow_left(3)
 
@@ -2475,11 +2381,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.arrow_right(3)
 
@@ -2497,11 +2400,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.arrow_up(3)
 
@@ -2519,11 +2419,8 @@ class Element:
         Args:
             - times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.arrow_down(3)
 
@@ -2541,11 +2438,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.backspace(3).input('123456').enter()
 
@@ -2563,11 +2457,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.delete(3)
 
@@ -2585,11 +2476,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.tab(2)
 
@@ -2607,11 +2495,8 @@ class Element:
         Args:
             times: The input times of key.
 
-        Returns:
-            Element: It can chain the relative actions.
-
         Examples:
-        ::
+        .. code-block:: python
 
             my_page.my_element.space(4)
 

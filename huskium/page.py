@@ -116,7 +116,7 @@ class Page:
             log_type: Type of log that which will be returned.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.get_log('browser')
             page.get_log('driver')
@@ -156,11 +156,8 @@ class Page:
         Returns an object providing access to all
         Federated Credential Management (FedCM) dialog commands.
 
-        Returns:
-            FedCM: The FedCM object to trigger its attributes.
-
         Examples:
-        ::
+        .. code-block:: python
 
             title = page.fedcm.title
             subtitle = page.fedcm.subtitle
@@ -449,7 +446,7 @@ class Page:
         other browsers should use set_window_position and set_window_size.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.set_window_rect(x=10, y=10)
             page.set_window_rect(width=100, height=200)
@@ -617,7 +614,7 @@ class Page:
             *args: Any applicable arguments for your JavaScript.
 
         Examples:
-        ::
+        .. code-block:: python
 
             driver.execute_script('return document.title;')
 
@@ -650,7 +647,7 @@ class Page:
         once called, it will execute all stored actions in page.
 
         Examples:
-        ::
+        .. code-block:: python
 
             # Perform all saved actions:
             my_page.my_element1.scroll_to_element().action_click()
@@ -666,7 +663,7 @@ class Page:
         once called, it will reset all stored actions in page.
 
         Examples:
-        ::
+        .. code-block:: python
 
             # Reset all saved actions:
             my_page.my_element1.scroll_to_element().action_click()
@@ -815,7 +812,7 @@ class Page:
             duration: length of time to tap, in ms. Default value is 100 ms.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.tap([(100, 20), (100, 60), (100, 100)], 500)
 
@@ -855,7 +852,7 @@ class Page:
                 note that default set to 250 by ActionBuilder.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.swipe(100, 100, 100, 400)
 
@@ -883,7 +880,7 @@ class Page:
             times: The number of times to perform the swipe.
 
         Examples:
-        ::
+        .. code-block:: python
 
             # Swipe parameters. Refer to the Class notes for details.
             from huskium import Offset, Area
@@ -952,7 +949,7 @@ class Page:
             end_y: y-coordinate at which to stop
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.flick(100, 100, 100, 400)
 
@@ -1207,7 +1204,7 @@ class Page:
             window: `str` for Window name; `int` for Window index.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.switch_to_window('main')
             page.switch_to_window(1)
@@ -1221,11 +1218,8 @@ class Page:
         """
         Appium API. Get the Appium server status.
 
-        Returns:
-            Dict: The status information.
-
         Examples:
-        ::
+        .. code-block:: python
 
             page.get_status()
 
@@ -1323,7 +1317,7 @@ class Page:
                 This should end with a `.png` extension.
 
         Examples:
-        ::
+        .. code-block:: python
 
             driver.save_screenshot('/Screenshots/foo.png')
 
@@ -1341,7 +1335,7 @@ class Page:
                 or an integer representing the index.
 
         Examples:
-        ::
+        .. code-block:: python
 
             xxx_page.switch_to_frame('name')
             xxx_page.switch_to_frame(1)
@@ -1373,7 +1367,7 @@ class Page:
                     "expiry", "sameSite".
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.add_cookie({'name': 'foo', 'value': 'bar'})
             page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/'})
@@ -1391,7 +1385,7 @@ class Page:
             cookies: list[dict]
 
         Examples:
-        ::
+        .. code-block:: python
 
             cookies = [
                 {'name' : 'foo', 'value' : 'bar'},
@@ -1468,7 +1462,7 @@ class Page:
         an execute_async_script call before throwing an error.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.set_script_timeout(30)
 
@@ -1481,7 +1475,7 @@ class Page:
         before throwing an error.
 
         Examples:
-        ::
+        .. code-block:: python
 
             page.set_page_load_timeout(30)
 
