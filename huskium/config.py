@@ -19,7 +19,7 @@ class Log:
         PREFIX_FILTER (PrefixFilter): Internal debug logging filter.
 
     Examples:
-    .. code-block:: python
+    ::
 
         # Finds frames with the prefix "run".
         PREFIX_FILTER.prefix = 'run'

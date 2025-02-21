@@ -120,7 +120,7 @@ class Element:
         All the args logic are the same as Element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # my_page.py
             class MyPage(Page):
@@ -712,7 +712,7 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        .. code-block:: python
+        ::
 
             try:
                 self.present_try.text
@@ -728,7 +728,7 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        .. code-block:: python
+        ::
 
             try:
                 self.visible_try.text
@@ -744,7 +744,7 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        .. code-block:: python
+        ::
 
             try:
                 self.clickable_try.text
@@ -1107,7 +1107,7 @@ class Element:
                 as a click. Should be considered along with `min_distance`.
 
         Examples:
-        .. code-block:: python
+        ::
 
             from huskium import Offset, Area
 
@@ -1187,7 +1187,7 @@ class Element:
                 with `min_distance` in adjustment process.
 
         Examples:
-        .. code-block:: python
+        ::
 
             from huskium import Offset, Area
 
@@ -1376,7 +1376,7 @@ class Element:
         Clear the text of the field type element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.clear()
             my_page.my_element.clear().send_keys('my text')
@@ -1397,7 +1397,7 @@ class Element:
             *value: The texts or keys to typing.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.send_keys('my_text')
             my_page.my_element.clear().send_keys('my_text')
@@ -1420,7 +1420,7 @@ class Element:
             name: Name of the attribute to retrieve.
 
         Examples:
-        .. code-block:: python
+        ::
 
             text_length = element.get_dom_attribute("class")
 
@@ -1450,7 +1450,7 @@ class Element:
             name: Name of the attribute or property to retrieve.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Check if the "active" CSS class is applied to an element.
             is_active = "active" in target_element.get_attribute("class")
@@ -1469,7 +1469,7 @@ class Element:
             name: Name of the property to retrieve.
 
         Examples:
-        .. code-block:: python
+        ::
 
             text_length = target_element.get_property("text_length")
 
@@ -1537,7 +1537,7 @@ class Element:
         ActionChains API. Performs all stored actions.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage. Execute element actions.
             page.element.scroll_to_element().action_click().perform()
@@ -1562,7 +1562,7 @@ class Element:
         once called, it will reset all stored actions in page.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Reset the stored actions by the last reset_actions.
             page.element1.scroll_to_element().action_click()
@@ -1582,7 +1582,7 @@ class Element:
         ActionChains API. Clicks an element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             my_page.my_element.action_click().perform()
@@ -1607,7 +1607,7 @@ class Element:
         ActionChains API. Holds down the left mouse button on an element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             my_page.my_element.click_and_hold().perform()
@@ -1632,7 +1632,7 @@ class Element:
         ActionChains API. Performs a context-click (right click) on an element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             my_page.my_element.context_click().perform()
@@ -1657,7 +1657,7 @@ class Element:
         ActionChains API. Double-clicks an element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             my_page.my_element.double_click()
@@ -1687,7 +1687,7 @@ class Element:
             target: The element to mouse up.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element1.drag_and_drop(page.element2).perform()
@@ -1718,7 +1718,7 @@ class Element:
             yoffset: Y offset to move to, as a positive or negative integer.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.drag_and_drop_by_offset(100, 200).perform()
@@ -1746,7 +1746,7 @@ class Element:
             value: The combination of hotkey.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # copy(control+c)
             page.element.hotkey(Keys.CONTROL, 'c').perform()
@@ -1783,7 +1783,7 @@ class Element:
                 Default to focus current element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # copy(control+c)
             page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
@@ -1813,7 +1813,7 @@ class Element:
                 as this is generally not the first action.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # copy(control+c)
             page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
@@ -1838,10 +1838,8 @@ class Element:
             keys_to_send: The keys to send.
                 Modifier keys constants can be found in the 'Keys' class.
 
-
-
         Examples:
-        .. code-block:: python
+        ::
 
             # Combine with key_down and key_up method
             page.element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
@@ -1864,7 +1862,7 @@ class Element:
                 Modifier keys constants can be found in the 'Keys' class.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.send_keys_to_element(Keys.ENTER)
@@ -1890,7 +1888,7 @@ class Element:
         Moving the mouse to the middle of an element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.move_to_element().perform()
@@ -1925,7 +1923,7 @@ class Element:
             yoffset: Y offset to move to, as a positive or negative integer.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.move_to_element_with_offset(100, 200).perform()
@@ -1950,7 +1948,7 @@ class Element:
         ActionChains API. Releasing a held mouse button on an element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.release().perform()
@@ -1985,7 +1983,7 @@ class Element:
         scrolls the bottom of the element to the bottom of the viewport.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.scroll_to_element().perform()
@@ -2030,7 +2028,7 @@ class Element:
                 a negative value scrolls up.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # Basic usage
             page.element.scroll_from_element(100, 200, -50, -100).perform()
@@ -2074,7 +2072,7 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        .. code-block:: python
+        ::
 
             try:
                 self.select_try.options
@@ -2253,7 +2251,7 @@ class Element:
             text: The text to input.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.input('123 456')
             my_page.my_element.input('123').space().input('456')
@@ -2271,7 +2269,7 @@ class Element:
         Send keys ENTER to the element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.input('123 456').enter()
 
@@ -2288,7 +2286,7 @@ class Element:
         Send keys "COMMAND/CONTROL + A" to the element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.select_all().copy()
 
@@ -2305,7 +2303,7 @@ class Element:
         Send keys "COMMAND/CONTROL + X" to the element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element1.cut()
             my_page.my_element2.paste()
@@ -2323,7 +2321,7 @@ class Element:
         Send keys "COMMAND/CONTROL + C" to the element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
@@ -2341,7 +2339,7 @@ class Element:
         Send keys "COMMAND/CONTROL + V" to the element.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element1.copy()
             my_page.my_element2.paste()
@@ -2362,7 +2360,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.arrow_left(3)
 
@@ -2382,7 +2380,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.arrow_right(3)
 
@@ -2401,7 +2399,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.arrow_up(3)
 
@@ -2420,7 +2418,7 @@ class Element:
             - times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.arrow_down(3)
 
@@ -2439,7 +2437,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.backspace(3).input('123456').enter()
 
@@ -2458,7 +2456,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.delete(3)
 
@@ -2477,7 +2475,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.tab(2)
 
@@ -2496,7 +2494,7 @@ class Element:
             times: The input times of key.
 
         Examples:
-        .. code-block:: python
+        ::
 
             my_page.my_element.space(4)
 

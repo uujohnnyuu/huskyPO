@@ -100,7 +100,7 @@ class Elements:
         All the args logic are the same as Elements.
 
         Examples:
-        .. code-block:: python
+        ::
 
             # my_page.py
             class MyPage(Page):
@@ -583,7 +583,7 @@ class Elements:
             name: Name of the attribute to retrieve.
 
         Examples:
-        .. code-block:: python
+        ::
 
             text_length = page.element.get_dom_attributes("class")
 
