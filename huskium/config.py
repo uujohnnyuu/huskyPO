@@ -15,24 +15,24 @@ class Log:
     """
     General log settings.
 
-    Attributes:
-        PREFIX_FILTER (PrefixFilter): Internal debug logging filter.
-
     Examples:
-    ::
+        The usage of `PREFIX_FILTER`::
 
-        # Finds frames with the prefix "run".
-        PREFIX_FILTER.prefix = 'run'
+            from huskium import Log
 
-        # Makes the prefix "run" case-sensitive.
-        PREFIX_FILTER.lower = False
+            # Finds frames with the prefix "run".
+            Log.PREFIX_FILTER.prefix = 'run'
 
-        # Finds the file (module) frame using the prefix "run".
-        PREFIX_FILTER.funcframe = False
+            # Makes the prefix "run" case-sensitive.
+            Log.PREFIX_FILTER.lower = False
+
+            # Finds the file (module) frame using the prefix "run".
+            Log.PREFIX_FILTER.funcframe = False
 
     """
     # prefix filter object
     PREFIX_FILTER = PrefixFilter('test')
+    """Internal debug logging filter."""
 
     # Deprecation of logstack
     _PREFIX = 'test'
@@ -56,24 +56,21 @@ class Log:
 class Cache:
     """
     Configure the cache in the related function.
-
-    Attributes:
-        ELEMENT (bool): True (default) to enable cache in Element.
     """
     ELEMENT: bool = True
+    """True (default) to enable cache in Element."""
 
 
 class Timeout:
     """
     Timeout settings.
-
-    Attributes:
-        DEFAULT (int, float): Default is 30 seconds.
-        RERAISE (bool): When a timeout occurs,
-            True (default) raises a TimeoutException; otherwise, returns False.
     """
     DEFAULT: int | float = 30
+    """Default is 30 seconds."""
+
     RERAISE: bool = True
+    """When a timeout occurs,
+    True (default) raises a TimeoutException; otherwise, returns False."""
 
     @classmethod
     def reraise(cls, switch: bool | None = None) -> bool:

@@ -21,12 +21,12 @@ class ByAttribute:
     This is mainly used for internal validation of `By`.
     You can also use this class attribute to check which valid `By`
     attributes are available in your current selenium and appium version.
-
-    Attributes:
-        NAMES (list): A list of all `By` attribute names as strings.
-        VALUES (list): A list of all `By` attribute values.
-        VALUES_WITH_NONE (list): A list of `VALUES`, including `None`.
     """
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]
+    """A list of all `By` attribute names as strings."""
+
     VALUES = [getattr(By, attr) for attr in NAMES]
+    """A list of all `By` attribute values."""
+
     VALUES_WITH_NONE = VALUES + [None]
+    """A list of `VALUES`, including `None`."""
