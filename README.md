@@ -89,11 +89,11 @@ class MyPage(Page):
 
     # Method 1: Call `dynamic` to set `static_search_result`.
     def dynamic_search_result(self, order: int = 1):
-        return self.static_search_result.dynamic(By.XPATH, f'(//h3)[{order}]', remark=f'Search NO.{order}')
+        return self.static_search_result.dynamic(By.XPATH, f'(//h3)[{order}]', remark=f'NO.{order}')
 
     # Method 2: Use the data descriptor mechanism.
     def dynamic_search_result(self, order: int = 1):
-        self.static_search_result = Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search NO.{order}')
+        self.static_search_result = Element(By.XPATH, f'(//h3)[{order}]', remark=f'NO.{order}')
         return self.static_search_result
 ```
 
@@ -141,51 +141,53 @@ Cache.ELEMENT = True
 
 ## Log Settings
 
-### 1. Global Configuration
+### 1. Huskium Dubug Log Configuration
 ```python
 from huskium import Log
 
 # Capture log messages from frames where the name starts with 'test'.
 # Set to None to disable filtering.
-Log.PREFIX = 'test'  
+Log.PREFIX_FILTER.prefix = 'test'  
 
 # Specify whether to filter logs by function name.
-# If False, filtering is based on filename (module) instead.
-Log.FUNCFRAME: bool = True
+# If False, filtering is based on file (module) name instead.
+Log.PREFIX_FILTER.funcframe: bool = True
 
 # Set to True for case-insensitive filtering.
-Log.LOWER: bool = True
+Log.PREFIX_FILTER.lower: bool = True
 ```
 
-### 2. Log Filter
+### 2. Huskium Debug Log Display Example
+```log
+# When Log.PREFIX_FILTER.prefix = None, logging behaves normally, 
+# showing the first frame (stacklevel = 1).
+2025-02-11 11:13:08 | DEBUG | element.py:574 | wait_clickable | Element(logout_button): Some message.
+
+# When Log.PREFIX_FILTER.prefix = 'test', 
+# logs display the first frame with a name starting with 'test' (stacklevel >= 1).
+# This helps quickly trace the module and line where the issue occurs.
+2025-02-11 11:13:22 | DEBUG | test_game.py:64 | test_game_flow | Element(logout_button): Some message.
+```
+
+### 3. Customize Log Filter
+You can also apply the provided filters to your own logging as follows:
 ```python
 from huskium import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
 
 # Apply a filter to customize logging.
 # PrefixFilter includes both FuncPrefixFilter and FilePrefixFilter.
-# If Log.FUNCNAME = True, FuncPrefixFilter is used; otherwise, FilePrefixFilter is applied.
-logging.getLogger().addFilter(PrefixFilter())
+# It is recommended that create different filter for different usage.
+prefix_filter = PrefixFilter('test')
+logging.getLogger().addFilter(prefix_filter)
 
-# Use specific filters independently if needed, regardless of Log.FUNCNAME.
-logging.getLogger().addFilter(FilePrefixFilter())
+# or
+run_module_filter = FilePrefixFilter('run')
+logging.getLogger().addFilter(run_module_filter)
 
-# It is recommended to configure logging per module.
-# Huskium’s core modules already define LOGGER, so Log settings control behavior externally.
-LOGGER = logging.getLogger(__name__)
-FILTER = FuncPrefixFilter()
-LOGGER.addFilter(FILTER)
+# or
+test_func_filter = FuncPrefixFilter('test')
+logging.getLogger().addFilter(test_func_filter)
 ```
-
-### 3. Log Display Example
-```log
-# When Log.PREFIX = None, logging behaves normally, showing the first frame (stacklevel = 1).
-2025-02-11 11:13:08 | DEBUG | element.py:574 | wait_clickable | Element(logout_button): Some message.
-
-# When Log.PREFIX = 'test', logs display the first frame with a name starting with 'test' (stacklevel >= 1).
-# This helps quickly trace the module and line where the issue occurs.
-2025-02-11 11:13:22 | DEBUG | test_game.py:64 | test_game_flow | Element(logout_button): Some message.
-```
-
 ---
 
 ## Wait Actions
