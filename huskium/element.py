@@ -246,7 +246,7 @@ class Element:
 
     def find_element(self) -> WebElement:
         """
-        Using the traditional `find_element()` or `find_elements()[index]` 
+        Using the traditional `find_element()` or `find_elements()[index]`
         to locate element.
         It is recommended for use in situations where no waiting is required,
         such as the Android UiScrollable locator method.
@@ -909,7 +909,7 @@ class Element:
 
     def delayed_click(self, sleep: int | float = 0.5) -> None:
         """
-        Clicks the element after it becomes clickable,  
+        Clicks the element after it becomes clickable,
         with a specified delay (sleep) in seconds.
         """
         try:
@@ -936,12 +936,12 @@ class Element:
     @property
     def location_once_scrolled_into_view(self) -> dict:
         """
-        THIS PROPERTY MAY CHANGE WITHOUT WARNING. 
+        THIS PROPERTY MAY CHANGE WITHOUT WARNING.
 
-        Use this to determine the on-screen location of an element  
+        Use this to determine the on-screen location of an element
         that can be clicked, and it scrolls the element into view if necessary.
 
-        Returns the top-left corner coordinates on the screen,  
+        Returns the top-left corner coordinates on the screen,
         or `(0, 0)` if the element is not visible.
         """
         try:
@@ -1465,7 +1465,7 @@ class Element:
 
         Examples:
             ::
-            
+
                 page.element.visible_value_of_css_property('color')
 
         """

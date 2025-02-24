@@ -78,7 +78,7 @@ class Page:
         Get a WebDriverWait object.
 
         Args:
-            timeout: Maximum wait time in seconds. 
+            timeout: Maximum wait time in seconds.
                 If `None`, it initializes with `Timeout.DEFAULT`.
         """
         self._wait_timeout = Timeout.DEFAULT if timeout is None else timeout
@@ -621,7 +621,7 @@ class Page:
 
     def click_and_hold(self) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Holds down the left mouse button on current mouse position.
         """
         self._action.click_and_hold()
@@ -910,7 +910,7 @@ class Page:
         times: int = 1
     ) -> Self:
         """
-        Flick from one point to another, 
+        Flick from one point to another,
         allowing customization of the offset and border settings.
 
         Args:

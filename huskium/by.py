@@ -16,11 +16,11 @@ class By(AppiumBy):
 
 class ByAttribute:
     """
-    Mainly used for internal validation of `By`.  
-    It can also be used to check the available `By` attributes  
+    Mainly used for internal validation of `By`.
+    It can also be used to check the available `By` attributes
     in your current Selenium and Appium version.
     """
-    
+
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]
     """A list of all `By` attribute names as strings."""
 

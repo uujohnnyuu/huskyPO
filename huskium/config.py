@@ -106,7 +106,7 @@ class Offset:
 
     UP: tuple = (0.5, 0.75, 0.5, 0.25)
     """Swipe up (bottom to top)."""
-    
+
     DOWN: tuple = (0.5, 0.25, 0.5, 0.75)
     """Swipe down (top to bottom)."""
 

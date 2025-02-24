@@ -221,7 +221,7 @@ def visibility_of_any_elements_located(
 
     Returns:
         list[WebElement]:
-            The list of `WebElement` if at least one element is visible; 
+            The list of `WebElement` if at least one element is visible;
             otherwise, the empty list `[]` if all elements are invisible.
 
     Raises:
@@ -252,7 +252,7 @@ def visibility_of_all_elements_located(
 
     Returns:
         (list[WebElement] | False):
-            The list of `WebElement` if all elements are visible; 
+            The list of `WebElement` if all elements are visible;
             otherwise, `False` if at least one element is invisible.
 
     Raises:
@@ -297,7 +297,7 @@ def invisibility_of_element_located(
         NoSuchElementException: Raised if the element is
             absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is 
+        StaleElementReferenceException: Raised if the found element is
             stale and `present` is `True`.
             Optionally Ignored in `WebDriverWait`.
     """
@@ -429,7 +429,7 @@ def element_located_to_be_unclickable(
         NoSuchElementException: Raised if the element is
             absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is 
+        StaleElementReferenceException: Raised if the found element is
             stale and `present` is `True`.
             Optionally Ignored in `WebDriverWait`.
     """

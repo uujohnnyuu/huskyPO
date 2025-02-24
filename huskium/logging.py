@@ -131,9 +131,9 @@ class PageElementLoggerAdapter(logging.LoggerAdapter):
             instance: The class instance in the module.
         """
         super().__init__(
-            logger, 
+            logger,
             {
-                "petype": type(instance).__name__, 
+                "petype": type(instance).__name__,
                 "remark": getattr(instance, 'remark', 'remark')
             }
         )
