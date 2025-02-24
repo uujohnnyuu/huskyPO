@@ -148,12 +148,12 @@ class Elements:
 
     @property
     def by(self) -> str | None:
-        """The `by` attribute."""
+        """The `by` attribute of the `Elements`."""
         return self._by
 
     @property
     def value(self) -> str | None:
-        """The `value` attribute."""
+        """The `value` attribute of the `Elements`."""
         return self._value
 
     @property
@@ -175,7 +175,7 @@ class Elements:
 
     @property
     def driver(self) -> WebDriver:
-        """The driver object from page."""
+        """The `driver` object from `page`."""
         return self._driver
 
     def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:

@@ -196,12 +196,12 @@ class Element:
 
     @property
     def by(self) -> str | None:
-        """The `by` attribute."""
+        """The `by` attribute of the `Element`."""
         return self._by
 
     @property
     def value(self) -> str | None:
-        """The `value` attribute."""
+        """The `value` attribute of the `Element`."""
         return self._value
 
     @property
@@ -213,7 +213,7 @@ class Element:
 
     @property
     def index(self) -> int | None:
-        """The `index` attribute."""
+        """The `index` attribute of the `Element`."""
         return self._index
 
     @property
@@ -236,12 +236,12 @@ class Element:
 
     @property
     def driver(self) -> WebDriver:
-        """The driver object from page."""
+        """The `driver` object from `page`."""
         return self._driver
 
     @property
     def action(self) -> ActionChains:
-        """The ActionChains object from page."""
+        """The `ActionChains` object from `page`."""
         return self._page._action
 
     def find_element(self) -> WebElement:
