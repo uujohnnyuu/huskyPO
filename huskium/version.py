@@ -3,7 +3,5 @@
 # PyPI: https://pypi.org/project/huskium/
 # GitHub: https://github.com/uujohnnyuu/huskium
 
-import time
-
 
 VERSION = '1.0.7'
