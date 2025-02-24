@@ -174,17 +174,20 @@ You can also apply the provided filters to your own logging as follows:
 ```python
 from huskium import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
 
-# Apply a filter to customize logging.
 # PrefixFilter includes both FuncPrefixFilter and FilePrefixFilter.
-# It is recommended that create different filter for different usage.
 prefix_filter = PrefixFilter('test')
 logging.getLogger().addFilter(prefix_filter)
 
-# or
+# You can update the filter dynamically by accessing the attribute.
+prefix_filter.prefix = 'others'
+prefix_filter.funcframe = False
+prefix_filter.lower = False
+
+# If you only want to display module frames, directly use `FilePrefixFilter`.
 run_module_filter = FilePrefixFilter('run')
 logging.getLogger().addFilter(run_module_filter)
 
-# or
+# If you only want to display func frames, directly use `FuncPrefixFilter`.
 test_func_filter = FuncPrefixFilter('test')
 logging.getLogger().addFilter(test_func_filter)
 ```
