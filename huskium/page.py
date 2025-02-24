@@ -42,6 +42,11 @@ class Page:
         _wait_timeout: int | float
 
     def __init__(self, driver: WebDriver, remark: str = 'Page') -> None:
+        """
+        Args:
+            driver: The WebDriver object of Selenium or Appium.
+            remark: Custom remark for identification or logging.
+        """
         if not isinstance(driver, WebDriver):
             raise TypeError(f'The "driver" must be "WebDriver", not {type(driver).__name__}.')
         if not isinstance(remark, str):
@@ -49,39 +54,39 @@ class Page:
         self._driver = driver
         self._remark = remark
         self._action = ActionChains(driver)
-        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
+        self._logger = PageElementLoggerAdapter(LOGGER, self)
 
     @property
     def driver(self) -> WebDriver:
+        """driver"""
         return self._driver
 
     @property
     def remark(self) -> str:
+        """remark"""
         return self._remark
 
     @property
     def action(self) -> ActionChains:
         """
-        Calling instance of ActionChains.
+        The ActionChains object.
         """
         return self._action
 
     def wait(self, timeout: int | float | None = None) -> WebDriverWait:
         """
-        Get an object of WebDriverWait.
+        Get a WebDriverWait object.
 
         Args:
-            timeout: The maximum time in seconds to wait for the expected
-                condition. If `None`, it initializes with `Timeout.DEFAULT`.
+            timeout: Maximum wait time in seconds. 
+                If `None`, it initializes with `Timeout.DEFAULT`.
         """
         self._wait_timeout = Timeout.DEFAULT if timeout is None else timeout
         return WebDriverWait(self.driver, self._wait_timeout)
 
     @property
     def wait_timeout(self) -> int | float | None:
-        """
-        Get the final waiting timeout.
-        """
+        """The final waiting timeout."""
         return getattr(self, _Name._wait_timeout, None)
 
     def _timeout_process(
@@ -90,9 +95,7 @@ class Page:
         exc: TimeoutException,
         reraise: bool | None
     ) -> Literal[False]:
-        """
-        Handling a TimeoutException after it occurs.
-        """
+        """Handling a TimeoutException after it occurs."""
         exc.msg = status
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg, stacklevel=2)
@@ -145,9 +148,7 @@ class Page:
         self.driver.download_file(file_name, target_directory)
 
     def delete_downloadable_files(self) -> None:
-        """
-        Deletes all downloadable files.
-        """
+        """Deletes all downloadable files."""
         self.driver.delete_downloadable_files()
 
     @property
@@ -175,16 +176,12 @@ class Page:
 
     @property
     def supports_fedcm(self) -> bool:
-        """
-        Returns whether the browser supports FedCM capabilities.
-        """
+        """Returns whether the browser supports FedCM capabilities."""
         return self.driver.supports_fedcm
 
     @property
     def dialog(self) -> Dialog:
-        """
-        Returns the FedCM dialog object for interaction.
-        """
+        """Returns the FedCM dialog object for interaction."""
         return self.driver.dialog
 
     def fedcm_dialog(
@@ -213,38 +210,26 @@ class Page:
 
     @property
     def mobile(self) -> Mobile:
-        """
-        Return Mobile object.
-        """
+        """Return Mobile object."""
         return self.driver.mobile
 
     @property
     def name(self) -> str:
-        """
-        Returns the name of the underlying browser for this instance.
-        """
+        """Returns the name of the underlying browser for this instance."""
         return self.driver.name
 
     def get(self, url: str) -> None:
-        """
-        Loads a web page in the current browser session.
-        """
+        """Loads a web page in the current browser session."""
         self.driver.get(url)
 
     @property
     def source(self) -> str:
-        """
-        Gets the source of the current page.
-        It is the same as driver.page_source.
-        """
+        """The source of the current page."""
         return self.driver.page_source
 
     @property
     def url(self) -> str:
-        """
-        Gets the URL of the current page.
-        It is the same as driver.current_url.
-        """
+        """The URL of the current page."""
         return self.driver.current_url
 
     def url_is(
@@ -253,9 +238,7 @@ class Page:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> bool:
-        """
-        An expectation for checking the current url.
-        """
+        """An expectation for checking the current url."""
         try:
             return self.wait(timeout).until(ec.url_to_be(url))
         except TimeoutException as exc:
@@ -292,9 +275,7 @@ class Page:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> bool:
-        """
-        An expectation for checking the current url.
-        """
+        """An expectation for checking the current url."""
         try:
             return self.wait(timeout).until(ec.url_matches(pattern))
         except TimeoutException as exc:
@@ -327,9 +308,7 @@ class Page:
 
     @property
     def title(self) -> str:
-        """
-        Returns the title of the current page.
-        """
+        """The title of the current page."""
         return self.driver.title
 
     def title_is(
@@ -338,9 +317,7 @@ class Page:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> bool:
-        """
-        An expectation for checking the title of a page.
-        """
+        """An expectation for checking the title of a page."""
         try:
             return self.wait(timeout).until(ec.title_is(title))
         except TimeoutException as exc:
@@ -372,65 +349,45 @@ class Page:
             return self._timeout_process(status, exc, reraise)
 
     def refresh(self) -> None:
-        """
-        Refreshes the current page.
-        """
+        """Refreshes the current page."""
         self.driver.refresh()
 
     def back(self) -> None:
-        """
-        Goes one step backward in the browser history.
-        """
+        """Goes one step backward in the browser history."""
         self.driver.back()
 
     def forward(self) -> None:
-        """
-        Goes one step forward in the browser history.
-        """
+        """Goes one step forward in the browser history."""
         self.driver.forward()
 
     def close(self) -> None:
-        """
-        Closes the current window.
-        """
+        """Closes the current window."""
         self.driver.close()
 
     def quit(self) -> None:
-        """
-        Quits the driver and closes every associated window.
-        """
+        """Quits the driver and closes every associated window."""
         self.driver.quit()
 
     @property
     def current_window_handle(self) -> str:
-        """
-        Returns the handle of the current window.
-        """
+        """The handle of the current window."""
         return self.driver.current_window_handle
 
     @property
     def window_handles(self) -> list[str]:
-        """
-        Returns the handles of all windows within the current session.
-        """
+        """The handles of all windows within the current session."""
         return self.driver.window_handles
 
     def maximize_window(self) -> None:
-        """
-        Maximizes the current window that webdriver is using.
-        """
+        """Maximizes the current window that webdriver is using."""
         self.driver.maximize_window()
 
     def fullscreen_window(self) -> None:
-        """
-        Invokes the window manager-specific 'full screen' operation.
-        """
+        """Invokes the window manager-specific 'full screen' operation."""
         self.driver.fullscreen_window()
 
     def minimize_window(self) -> None:
-        """
-        Invokes the window manager-specific 'minimize' operation.
-        """
+        """Invokes the window manager-specific 'minimize' operation."""
         self.driver.minimize_window()
 
     def set_window_rect(
@@ -480,14 +437,12 @@ class Page:
         y: int = 0,
         windowHandle: str = 'current'
     ) -> dict:
-        """
-        Sets the x,y position of the current window. (window.moveTo)
-        """
+        """Sets the (x, y) position of the current window. (window.moveTo)"""
         return self.driver.set_window_position(x, y, windowHandle)
 
     def get_window_position(self, windowHandle: str = "current") -> dict:
         """
-        Gets the x, y coordinates of the window.
+        Gets the (x, y) coordinates of the window.
         For example: `{'x': 0, 'y': 0}`.
         """
         return self.driver.get_window_position(windowHandle)
@@ -498,9 +453,7 @@ class Page:
         height: int | None = None,
         windowHandle: str = 'current'
     ) -> None:
-        """
-        Sets the width and height of the current window.
-        """
+        """Sets the width and height of the current window."""
         if width is None and height is None:
             self.driver.maximize_window()
         else:
@@ -526,9 +479,7 @@ class Page:
         }
 
     def get_window_center(self) -> dict[str, int]:
-        """
-        window center: {'x': int, 'y': int}
-        """
+        """window center: {'x': int, 'y': int}"""
         rect = self.driver.get_window_rect()
         return {
             'x': int(rect['x'] + rect['width'] / 2),
@@ -541,9 +492,7 @@ class Page:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> bool:
-        """
-        An expectation for the number of windows to be a certain value.
-        """
+        """An expectation for the number of windows to be a certain value."""
         try:
             return self.wait(timeout).until(ec.number_of_windows_to_be(num_windows))
         except TimeoutException as exc:
@@ -560,9 +509,7 @@ class Page:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> bool:
-        """
-        An expectation for the number of windows to be a certain value.
-        """
+        """An expectation for the number of windows to be a certain value."""
         try:
             return self.wait(timeout).until(ec.new_window_is_opened(current_handles))
         except TimeoutException as exc:
@@ -574,9 +521,7 @@ class Page:
             return self._timeout_process(status, exc, reraise)
 
     def print_page(self, print_options: PrintOptions | None = None) -> str:
-        """
-        Takes PDF of the current page.
-        """
+        """Takes PDF of the current page."""
         return self.driver.print_page(print_options)
 
     def pin_script(self, script: str, script_key: Any | None = None) -> ScriptKey:
@@ -587,23 +532,17 @@ class Page:
         return self.driver.pin_script(script, script_key)
 
     def unpin(self, script_key: ScriptKey) -> None:
-        """
-        Remove a pinned script from storage.
-        """
+        """Remove a pinned script from storage."""
         self.driver.unpin(script_key)
 
     @property
     def pinned_scripts(self) -> dict:
-        """
-        Get pinned scripts as dict from storage.
-        """
+        """Get pinned scripts as dict from storage."""
         return self.driver.pinned_scripts
 
     @property
     def list_pinned_scripts(self) -> list[str]:
-        """
-        Get listed pinned scripts from storage.
-        """
+        """Get listed pinned scripts from storage."""
         return self.driver.get_pinned_scripts()
 
     def execute_script(self, script: str, *args) -> Any:
@@ -617,7 +556,7 @@ class Page:
         Examples:
             ::
 
-                driver.execute_script('return document.title;')
+                page.execute_script('return document.title;')
 
         """
         return self.driver.execute_script(script, *args)
@@ -637,14 +576,14 @@ class Page:
                 "var callback = arguments[arguments.length - 1]; "
                 "window.setTimeout(function(){ callback('timeout') }, 3000);"
             )
-            driver.execute_async_script(script)
+            page.execute_async_script(script)
 
         """
         return self.driver.execute_async_script(script, *args)
 
     def perform(self) -> None:
         """
-        Performs all stored actions.
+        ActionChains API. Performs all stored actions.
         once called, it will execute all stored actions in page.
 
         Examples:
@@ -660,6 +599,7 @@ class Page:
 
     def reset_actions(self) -> None:
         """
+        ActionChains API.
         Clears actions that are already stored in object of Page.
         once called, it will reset all stored actions in page.
 
@@ -675,14 +615,13 @@ class Page:
         self._action.reset_actions()
 
     def click(self) -> Self:
-        """
-        clicks on current mouse position.
-        """
+        """ActionChains API. Clicks on current mouse position."""
         self._action.click()
         return self
 
     def click_and_hold(self) -> Self:
         """
+        ActionChains API. 
         Holds down the left mouse button on current mouse position.
         """
         self._action.click_and_hold()
@@ -690,20 +629,20 @@ class Page:
 
     def context_click(self) -> Self:
         """
+        ActionChains API.
         Performs a context-click (right click) on current mouse position.
         """
         self._action.context_click()
         return self
 
     def double_click(self) -> Self:
-        """
-        Double-clicks on current mouse position.
-        """
+        """ActionChains API. Double-clicks on current mouse position."""
         self._action.double_click()
         return self
 
     def key_down(self, value: str) -> Self:
         """
+        ActionChains API.
         Sends a key press only to a focused element, without releasing it.
         Should only be used with modifier keys (Control, Alt and Shift).
 
@@ -715,6 +654,7 @@ class Page:
 
     def key_up(self, value: str) -> Self:
         """
+        ActionChains API.
         Releases a modifier key on a focused element.
 
         Args:
@@ -725,6 +665,7 @@ class Page:
 
     def move_by_offset(self, xoffset: int, yoffset: int) -> Self:
         """
+        ActionChains API.
         Moving the mouse to an offset from current mouse position.
 
         Args:
@@ -736,6 +677,7 @@ class Page:
 
     def pause(self, seconds: int | float) -> Self:
         """
+        ActionChains API.
         Pause all inputs for the specified duration in seconds.
         """
         self._action.pause(seconds)
@@ -743,6 +685,7 @@ class Page:
 
     def release(self) -> Self:
         """
+        ActionChains API.
         Releasing a held mouse button on current mouse position.
         """
         self._action.release()
@@ -750,6 +693,7 @@ class Page:
 
     def send_keys(self, *keys_to_send: str) -> Self:
         """
+        ActionChains API.
         Sends keys to current focused element.
         """
         self._action.send_keys(*keys_to_send)
@@ -757,6 +701,7 @@ class Page:
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
         """
+        ActionChains API.
         Scrolls by provided amounts with the origin
         in the top left corner of the viewport.
 
@@ -777,7 +722,7 @@ class Page:
         delta_y: int = 0,
     ) -> Self:
         """
-        Selenium ActionChains API.
+        ActionChains API.
         Scrolls by provided amount based on a provided origin.
         The scroll origin is the upper left of the viewport plus any offsets.
 
@@ -965,7 +910,8 @@ class Page:
         times: int = 1
     ) -> Self:
         """
-        Flick from one point to another, allowing customization of the offset and border settings.
+        Flick from one point to another, 
+        allowing customization of the offset and border settings.
 
         Args:
             offset: Please refer to the Examples.
@@ -1157,9 +1103,7 @@ class Page:
         actions.perform()
 
     def switch_to_active_element(self) -> WebElement:
-        """
-        Returns the element with focus, or BODY if nothing has focus.
-        """
+        """Returns the element with focus, or BODY if nothing has focus."""
         return self.driver.switch_to.active_element
 
     def switch_to_alert(
@@ -1167,9 +1111,7 @@ class Page:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> Alert | Literal[False]:
-        """
-        Switch to alert.
-        """
+        """Switch to alert."""
         try:
             return self.wait(timeout).until(ec.alert_is_present())
         except TimeoutException as exc:
@@ -1177,9 +1119,7 @@ class Page:
             return self._timeout_process(status, exc, reraise)
 
     def switch_to_default_content(self) -> None:
-        """
-        Switch focus to the default frame.
-        """
+        """Switch focus to the default frame."""
         self.driver.switch_to.default_content()
 
     def switch_to_new_window(self, type_hint: str | None) -> None:
@@ -1230,15 +1170,11 @@ class Page:
 
     @property
     def contexts(self) -> Any | list[str]:
-        """
-        Appium API. Get current all contexts.
-        """
+        """Appium API. Get current all contexts."""
         return self.driver.contexts  # type: ignore[attr-defined]
 
     def switch_to_context(self, context) -> Self:
-        """
-        Appium API. Switch to NATIVE_APP or WEBVIEW.
-        """
+        """Appium API. Switch to NATIVE_APP or WEBVIEW."""
         self.driver.switch_to.context(context)  # type: ignore[attr-defined]
         return self
 
@@ -1273,10 +1209,8 @@ class Page:
 
     def switch_to_app(self) -> Any | str:
         """
-        Appium API
-        Switch to native app.
-
-        Return: current context after judging whether to switch.
+        Appium API. Switch to native app.
+        Return the current context after judging whether to switch.
         """
         if self.driver.current_context != 'NATIVE_APP':  # type: ignore[attr-defined]
             self.driver.switch_to.context('NATIVE_APP')  # type: ignore[attr-defined]
@@ -1407,9 +1341,7 @@ class Page:
             self.driver.add_cookie(cookie)
 
     def delete_cookie(self, name) -> None:
-        """
-        Deletes a single cookie with the given name.
-        """
+        """Deletes a single cookie with the given name."""
         self.driver.delete_cookie(name)
 
     def delete_all_cookies(self) -> None:
@@ -1425,40 +1357,26 @@ class Page:
         self.driver.delete_all_cookies()
 
     def switch_to_flutter(self) -> Self:
-        """
-        appium API.
-        Switch to flutter app.
-        """
+        """Appium API. Switch to flutter app."""
         if self.driver.current_context != "FLUTTER":  # type: ignore[attr-defined]
             self.driver.switch_to.context('FLUTTER')  # type: ignore[attr-defined]
         return self
 
     def accept_alert(self) -> None:
-        """
-        selenium API.
-        Accept an alert.
-        """
+        """Accept an alert."""
         self.driver.switch_to.alert.accept()
 
     def dismiss_alert(self) -> None:
-        """
-        selenium API.
-        Dismisses an alert.
-        """
+        """Dismisses an alert."""
         self.driver.switch_to.alert.dismiss()
 
     @property
     def alert_text(self) -> str:
-        """
-        selenium API
-        Gets the text of the Alert.
-        """
+        """Gets the text of the Alert."""
         return self.driver.switch_to.alert.text
 
     def implicitly_wait(self, timeout: int | float = 30) -> None:
-        """
-        implicitly wait.
-        """
+        """implicitly wait"""
         self.driver.implicitly_wait(timeout)
 
     def set_script_timeout(self, time_to_wait: int | float) -> None:

@@ -10,18 +10,17 @@ from appium.webdriver.common.appiumby import AppiumBy
 
 
 class By(AppiumBy):
-    """
-    Including all Selenium `By` and Appium `AppiumBy` methods.
-    """
+    """All Selenium `By` and Appium `AppiumBy` methods."""
     pass
 
 
 class ByAttribute:
     """
-    This is mainly used for internal validation of `By`.
-    You can also use this class attribute to check which valid `By`
-    attributes are available in your current selenium and appium version.
+    Mainly used for internal validation of `By`.  
+    It can also be used to check the available `By` attributes  
+    in your current Selenium and Appium version.
     """
+    
     NAMES = [attr for attr in dir(By) if not attr.startswith('__')]
     """A list of all `By` attribute names as strings."""
 

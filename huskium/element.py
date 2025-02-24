@@ -27,7 +27,7 @@ from .config import Log, Cache, Timeout, Offset, Area
 from .logging import PageElementLoggerAdapter
 from .page import Page
 from .exception import NoSuchCacheException
-from .types import SeleniumWebElement, WebDriver, WebElement, Coordinate
+from .types import WebDriver, WebElement, Coordinate
 from .shared import ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name
 
 
@@ -75,9 +75,7 @@ class Element:
         self._set_data(by, value, index, timeout, remark, cache)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
-        """
-        Make "Element" a descriptor of "Page".
-        """
+        """Make "Element" a descriptor of "Page"."""
         if not isinstance(instance, Page):
             raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
         # If the stored _page differs from the current value,
@@ -94,9 +92,7 @@ class Element:
         return self
 
     def __set__(self, instance: Page, value: Element) -> None:
-        """
-        Set dynamic element by `self.element = Element(...)` pattern.
-        """
+        """Set dynamic element by `self.element = Element(...)` pattern."""
         if not isinstance(value, Element):
             raise TypeError('Only "Element" objects are allowed to be assigned.')
         # Avoid using __init__() here, as it may reset the descriptor.
@@ -155,9 +151,7 @@ class Element:
         return self
 
     def _verify_data(self, by, value, index, timeout, remark, cache) -> None:
-        """
-        Verify basic attributes.
-        """
+        """Verify basic attributes."""
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The "by" strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
@@ -172,21 +166,17 @@ class Element:
             raise TypeError(f'The "cache" type must be "bool", not "{type(cache).__name__}".')
 
     def _set_data(self, by, value, index, timeout, remark, cache) -> None:
-        """
-        Set basic attributes.
-        """
+        """Set basic attributes."""
         self._by = by
         self._value = value
         self._index = index
         self._timeout = timeout
         self._remark = remark
         self._cache = cache
-        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
+        self._logger = PageElementLoggerAdapter(LOGGER, self)
 
     def _if_clear_caches(self, logtag: str = '[CLEAR]') -> None:
-        """
-        If cache is True, clear all caches.
-        """
+        """If cache is True, clear all caches."""
         if self.cache:
             for cache_name in _Name._caches:
                 if cache := vars(self).pop(cache_name, None):
@@ -206,30 +196,29 @@ class Element:
 
     @property
     def by(self) -> str | None:
+        """by"""
         return self._by
 
     @property
     def value(self) -> str | None:
+        """value"""
         return self._value
 
     @property
     def locator(self) -> tuple[str, str]:
-        """
-        (by, value)
-        """
+        """(by, value)"""
         if self._by and self._value:
             return (self._by, self._value)
         raise ValueError('"by" and "value" cannot be None when performing element operations.')
 
     @property
     def index(self) -> int | None:
+        """index"""
         return self._index
 
     @property
     def timeout(self) -> int | float:
-        """
-        If initial timeout is `None`, return `Timeout.DEFAULT`.
-        """
+        """If initial timeout is `None`, return `Timeout.DEFAULT`."""
         return Timeout.DEFAULT if self._timeout is None else self._timeout
 
     @property
@@ -242,26 +231,23 @@ class Element:
 
     @property
     def cache(self) -> bool:
-        """
-        If initial cache is `None`, return `Cache.ELEMENT`.
-        """
+        """If initial cache is `None`, return `Cache.ELEMENT`."""
         return Cache.ELEMENT if self._cache is None else self._cache
 
     @property
     def driver(self) -> WebDriver:
+        """The driver object from page."""
         return self._driver
 
     @property
     def action(self) -> ActionChains:
-        """
-        Get ActionChains object from Page-related instance.
-        """
+        """The ActionChains object from page."""
         return self._page._action
 
     def find_element(self) -> WebElement:
         """
-        Using the traditional `find_element()` or
-        `find_elements()[index]` (if there is index) to locate element.
+        Using the traditional `find_element()` or `find_elements()[index]` 
+        to locate element.
         It is recommended for use in situations where no waiting is required,
         such as the Android UiScrollable locator method.
         """
@@ -275,14 +261,12 @@ class Element:
         ignored_exceptions: WaitExcTypes | None = None
     ) -> WebDriverWait:
         """
-        Get an object of WebDriverWait.
+        Get a WebDriverWait object.
 
         Args:
-            timeout: The maximum time in seconds to wait for the
-                expected condition.
+            timeout: Maximum wait time in seconds.
                 If `None`, it initializes with the element timeout.
-            ignored_exceptions: iterable structure of exception classes
-                ignored during calls.
+            ignored_exceptions: Iterable ignored exception classes.
                 If `None`, it contains `NoSuchElementException` only.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
@@ -295,8 +279,8 @@ class Element:
     @property
     def wait_timeout(self) -> int | float | None:
         """
-        Get the final waiting timeout of the element.
-        If no element action has been executed yet, it will return None.
+        The final waiting timeout of the element.
+        If no any element action has been executed yet, it will return None.
         """
         return getattr(self, _Name._wait_timeout, None)
 
@@ -307,14 +291,12 @@ class Element:
         reraise: bool | None,
         present: bool = True
     ) -> Literal[False]:
-        """
-        Handling a TimeoutException after it occurs.
-        """
+        """Handling a TimeoutException after it occurs."""
         if not present:
             status += ' or absent'
         exc.msg = f'Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".'
         if isinstance(exc.__context__, NoSuchCacheException):
-            exc.__context__ = None
+            exc.__context__ = None  # Suppress unnecessary internal exceptions.
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg, stacklevel=2)
             raise exc
@@ -586,7 +568,7 @@ class Element:
                     self._present_cache = element_or_true
                     self._logger.debug(f'Locator -> PresentC -> Unclickable(P={present}) = {self._present_cache}')
                 else:
-                    self._logger.debug(f'locator -> Unclickable(P={present}) = {element_or_true}')
+                    self._logger.debug(f'Locator -> Unclickable(P={present}) = {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
@@ -687,23 +669,17 @@ class Element:
 
     @property
     def present(self) -> WebElement:
-        """
-        The same as `element.wait_present(reraise=True)`.
-        """
+        """ The same as `element.wait_present(reraise=True)`."""
         return cast(WebElement, self.wait_present(reraise=True))
 
     @property
     def visible(self) -> WebElement:
-        """
-        The same as element.wait_visible(reraise=True).
-        """
+        """The same as element.wait_visible(reraise=True)."""
         return cast(WebElement, self.wait_visible(reraise=True))
 
     @property
     def clickable(self) -> WebElement:
-        """
-        The same as element.wait_clickable(reraise=True).
-        """
+        """The same as element.wait_clickable(reraise=True)."""
         return cast(WebElement, self.wait_clickable(reraise=True))
 
     @property
@@ -747,44 +723,34 @@ class Element:
             ::
 
                 try:
-                    self.clickable_try.text
+                    self.clickable_try.click()
                 except ELEMENT_REFERENCE_EXCEPTIONS:
-                    self.clickable.text
+                    self.clickable.click()
 
         """
         return self._cache_try(_Name._clickable_cache)
 
     @property
     def present_cache(self) -> WebElement | None:
-        """
-        Retrieves the stored present element, `None` otherwise.
-        """
+        """Retrieves the stored present element, `None` otherwise."""
         return getattr(self, _Name._present_cache, None)
 
     @property
     def visible_cache(self) -> WebElement | None:
-        """
-        Retrieves the stored visible element, `None` otherwise.
-        """
+        """Retrieves the stored visible element, `None` otherwise."""
         return getattr(self, _Name._visible_cache, None)
 
     @property
     def clickable_cache(self) -> WebElement | None:
-        """
-        Retrieves the stored clickable element, `None` otherwise.
-        """
+        """Retrieves the stored clickable element, `None` otherwise."""
         return getattr(self, _Name._clickable_cache, None)
 
     def is_present(self, timeout: int | float | None = None) -> bool:
-        """
-        Whether the element is present within the timeout.
-        """
+        """Whether the element is present within the timeout."""
         return True if self.wait_present(timeout, False) else False
 
     def is_visible(self) -> bool:
-        """
-        Whether the element is visible (displayed).
-        """
+        """Whether the element is visible (displayed)."""
         try:
             result = self.present_try.is_displayed()
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -796,9 +762,7 @@ class Element:
         return result
 
     def is_enabled(self) -> bool:
-        """
-        Whether the element is enabled.
-        """
+        """Whether the element is enabled."""
         try:
             result = self.present_try.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -807,9 +771,7 @@ class Element:
         return result
 
     def is_clickable(self) -> bool:
-        """
-        Whether the element is clickable (displayed and enabled).
-        """
+        """Whether the element is clickable (displayed and enabled)."""
         try:
             cache = self.present_try
             result = cache.is_displayed() and cache.is_enabled()
@@ -823,9 +785,7 @@ class Element:
         return result
 
     def is_selected(self) -> bool:
-        """
-        Whether the element is selected.
-        """
+        """Whether the element is selected."""
         try:
             result = self.present_try.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -849,9 +809,7 @@ class Element:
 
     @property
     def text(self) -> str:
-        """
-        The text of the element when it is present.
-        """
+        """The text of the element when it is present."""
         try:
             return self.present_try.text
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -859,9 +817,7 @@ class Element:
 
     @property
     def visible_text(self) -> str:
-        """
-        The text of the element when it is visible.
-        """
+        """The text of the element when it is visible."""
         try:
             return self.visible_try.text
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -870,7 +826,7 @@ class Element:
     @property
     def rect(self) -> dict:
         """
-        A dictionary with the size and location of the element.
+        The location and size of the element.
         For example: `{'x': 10, 'y': 15, 'width': 100, 'height': 200}`.
         """
         try:
@@ -945,9 +901,7 @@ class Element:
         }
 
     def click(self) -> None:
-        """
-        Click the element when it is clickable.
-        """
+        """Click the element when it is clickable."""
         try:
             self.clickable_try.click()
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -955,8 +909,8 @@ class Element:
 
     def delayed_click(self, sleep: int | float = 0.5) -> None:
         """
-        Delays for a specified time (sleep) in seconds
-        after the element becomes clickable, then clicks.
+        Clicks the element after it becomes clickable,  
+        with a specified delay (sleep) in seconds.
         """
         try:
             cache = self.clickable_try
@@ -982,11 +936,13 @@ class Element:
     @property
     def location_once_scrolled_into_view(self) -> dict:
         """
-        THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where
-        on the screen an element is that we can click it.
-        This method should cause the element to be scrolled into view.
-        Returns the top lefthand corner location on the screen,
-        or zero coordinates if the element is not visible.
+        THIS PROPERTY MAY CHANGE WITHOUT WARNING. 
+
+        Use this to determine the on-screen location of an element  
+        that can be clicked, and it scrolls the element into view if necessary.
+
+        Returns the top-left corner coordinates on the screen,  
+        or `(0, 0)` if the element is not visible.
         """
         try:
             return self.present_try.location_once_scrolled_into_view
@@ -995,9 +951,7 @@ class Element:
 
     @property
     def aria_role(self) -> str:
-        """
-        Returns the ARIA role of the current web element.
-        """
+        """The ARIA role of the current web element."""
         try:
             return self.present_try.aria_role
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -1005,9 +959,7 @@ class Element:
 
     @property
     def accessible_name(self) -> str:
-        """
-        Returns the ARIA Level of the current web element.
-        """
+        """The ARIA Level of the current web element."""
         try:
             return self.present_try.accessible_name
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -1031,8 +983,7 @@ class Element:
         pause: float | None = None
     ) -> Self:
         """
-        Appium API.
-        Drag the origin element to the destination element.
+        Appium API. Drag the origin element to the destination element.
 
         Args:
             target: The element to drag to.
@@ -1047,8 +998,7 @@ class Element:
 
     def app_scroll(self, target: Element, duration: int | None = None) -> Self:
         """
-        Appium API.
-        Scrolls from one element to another
+        Appium API. Scrolls from one element to another.
 
         Args:
             target: The element to scroll to (center of element).
@@ -1480,9 +1430,7 @@ class Element:
             return self.present.get_property(name)
 
     def submit(self) -> None:
-        """
-        Submits a form.
-        """
+        """Submits a form."""
         try:
             self.present_try.submit()
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -1490,9 +1438,7 @@ class Element:
 
     @property
     def tag_name(self) -> str:
-        """
-        This element's tagName property.
-        """
+        """The tagName property."""
         try:
             return self.present_try.tag_name
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -1501,6 +1447,12 @@ class Element:
     def value_of_css_property(self, property_name: Any) -> str:
         """
         The value of a CSS property.
+
+        Examples:
+            ::
+
+                page.element.value_of_css_property('color')
+
         """
         try:
             return self.present_try.value_of_css_property(property_name)
@@ -1510,6 +1462,12 @@ class Element:
     def visible_value_of_css_property(self, property_name: Any) -> str:
         """
         The visible value of a CSS property.
+
+        Examples:
+            ::
+            
+                page.element.visible_value_of_css_property('color')
+
         """
         try:
             return self.visible_try.value_of_css_property(property_name)
@@ -1521,10 +1479,7 @@ class Element:
         timeout: int | float | None = None,
         reraise: bool | None = None
     ) -> bool:
-        """
-        If the frame is available
-        it switches the given driver to the specified frame.
-        """
+        """Switch to the frame if is available."""
         try:
             return self.wait(timeout).until(
                 ec.frame_to_be_available_and_switch_to_it(self.locator),
@@ -1774,8 +1729,7 @@ class Element:
         ActionChains API.
         Sends a key press only, without releasing it.
         Should only be used with modifier keys (Control, Alt and Shift).
-        If you want to perform a hotkey process,
-        it is recommended to use hotkey() instead.
+        If you want to perform a hotkey process, use hotkey() instead.
 
         Args:
             value: The modifier key to send. Values are defined in Keys class.
@@ -1803,8 +1757,7 @@ class Element:
         ActionChains API.
         Releases a modifier key.
         Should only be used with modifier keys (Control, Alt and Shift).
-        If you want to perform a hotkey process,
-        it is recommended to use hotkey() instead.
+        If you want to perform a hotkey process, use hotkey() instead.
 
         Args:
             value: The modifier key to send. Values are defined in Keys class.
@@ -1884,8 +1837,7 @@ class Element:
 
     def move_to_element(self) -> Self:
         """
-        ActionChains API.
-        Moving the mouse to the middle of an element.
+        ActionChains API. Moving the mouse to the middle of an element.
 
         Examples:
             ::
@@ -2052,9 +2004,7 @@ class Element:
 
     @property
     def select(self) -> Select:
-        """
-        Get the Select object by present element.
-        """
+        """The Select object by present element."""
         try:
             select = Select(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -2084,13 +2034,11 @@ class Element:
 
     @property
     def select_cache(self) -> Select | None:
-        """
-        Get the Select cache.
-        """
+        """The Select object if exists."""
         return getattr(self, _Name._select_cache, None)
 
     @property
-    def options(self) -> list[SeleniumWebElement]:
+    def options(self) -> list[WebElement]:
         """
         Select API.
         Returns a list of all options belonging to this select tag.
@@ -2101,7 +2049,7 @@ class Element:
             return self.select.options
 
     @property
-    def all_selected_options(self) -> list[SeleniumWebElement]:
+    def all_selected_options(self) -> list[WebElement]:
         """
         Select API.
         Returns a list of all selected options belonging to this select tag.
@@ -2112,7 +2060,7 @@ class Element:
             return self.select.all_selected_options
 
     @property
-    def first_selected_option(self) -> SeleniumWebElement:
+    def first_selected_option(self) -> WebElement:
         """
         Select API.
         The first selected option in this select tag,
@@ -2249,6 +2197,7 @@ class Element:
 
         Args:
             text: The text to input.
+            times: The number of times to repeat entering the text.
 
         Examples:
             ::

@@ -14,7 +14,7 @@ from . import Element, Elements
 def dynamic(func):
     """
     Dynamic element decorator for page objects.
-    Applies to any dynamic elements that return an Element or Elements.
+    Applies to any dynamic elements that return an `Element` or `Elements`.
 
     Examples:
         ::

@@ -5,13 +5,13 @@
 
 
 """
-Everything You Need to Know About Expected Conditions Extension (ECEX)
+Expected Conditions Extension (ECEX)
 
 Overview:
-    ECEX extends all methods related to element states.
+    ECEX extends official `expected_conditions (EC)` module.
 
 Locator Handling:
-    The `locator` follows the same structure as EC.
+    The `locator` follows the same structure as `EC`.
 
 Index Feature:
     The `index` allows using the `find_elements(*locator)[index]` pattern.
@@ -55,7 +55,7 @@ def _find_elements_by(
 ) -> list[WebElement]:
     """
     Internal `find_elements` using the `NoSuchElementException` pattern.
-    If the returned elements list is `[]`, raise `NoSuchElementException`.
+    If the returned elements is `[]`, raise `NoSuchElementException`.
     """
     elements = driver.find_elements(*locator)
     if elements == []:
@@ -93,7 +93,7 @@ def presence_of_all_elements_located(
     locator: tuple[str, str]
 ) -> Callable[[WebDriver], list[WebElement]]:
     """
-    Checks whether at least one element can be found by locator.
+    Checks whether at least one element can be found using the locator.
 
     Args:
         locator: `(by, value)`.
@@ -221,12 +221,11 @@ def visibility_of_any_elements_located(
 
     Returns:
         list[WebElement]:
-            The list of `WebElement`.
-            If at least one element is visible; otherwise,
-            the empty list `[]` if all elements are invisible.
+            The list of `WebElement` if at least one element is visible; 
+            otherwise, the empty list `[]` if all elements are invisible.
 
     Raises:
-        NoSuchElementException: Raised if all elements cannot be found.
+        NoSuchElementException: Raised if any elements cannot be found.
             Ignored by default in `WebDriverWait`.
         StaleElementReferenceException: Raised if any found element is stale.
             Optionally Ignored in `WebDriverWait`.
@@ -252,13 +251,12 @@ def visibility_of_all_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]:
-            The list of `WebElement`.
-            If all elements are visible; otherwise,
-            the empty list `[]` if at least one element is invisible.
+        (list[WebElement] | False):
+            The list of `WebElement` if all elements are visible; 
+            otherwise, `False` if at least one element is invisible.
 
     Raises:
-        NoSuchElementException: Raised if all elements cannot be found.
+        NoSuchElementException: Raised if any element cannot be found.
             Ignored by default in `WebDriverWait`.
         StaleElementReferenceException: Raised if any found element is stale.
             Optionally Ignored in `WebDriverWait`.
@@ -299,7 +297,8 @@ def invisibility_of_element_located(
         NoSuchElementException: Raised if the element is
             absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is stale.
+        StaleElementReferenceException: Raised if the found element is 
+            stale and `present` is `True`.
             Optionally Ignored in `WebDriverWait`.
     """
 
@@ -430,7 +429,8 @@ def element_located_to_be_unclickable(
         NoSuchElementException: Raised if the element is
             absent and `present` is `True`.
             Ignored by default in `WebDriverWait`.
-        StaleElementReferenceException: Raised if the found element is stale.
+        StaleElementReferenceException: Raised if the found element is 
+            stale and `present` is `True`.
             Optionally Ignored in `WebDriverWait`.
     """
 

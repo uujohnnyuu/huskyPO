@@ -12,14 +12,7 @@ import os
 # Filter
 class PrefixFilter(logging.Filter):
     """
-    A prefix filter for logging.
     Displays logs of frame whose names start with the target prefix.
-
-    Attributes:
-        prefix: The frame prefix.
-        lower: `True` for case-insensitive; `False` for case-sensitive.
-        funcframe: `True` to filter function frames;
-            `False` to filter file (module) frames.
 
     Examples:
         ::
@@ -27,11 +20,11 @@ class PrefixFilter(logging.Filter):
             import logging
             from huskium import PrefixFilter
 
-            # Create a filter object with prefix = 'test'
+            # Create a filter object with prefix = 'test'.
             filter = PrefixFilter('test')
 
-            # Set up logging
-            logging.addFilter(filter)
+            # Set up logging with filter.
+            logging.getLogger().addFilter(filter)
 
             # All logging will follow the filter logic,
             # recording logs from frames with the prefix 'test'.
@@ -63,11 +56,15 @@ class PrefixFilter(logging.Filter):
 
 class FuncPrefixFilter(logging.Filter):
     """
-    A function prefix filter for logging.
     Displays logs of function frame whose names start with the target prefix.
     """
 
     def __init__(self, prefix: str | None = None, lower: bool = True):
+        """
+        Args:
+            prefix: The frame prefix.
+            lower: `True` for case-insensitive; `False` for case-sensitive.
+        """
         super().__init__()
         self.prefix = prefix
         self.lower = lower
@@ -92,11 +89,15 @@ class FuncPrefixFilter(logging.Filter):
 
 class FilePrefixFilter(logging.Filter):
     """
-    A file (module) prefix filter for logging.
     Displays logs of file frame whose names start with the target prefix.
     """
 
     def __init__(self, prefix: str | None = None, lower: bool = True):
+        """
+        Args:
+            prefix: The frame prefix.
+            lower: `True` for case-insensitive; `False` for case-sensitive.
+        """
         super().__init__()
         self.prefix = prefix
         self.lower = lower
@@ -121,9 +122,21 @@ class FilePrefixFilter(logging.Filter):
 
 # Adapter
 class PageElementLoggerAdapter(logging.LoggerAdapter):
+    """Mainly used in internal `Page` and `Element(s)` debug log adapter."""
 
-    def __init__(self, logger, petype, remark):
-        super().__init__(logger, {"petype": petype, "remark": remark})
+    def __init__(self, logger, instance):
+        """
+        Args:
+            logger: The module logger object.
+            instance: The class instance in the module.
+        """
+        super().__init__(
+            logger, 
+            {
+                "petype": type(instance).__name__, 
+                "remark": getattr(instance, 'remark', 'remark')
+            }
+        )
 
     def process(self, msg, kwargs):
         return f'{self.extra["petype"]}({self.extra["remark"]}): {msg}', kwargs

@@ -63,9 +63,7 @@ class Elements:
         self._set_data(by, value, timeout, remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
-        """
-        Make "Elements" a descriptor of "Page".
-        """
+        """Make "Elements" a descriptor of "Page"."""
         if not isinstance(instance, Page):
             raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
         if getattr(self, _Name._page, None) != instance:
@@ -77,9 +75,7 @@ class Elements:
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
-        """
-        Set dynamic element by `self.elements = Elements(...)` pattern.
-        """
+        """Set dynamic element by `self.elements = Elements(...)` pattern."""
         if not isinstance(value, Elements):
             raise TypeError('Only "Elements" objects are allowed to be assigned.')
         # Avoid using __init__() here, as it may reset the descriptor.
@@ -132,9 +128,7 @@ class Elements:
         return self
 
     def _verify_data(self, by, value, timeout, remark) -> None:
-        """
-        Verify basic attributes.
-        """
+        """Verify basic attributes."""
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The "by" strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
@@ -145,56 +139,50 @@ class Elements:
             raise TypeError(f'The "remark" type must be "str", not "{type(remark).__name__}".')
 
     def _set_data(self, by, value, timeout, remark) -> None:
-        """
-        Set basic attributes.
-        """
+        """Set basic attributes."""
         self._by = by
         self._value = value
         self._timeout = timeout
         self._remark = remark
-        self._logger = PageElementLoggerAdapter(LOGGER, type(self).__name__, self.remark)
+        self._logger = PageElementLoggerAdapter(LOGGER, self)
 
     @property
     def by(self) -> str | None:
+        """by"""
         return self._by
 
     @property
     def value(self) -> str | None:
+        """value"""
         return self._value
 
     @property
     def locator(self) -> tuple[str, str]:
-        """
-        (by, value)
-        """
+        """(by, value)"""
         if self._by and self._value:
             return (self._by, self._value)
         raise ValueError('"by" and "value" cannot be None when performing element operations.')
 
     @property
     def timeout(self) -> int | float:
-        """
-        If initial timeout is None, return `Timeout.DEFAULT`.
-        """
+        """If initial timeout is None, return `Timeout.DEFAULT`."""
         return Timeout.DEFAULT if self._timeout is None else self._timeout
 
     @property
     def remark(self) -> str:
-        """
-        If initial remark is None, return (by="{by}", value="{value}").
-        """
+        """If initial remark is None, return (by="{by}", value="{value}")."""
         return self._remark or f'(by="{self._by}", value="{self._value}")'
 
     @property
     def driver(self) -> WebDriver:
+        """The driver object from page."""
         return self._driver
 
     def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:
         """
         Using the traditional `find_elements()` or
         `find_elements()[index]` (if there is index) to locate elements.
-        Note that if there are no any element found,
-        it will return empty list `[]`.
+        If there are no any element found, it will return empty list `[]`.
         """
         if isinstance(index, int):
             return self.driver.find_elements(*self.locator)[index]
@@ -238,14 +226,12 @@ class Elements:
         ignored_exceptions: WaitExcTypes | None = None
     ) -> WebDriverWait:
         """
-        Get an object of WebDriverWait.
+        Get a WebDriverWait object.
 
         Args:
-            timeout: The maximum time in seconds to wait for the
-                expected condition.
-                If `None`, it initializes with the element timeout.
-            ignored_exceptions: iterable structure of exception classes
-                ignored during calls.
+            timeout: Maximum wait time in seconds.
+                If `None`, it initializes with the elements timeout.
+            ignored_exceptions: Iterable ignored exception classes.
                 If `None`, it contains `NoSuchElementException` only.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
@@ -258,8 +244,8 @@ class Elements:
     @property
     def wait_timeout(self) -> int | float | None:
         """
-        Get the final waiting timeout of the element.
-        If no element action has been executed yet, it will return None.
+        The final waiting timeout of the element.
+        If no any element action has been executed yet, it will return None.
         """
         return getattr(self, _Name._wait_timeout, None)
 
@@ -269,9 +255,7 @@ class Elements:
         exc: TimeoutException,
         reraise: bool | None
     ) -> Literal[False]:
-        """
-        Handling a TimeoutException after it occurs.
-        """
+        """Handling a TimeoutException after it occurs."""
         exc.msg = f'Timed out waiting {self._wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
         if Timeout.reraise(reraise):
             self._logger.exception(exc.msg, stacklevel=2)
@@ -423,23 +407,17 @@ class Elements:
 
     @property
     def all_present(self) -> list[WebElement]:
-        """
-        The same as `elements.wait_all_present(reraise=True)`.
-        """
+        """The same as `elements.wait_all_present(reraise=True)`."""
         return cast(list[WebElement], self.wait_all_present(reraise=True))
 
     @property
     def all_visible(self) -> list[WebElement]:
-        """
-        The same as `elements.wait_all_visible(reraise=True)`.
-        """
+        """The same as `elements.wait_all_visible(reraise=True)`."""
         return cast(list[WebElement], self.wait_all_visible(reraise=True))
 
     @property
     def any_visible(self) -> list[WebElement]:
-        """
-        The same as elements.wait_any_visible(reraise=True).
-        """
+        """The same as elements.wait_any_visible(reraise=True)."""
         return cast(list[WebElement], self.wait_any_visible(reraise=True))
 
     def are_all_present(self, timeout: int | float | None = None) -> bool:
@@ -459,9 +437,6 @@ class Elements:
         """
         Whether all elements are visible.
 
-        Args:
-            timeout: Maximum wait time in seconds.
-
         Returns:
             bool:
                 `True` if all are visible within the timeout, `False` otherwise.
@@ -478,9 +453,6 @@ class Elements:
         """
         Whether at least one element is visible.
 
-        Args:
-            timeout: Maximum wait time in seconds.
-
         Returns:
             bool:
                 `True` if at least one is visible within the timeout,
@@ -496,9 +468,7 @@ class Elements:
 
     @property
     def quantity(self) -> int:
-        """
-        Get the quantity of all present elements.
-        """
+        """The quantity of all present elements."""
         try:
             return len(self.all_present)
         except TimeoutException:
@@ -506,30 +476,22 @@ class Elements:
 
     @property
     def texts(self) -> list[str]:
-        """
-        Gets texts of all present elements.
-        """
+        """The texts of all present elements."""
         return [element.text for element in self.all_present]
 
     @property
     def all_visible_texts(self) -> list[str]:
-        """
-        Gets texts of all elements until they are visible.
-        """
+        """The texts of all elements until they are visible."""
         return [element.text for element in self.all_visible]
 
     @property
     def any_visible_texts(self) -> list[str]:
-        """
-        Gets texts of the elements if at least one is visible.
-        """
+        """The texts of the elements if at least one is visible."""
         return [element.text for element in self.any_visible]
 
     @property
     def rects(self) -> list[dict[str, int]]:
-        """
-        Gets locations relative to the view and size of all present elements.
-        """
+        """The rects of all present elements."""
         return [
             {
                 'x': rect['x'],
@@ -543,16 +505,12 @@ class Elements:
 
     @property
     def locations(self) -> list[dict[str, int]]:
-        """
-        Gets locations of all present elements.
-        """
+        """The locations of all present elements."""
         return [element.location for element in self.all_present]
 
     @property
     def sizes(self) -> list[dict]:
-        """
-        Gets sizes of all present elements.
-        """
+        """The sizes of all present elements."""
         return [
             {
                 'width': size['width'],
@@ -564,10 +522,7 @@ class Elements:
 
     @property
     def centers(self) -> list[dict]:
-        """
-        Selenium and Appium API.
-        Gets center locations relative to the view of all present elements.
-        """
+        """The center locations of all present elements."""
         return [
             {
                 'x': int(rect['x'] + rect['width'] / 2),
@@ -595,22 +550,18 @@ class Elements:
         return [element.get_dom_attribute(name) for element in self.all_present]
 
     def get_attributes(self, name: str) -> list[str | dict | None]:
-        """
-        Gets specific attributes or properties of all present elements.
-        """
+        """The specific attributes or properties of all present elements."""
         return [element.get_attribute(name) for element in self.all_present]
 
     def get_properties(self, name: str) -> list[WebElement | bool | dict | str]:
-        """
-        Gets specific properties of all present elements.
-        """
+        """The specific properties of all present elements."""
         return [element.get_property(name) for element in self.all_present]
 
     @property
     def locations_in_view(self) -> list[dict[str, int]]:
         """
         Appium API.
-        Gets locations relative to the view of all present elements.
+        The locations relative to the view of all present elements.
         """
         return [element.location_in_view for element in self.all_present]  # type: ignore[union-attr]
 
@@ -625,14 +576,10 @@ class Elements:
 
     @property
     def aria_roles(self) -> list[str]:
-        """
-        Returns the ARIA roles of the current web elements.
-        """
+        """The ARIA roles of the current web elements."""
         return [element.aria_role for element in self.all_present]
 
     @property
     def accessible_names(self) -> list[str]:
-        """
-        Returns the ARIA Levels of the current webelement.
-        """
+        """The ARIA Levels of the current webelement."""
         return [element.accessible_name for element in self.all_present]
