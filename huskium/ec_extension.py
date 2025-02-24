@@ -75,7 +75,7 @@ def presence_of_element_located(
         index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        WebElement: 
+        WebElement:
             The `WebElement` if found.
 
     Raises:
@@ -99,8 +99,8 @@ def presence_of_all_elements_located(
         locator: `(by, value)`.
 
     Returns:
-        list[WebElement]: 
-            The list of `WebElement` if found, 
+        list[WebElement]:
+            The list of `WebElement` if found,
             or the empty list `[]` if not found.
     """
 
@@ -122,7 +122,7 @@ def absence_of_element_located(
         index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        bool: 
+        bool:
             `True` if the element **CANNOT be found**, `False` otherwise.
     """
 
@@ -146,7 +146,7 @@ def absence_of_all_elements_located(
         locator: `(by, value)`
 
     Returns:
-        bool: 
+        bool:
             `True` if all elements **CANNOT be found**, `False` otherwise.
     """
 
@@ -168,7 +168,7 @@ def visibility_of_element_located(
         index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             `WebElement` if the found element is visible, `False` otherwise.
 
     Raises:
@@ -195,7 +195,7 @@ def visibility_of_element(
         element: The present element.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             `WebElement` if the present element is visible, `False` otherwise.
 
     Raises:
@@ -220,7 +220,7 @@ def visibility_of_any_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]: 
+        list[WebElement]:
             The list of `WebElement`.
             If at least one element is visible; otherwise,
             the empty list `[]` if all elements are invisible.
@@ -252,7 +252,7 @@ def visibility_of_all_elements_located(
         locator (tuple): `(by, value)`
 
     Returns:
-        list[WebElement]: 
+        list[WebElement]:
             The list of `WebElement`.
             If all elements are visible; otherwise,
             the empty list `[]` if at least one element is invisible.
@@ -290,7 +290,7 @@ def invisibility_of_element_located(
             otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool): 
+        (WebElement | bool):
             `WebElement` if the element is invisible.
             If `True`, the element is absent and `present` is `False`.
             If `False`, the element is still visible.
@@ -329,7 +329,7 @@ def invisibility_of_element(
             otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool): 
+        (WebElement | bool):
             `WebElement` if the element is invisible.
             If `True`, the element is stale and `present` is `False`.
             If `False`, the element is still visible.
@@ -363,7 +363,7 @@ def element_located_to_be_clickable(
         index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             `WebElement` if the found element is clickable, `False` otherwise.
 
     Raises:
@@ -390,7 +390,7 @@ def element_to_be_clickable(
         element (WebElement): The present element.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             `WebElement` if the present element is clickable, `False` otherwise.
 
     Raises:
@@ -421,7 +421,7 @@ def element_located_to_be_unclickable(
             otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool): 
+        (WebElement | bool):
             WebElement` if the element is unclickable.
             If `True`, the element is absent and `present` is `False`.
             If `False`, the element is still clickable.
@@ -460,7 +460,7 @@ def element_to_be_unclickable(
             otherwise, it can be absent.
 
     Returns:
-        (WebElement | bool): 
+        (WebElement | bool):
             `WebElement` if the element is unclickable.
             If `True`, the element is stale and `present` is `False`.
             If `False`, the element is still clickable.
@@ -494,7 +494,7 @@ def element_located_to_be_selected(
         index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             `WebElement` if the found element is selected, `False` otherwise.
 
     Raises:
@@ -521,7 +521,7 @@ def element_to_be_selected(
         element (WebElement): The present element.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             `WebElement` if the present element is selected, `False` otherwise.
 
     Raises:
@@ -548,7 +548,7 @@ def element_located_to_be_unselected(
         index: `None` for `find_element()`; `int` for `find_elements()[index]`.
 
     Returns:
-        (WebElement | False): 
+        (WebElement | False):
             WebElement` if the found element is unselected, `False` otherwise.
 
     Raises:
@@ -575,8 +575,8 @@ def element_to_be_unselected(
         element: The present element.
 
     Returns:
-        (WebElement | False): 
-            `WebElement` if the present element is unselected, 
+        (WebElement | False):
+            `WebElement` if the present element is unselected,
             `False` otherwise.
 
     Raises:
@@ -605,8 +605,8 @@ def webview_is_present(
             defaulting to the most recently appeared.
 
     Returns:
-        (list[str] | False): 
-            All current contexts `list[str]` when a `WEBVIEW` exists; 
+        (list[str] | False):
+            All current contexts `list[str]` when a `WEBVIEW` exists;
             otherwise, `False` when no `WEBVIEW` exists.
     """
 
