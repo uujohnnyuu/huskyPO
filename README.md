@@ -141,7 +141,7 @@ Cache.ELEMENT = True
 
 ## Log Settings
 
-### 1. Huskium Dubug Log Configuration
+### 1. Dubug Log Configuration
 ```python
 from huskium import Log
 
@@ -157,7 +157,7 @@ Log.PREFIX_FILTER.funcframe: bool = True
 Log.PREFIX_FILTER.lower: bool = True
 ```
 
-### 2. Huskium Debug Log Display Example
+### 2. Debug Log Display Example
 ```log
 # When Log.PREFIX_FILTER.prefix = None, logging behaves normally, 
 # showing the first frame (stacklevel = 1).
