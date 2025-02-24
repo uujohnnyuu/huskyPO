@@ -100,29 +100,29 @@ class Elements:
         All the args logic are the same as Elements.
 
         Examples:
-        ::
+            ::
 
-            # my_page.py
-            class MyPage(Page):
+                # my_page.py
+                class MyPage(Page):
 
-                my_static_elements = Elements()
+                    my_static_elements = Elements()
 
-                def my_dynamic_elements(self, accid):
-                    return self.my_static_elements.dynamic(
-                        By.ACCESSIBILITY_ID, accid,
-                        remark="Dynamically set my_static_elements."
-                    )
+                    def my_dynamic_elements(self, accid):
+                        return self.my_static_elements.dynamic(
+                            By.ACCESSIBILITY_ID, accid,
+                            remark="Dynamically set my_static_elements."
+                        )
 
-            # my_testcase.py
-            class MyTestCase:
-                ...
-                my_page = MyPage(driver)
-                # The element accessibility id is dynamic.
-                id_ = Server.get_id()
-                # Dynamically retrieve the elements using any method.
-                my_page.my_dynamic_elements(id_).texts
-                # The static elements can be used after the dynamic one is set.
-                my_page.my_static_elements.locations
+                # my_testcase.py
+                class MyTestCase:
+                    ...
+                    my_page = MyPage(driver)
+                    # The element accessibility id is dynamic.
+                    id_ = Server.get_id()
+                    # Dynamically retrieve the elements using any method.
+                    my_page.my_dynamic_elements(id_).texts
+                    # The static elements can be used after the dynamic one is set.
+                    my_page.my_static_elements.locations
 
         """
         # Avoid using __init__() here, as it will reset the descriptor.
@@ -583,9 +583,9 @@ class Elements:
             name: Name of the attribute to retrieve.
 
         Examples:
-        ::
+            ::
 
-            text_length = page.element.get_dom_attributes("class")
+                text_length = page.element.get_dom_attributes("class")
 
         """
         return [element.get_dom_attribute(name) for element in self.all_present]

@@ -22,20 +22,20 @@ class PrefixFilter(logging.Filter):
             `False` to filter file (module) frames.
 
     Examples:
-    .. code-block:: python
+        ::
 
-        import logging
-        from huskium import PrefixFilter
+            import logging
+            from huskium import PrefixFilter
 
-        # Create a filter object with prefix = 'test'
-        filter = PrefixFilter('test')
+            # Create a filter object with prefix = 'test'
+            filter = PrefixFilter('test')
 
-        # Set up logging
-        logging.addFilter(filter)
+            # Set up logging
+            logging.addFilter(filter)
 
-        # All logging will follow the filter logic,
-        # recording logs from frames with the prefix 'test'.
-        logging.info(...)
+            # All logging will follow the filter logic,
+            # recording logs from frames with the prefix 'test'.
+            logging.info(...)
 
     """
 

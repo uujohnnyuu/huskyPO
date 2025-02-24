@@ -17,18 +17,18 @@ def dynamic(func):
     Applies to any dynamic elements that return an Element or Elements.
 
     Examples:
-    ::
+        ::
 
-        from huskium import dynamic
+            from huskium import dynamic
 
-        @dynamic
-        def my_element(self, par):
-            return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
+            @dynamic
+            def my_element(self, par):
+                return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 
-        # You can NOT set the dynamic element without the dynamic decorator,
-        # as it will not trigger the descriptor. The following is incorrect:
-        def my_element(self, par):
-            return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
+            # You can NOT set the dynamic element without the dynamic decorator,
+            # as it will not trigger the descriptor. The following is incorrect:
+            def my_element(self, par):
+                return Element(By.IOS_PREDICATE, 'name CONTAINS "{par}"')
 
     """
 

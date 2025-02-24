@@ -120,31 +120,31 @@ class Element:
         All the args logic are the same as Element.
 
         Examples:
-        ::
+            ::
 
-            # my_page.py
-            class MyPage(Page):
+                # my_page.py
+                class MyPage(Page):
 
-                my_static_element = Element()
+                    my_static_element = Element()
 
-                def my_dynamic_element(self, id_):
-                    return self.my_static_element.dynamic(
-                        By.ID, id_, remark="dynamic_elem"
-                    )
+                    def my_dynamic_element(self, id_):
+                        return self.my_static_element.dynamic(
+                            By.ID, id_, remark="dynamic_elem"
+                        )
 
-            # my_testcase.py
-            class MyTestCase:
+                # my_testcase.py
+                class MyTestCase:
 
-                my_page = MyPage(driver)
+                    my_page = MyPage(driver)
 
-                # The element ID is dynamic.
-                id_ = Server.get_id()
+                    # The element ID is dynamic.
+                    id_ = Server.get_id()
 
-                # Dynamically retrieve the element using any method.
-                my_page.my_dynamic_element(id_).text
+                    # Dynamically retrieve the element using any method.
+                    my_page.my_dynamic_element(id_).text
 
-                # The static element can be used after the dynamic one is set.
-                my_page.my_static_element.click()
+                    # The static element can be used after the dynamic one set.
+                    my_page.my_static_element.click()
 
         """
         # Avoid using __init__() here, as it will reset the descriptor.
@@ -712,12 +712,12 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        ::
+            ::
 
-            try:
-                self.present_try.text
-            except ELEMENT_REFERENCE_EXCEPTIONS:
-                self.present.text
+                try:
+                    self.present_try.text
+                except ELEMENT_REFERENCE_EXCEPTIONS:
+                    self.present.text
 
         """
         return self._cache_try(_Name._present_cache)
@@ -728,12 +728,12 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        ::
+            ::
 
-            try:
-                self.visible_try.text
-            except ELEMENT_REFERENCE_EXCEPTIONS:
-                self.visible.text
+                try:
+                    self.visible_try.text
+                except ELEMENT_REFERENCE_EXCEPTIONS:
+                    self.visible.text
 
         """
         return self._cache_try(_Name._visible_cache)
@@ -744,12 +744,12 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        ::
+            ::
 
-            try:
-                self.clickable_try.text
-            except ELEMENT_REFERENCE_EXCEPTIONS:
-                self.clickable.text
+                try:
+                    self.clickable_try.text
+                except ELEMENT_REFERENCE_EXCEPTIONS:
+                    self.clickable.text
 
         """
         return self._cache_try(_Name._clickable_cache)
@@ -1107,48 +1107,48 @@ class Element:
                 as a click. Should be considered along with `min_distance`.
 
         Examples:
-        ::
+            ::
 
-            from huskium import Offset, Area
+                from huskium import Offset, Area
 
-            # Swipe by default.
-            # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
-            # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 0.5 of current window width.
-            # offset y: From 0.75 to 0.25 of current window height.
-            my_page.target_element.swipe_by()
+                # Swipe by default.
+                # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
+                # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
+                # offset x: Fixed 0.5 of current window width.
+                # offset y: From 0.75 to 0.25 of current window height.
+                my_page.target_element.swipe_by()
 
-            # Swipe to the direction using Offset.
-            my_page.target_element.swipe_by(Offset.DOWN)
-            my_page.target_element.swipe_by(Offset.UPPER_LEFT)
+                # Swipe to the direction using Offset.
+                my_page.target_element.swipe_by(Offset.DOWN)
+                my_page.target_element.swipe_by(Offset.UPPER_LEFT)
 
-            # Swipe with customize relative offset.
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
+                # Swipe with customize relative offset.
+                my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
 
-            # Swipe within a swipeable range.
-            # Get the absolute area rect using the scrollable element.
-            area = my_page.scrollable_element.rect
-            my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), area)
+                # Swipe within a swipeable range.
+                # Get the absolute area rect using the scrollable element.
+                area = my_page.scrollable_element.rect
+                my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), area)
 
-            # Swipe with customize absolute offset.
-            my_page.target_element.swipe_by((250, 300, 400, 700))
+                # Swipe with customize absolute offset.
+                my_page.target_element.swipe_by((250, 300, 400, 700))
 
-            # Swipe with customize relative offset of customize relative area.
-            # The area is relative to current window rect, for example:
-            # current window rect = (10, 20, 500, 1000)
-            # area = (0.1, 0.2, 0.6, 0.7)
-            # area_x = 10 + 500 x 0.1 = 60
-            # area_y = 20 + 1000 x 0.2 = 220
-            # area_width = 500 x 0.6 = 300
-            # area_height = 1000 x 0.7 = 700
-            my_page.target_element.swipe_by(
-                (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
-            )
+                # Swipe with customize relative offset of customize relative area.
+                # The area is relative to current window rect, for example:
+                # current window rect = (10, 20, 500, 1000)
+                # area = (0.1, 0.2, 0.6, 0.7)
+                # area_x = 10 + 500 x 0.1 = 60
+                # area_y = 20 + 1000 x 0.2 = 220
+                # area_width = 500 x 0.6 = 300
+                # area_height = 1000 x 0.7 = 700
+                my_page.target_element.swipe_by(
+                    (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
+                )
 
-            # Swipe with customize relative offset of customize absolute area.
-            my_page.target_element.swipe_by(
-                (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
-            )
+                # Swipe with customize relative offset of customize absolute area.
+                my_page.target_element.swipe_by(
+                    (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
+                )
 
         """
         area = self._page._get_area(area)
@@ -1187,48 +1187,48 @@ class Element:
                 with `min_distance` in adjustment process.
 
         Examples:
-        ::
+            ::
 
-            from huskium import Offset, Area
+                from huskium import Offset, Area
 
-            # Filck by default.
-            # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
-            # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 0.5 of current window width.
-            # offset y: From 0.75 to 0.25 of current window height.
-            my_page.target_element.filck_by()
+                # Filck by default.
+                # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
+                # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
+                # offset x: Fixed 0.5 of current window width.
+                # offset y: From 0.75 to 0.25 of current window height.
+                my_page.target_element.filck_by()
 
-            # Filck to the direction using Offset.
-            my_page.target_element.filck_by(Offset.DOWN)
-            my_page.target_element.filck_by(Offset.UPPER_LEFT)
+                # Filck to the direction using Offset.
+                my_page.target_element.filck_by(Offset.DOWN)
+                my_page.target_element.filck_by(Offset.UPPER_LEFT)
 
-            # Filck with customize relative offset.
-            my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35))
+                # Filck with customize relative offset.
+                my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35))
 
-            # Filck within a filckable range.
-            # Get the absolute area rect using the scrollable element.
-            area = my_page.scrollable_element.rect
-            my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35), area)
+                # Filck within a filckable range.
+                # Get the absolute area rect using the scrollable element.
+                area = my_page.scrollable_element.rect
+                my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35), area)
 
-            # Filck with customize absolute offset.
-            my_page.target_element.filck_by((250, 300, 400, 700))
+                # Filck with customize absolute offset.
+                my_page.target_element.filck_by((250, 300, 400, 700))
 
-            # Filck with customize relative offset of customize relative area.
-            # The area is relative to current window rect, for example:
-            # current window rect = (10, 20, 500, 1000)
-            # area = (0.1, 0.2, 0.6, 0.7)
-            # area_x = 10 + 500 x 0.1 = 60
-            # area_y = 20 + 1000 x 0.2 = 220
-            # area_width = 500 x 0.6 = 300
-            # area_height = 1000 x 0.7 = 700
-            my_page.target_element.filck_by(
-                (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
-            )
+                # Filck with customize relative offset of customize relative area.
+                # The area is relative to current window rect, for example:
+                # current window rect = (10, 20, 500, 1000)
+                # area = (0.1, 0.2, 0.6, 0.7)
+                # area_x = 10 + 500 x 0.1 = 60
+                # area_y = 20 + 1000 x 0.2 = 220
+                # area_width = 500 x 0.6 = 300
+                # area_height = 1000 x 0.7 = 700
+                my_page.target_element.filck_by(
+                    (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
+                )
 
-            # Filck with customize relative offset of customize absolute area.
-            my_page.target_element.filck_by(
-                (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
-            )
+                # Filck with customize relative offset of customize absolute area.
+                my_page.target_element.filck_by(
+                    (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
+                )
 
         """
         area = self._page._get_area(area)
@@ -1376,11 +1376,11 @@ class Element:
         Clear the text of the field type element.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.clear()
-            my_page.my_element.clear().send_keys('my text')
-            my_page.my_element.click().clear().send_keys('my text')
+                my_page.my_element.clear()
+                my_page.my_element.clear().send_keys('my text')
+                my_page.my_element.click().clear().send_keys('my text')
 
         """
         try:
@@ -1397,11 +1397,11 @@ class Element:
             *value: The texts or keys to typing.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.send_keys('my_text')
-            my_page.my_element.clear().send_keys('my_text')
-            my_page.my_element.click().clear().send_keys('my_text')
+                my_page.my_element.send_keys('my_text')
+                my_page.my_element.clear().send_keys('my_text')
+                my_page.my_element.click().clear().send_keys('my_text')
 
         """
         try:
@@ -1420,9 +1420,9 @@ class Element:
             name: Name of the attribute to retrieve.
 
         Examples:
-        ::
+            ::
 
-            text_length = element.get_dom_attribute("class")
+                text_length = element.get_dom_attribute("class")
 
         """
         try:
@@ -1450,10 +1450,10 @@ class Element:
             name: Name of the attribute or property to retrieve.
 
         Examples:
-        ::
+            ::
 
-            # Check if the "active" CSS class is applied to an element.
-            is_active = "active" in target_element.get_attribute("class")
+                # Check if the "active" CSS class is applied to an element.
+                is_active = "active" in target_element.get_attribute("class")
 
         """
         try:
@@ -1469,9 +1469,9 @@ class Element:
             name: Name of the property to retrieve.
 
         Examples:
-        ::
+            ::
 
-            text_length = target_element.get_property("text_length")
+                text_length = target_element.get_property("text_length")
 
         """
         try:
@@ -1537,20 +1537,20 @@ class Element:
         ActionChains API. Performs all stored actions.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage. Execute element actions.
-            page.element.scroll_to_element().action_click().perform()
+                # Basic usage. Execute element actions.
+                page.element.scroll_to_element().action_click().perform()
 
-            # Multiple actions to call, set perform to the last action.
-            # This will execute all actions in page not just page.element2.
-            page.element1.scroll_to_element().action_click()
-            page.element2.drag_and_drop(page.element3).perform()
+                # Multiple actions to call, set perform to the last action.
+                # This will execute all actions in page not just page.element2.
+                page.element1.scroll_to_element().action_click()
+                page.element2.drag_and_drop(page.element3).perform()
 
-            # As above, it is the same to call perform by page:
-            page.element1.scroll_to_element().action_click()
-            page.element2.drag_and_drop(page.element3)
-            page.perform()
+                # As above, it is the same to call perform by page:
+                page.element1.scroll_to_element().action_click()
+                page.element2.drag_and_drop(page.element3)
+                page.perform()
 
         """
         self.action.perform()
@@ -1562,17 +1562,17 @@ class Element:
         once called, it will reset all stored actions in page.
 
         Examples:
-        ::
+            ::
 
-            # Reset the stored actions by the last reset_actions.
-            page.element1.scroll_to_element().action_click()
-            page.element2.click_and_hold().reset_actions()
+                # Reset the stored actions by the last reset_actions.
+                page.element1.scroll_to_element().action_click()
+                page.element2.click_and_hold().reset_actions()
 
-            # There is a better one structure,
-            # reset all action calls made by page.
-            page.element1.scroll_to_element().action_click()
-            page.element2.click_and_hold()
-            page.reset_actions()
+                # There is a better one structure,
+                # reset all action calls made by page.
+                page.element1.scroll_to_element().action_click()
+                page.element2.click_and_hold()
+                page.reset_actions()
 
         """
         self.action.reset_actions()
@@ -1582,18 +1582,18 @@ class Element:
         ActionChains API. Clicks an element.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            my_page.my_element.action_click().perform()
+                # Basic usage
+                my_page.my_element.action_click().perform()
 
-            # Chain with another method
-            my_page.my_element.scroll_to_element().action_click().perform()
+                # Chain with another method
+                my_page.my_element.scroll_to_element().action_click().perform()
 
-            # or
-            my_page.my_element1.scroll_to_element().action_click()
-            ...  # other process
-            my_page.perform()
+                # or
+                my_page.my_element1.scroll_to_element().action_click()
+                ...  # other process
+                my_page.perform()
 
         """
         try:
@@ -1607,18 +1607,18 @@ class Element:
         ActionChains API. Holds down the left mouse button on an element.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            my_page.my_element.click_and_hold().perform()
+                # Basic usage
+                my_page.my_element.click_and_hold().perform()
 
-            # Chain with another method
-            my_page.my_element.scroll_to_element().click_and_hold().perform()
+                # Chain with another method
+                my_page.my_element.scroll_to_element().click_and_hold().perform()
 
-            # or
-            my_page.my_element1.scroll_to_element().click_and_hold()
-            ...  # other process
-            my_page.perform()
+                # or
+                my_page.my_element1.scroll_to_element().click_and_hold()
+                ...  # other process
+                my_page.perform()
 
         """
         try:
@@ -1632,18 +1632,18 @@ class Element:
         ActionChains API. Performs a context-click (right click) on an element.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            my_page.my_element.context_click().perform()
+                # Basic usage
+                my_page.my_element.context_click().perform()
 
-            # Chain with another method
-            my_page.my_element.scroll_to_element().context_click().perform()
+                # Chain with another method
+                my_page.my_element.scroll_to_element().context_click().perform()
 
-            # or
-            my_page.my_element1.scroll_to_element().context_click()
-            ...  # other process
-            my_page.perform()
+                # or
+                my_page.my_element1.scroll_to_element().context_click()
+                ...  # other process
+                my_page.perform()
 
         """
         try:
@@ -1657,18 +1657,18 @@ class Element:
         ActionChains API. Double-clicks an element.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            my_page.my_element.double_click()
+                # Basic usage
+                my_page.my_element.double_click()
 
-            # Chain with another method
-            my_page.my_element.scroll_to_element().double_click()
+                # Chain with another method
+                my_page.my_element.scroll_to_element().double_click()
 
-            # or
-            my_page.my_element1.scroll_to_element().double_click()
-            ...  # other process
-            my_page.perform()
+                # or
+                my_page.my_element1.scroll_to_element().double_click()
+                ...  # other process
+                my_page.perform()
 
         """
         try:
@@ -1687,18 +1687,18 @@ class Element:
             target: The element to mouse up.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element1.drag_and_drop(page.element2).perform()
+                # Basic usage
+                page.element1.drag_and_drop(page.element2).perform()
 
-            # Chain with another method
-            page.element1.scroll_to_element().drag_and_drop(page.element2).perform()
+                # Chain with another method
+                page.element1.scroll_to_element().drag_and_drop(page.element2).perform()
 
-            # or
-            page.element1.scroll_to_element().drag_and_drop(page.element2)
-            ...  # other process
-            page.perform()
+                # or
+                page.element1.scroll_to_element().drag_and_drop(page.element2)
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -1718,18 +1718,18 @@ class Element:
             yoffset: Y offset to move to, as a positive or negative integer.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.drag_and_drop_by_offset(100, 200).perform()
+                # Basic usage
+                page.element.drag_and_drop_by_offset(100, 200).perform()
 
-            # Chain with another method
-            page.element.scroll_to_element().drag_and_drop_by_offset(100, 200).perform()
+                # Chain with another method
+                page.element.scroll_to_element().drag_and_drop_by_offset(100, 200).perform()
 
-            # or
-            page.element.scroll_to_element().drag_and_drop_by_offset(100, 200)
-            ...  # other process
-            page.perform()
+                # or
+                page.element.scroll_to_element().drag_and_drop_by_offset(100, 200)
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -1746,13 +1746,13 @@ class Element:
             value: The combination of hotkey.
 
         Examples:
-        ::
+            ::
 
-            # copy(control+c)
-            page.element.hotkey(Keys.CONTROL, 'c').perform()
+                # copy(control+c)
+                page.element.hotkey(Keys.CONTROL, 'c').perform()
 
-            # switch to previous application(command+shift+tab)
-            page.element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
+                # switch to previous application(command+shift+tab)
+                page.element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
 
         """
         # key_down, first to focus target element.
@@ -1783,10 +1783,10 @@ class Element:
                 Default to focus current element.
 
         Examples:
-        ::
+            ::
 
-            # copy(control+c)
-            page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+                # copy(control+c)
+                page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
 
         """
         if focus:
@@ -1813,10 +1813,10 @@ class Element:
                 as this is generally not the first action.
 
         Examples:
-        ::
+            ::
 
-            # copy(control+c)
-            page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+                # copy(control+c)
+                page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
 
         """
         if focus:
@@ -1839,15 +1839,15 @@ class Element:
                 Modifier keys constants can be found in the 'Keys' class.
 
         Examples:
-        ::
+            ::
 
-            # Combine with key_down and key_up method
-            page.element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
+                # Combine with key_down and key_up method
+                page.element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
 
-            # Send keys to focused element
-            # This is recommend to use send_keys_to_element() instead.
-            page.element.action_click()  # Need to have focused element first.
-            page.element.action_send_keys('my_keys').perform()
+                # Send keys to focused element
+                # This is recommend to use send_keys_to_element() instead.
+                page.element.action_click()  # Need to have focused element first.
+                page.element.action_send_keys('my_keys').perform()
 
         """
         self.action.send_keys(*keys_to_send)
@@ -1862,18 +1862,18 @@ class Element:
                 Modifier keys constants can be found in the 'Keys' class.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.send_keys_to_element(Keys.ENTER)
+                # Basic usage
+                page.element.send_keys_to_element(Keys.ENTER)
 
-            # Chain with another method
-            page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
+                # Chain with another method
+                page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
 
-            # or
-            page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
-            ...  # other process
-            page.perform()
+                # or
+                page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -1888,18 +1888,18 @@ class Element:
         Moving the mouse to the middle of an element.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.move_to_element().perform()
+                # Basic usage
+                page.element.move_to_element().perform()
 
-            # Chain with another method
-            page.element.scroll_to_element().move_to_element().perform()
+                # Chain with another method
+                page.element.scroll_to_element().move_to_element().perform()
 
-            # or
-            page.element.scroll_to_element().move_to_element()
-            ...  # other process
-            page.perform()
+                # or
+                page.element.scroll_to_element().move_to_element()
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -1923,18 +1923,18 @@ class Element:
             yoffset: Y offset to move to, as a positive or negative integer.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.move_to_element_with_offset(100, 200).perform()
+                # Basic usage
+                page.element.move_to_element_with_offset(100, 200).perform()
 
-            # Chain with another method
-            page.element.scroll_to_element().move_to_element_with_offset(100, 200).perform()
+                # Chain with another method
+                page.element.scroll_to_element().move_to_element_with_offset(100, 200).perform()
 
-            # or
-            page.element.scroll_to_element().move_to_element_with_offset(100, 200)
-            ...  # other process
-            page.perform()
+                # or
+                page.element.scroll_to_element().move_to_element_with_offset(100, 200)
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -1948,18 +1948,18 @@ class Element:
         ActionChains API. Releasing a held mouse button on an element.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.release().perform()
+                # Basic usage
+                page.element.release().perform()
 
-            # Chain with another method
-            page.element.click_and_hold().release().perform()
+                # Chain with another method
+                page.element.click_and_hold().release().perform()
 
-            # or
-            page.element.click_and_hold().release()
-            ...  # other process
-            page.perform()
+                # or
+                page.element.click_and_hold().release()
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -1983,18 +1983,18 @@ class Element:
         scrolls the bottom of the element to the bottom of the viewport.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.scroll_to_element().perform()
+                # Basic usage
+                page.element.scroll_to_element().perform()
 
-            # Chain with another method
-            page.element.scroll_to_element().action_click().perform()
+                # Chain with another method
+                page.element.scroll_to_element().action_click().perform()
 
-            # or
-            page.element1.scroll_to_element().action_click()
-            ...  # other process
-            page.perform()
+                # or
+                page.element1.scroll_to_element().action_click()
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -2028,18 +2028,18 @@ class Element:
                 a negative value scrolls up.
 
         Examples:
-        ::
+            ::
 
-            # Basic usage
-            page.element.scroll_from_element(100, 200, -50, -100).perform()
+                # Basic usage
+                page.element.scroll_from_element(100, 200, -50, -100).perform()
 
-            # Chain with another method
-            page.element.scroll_from_element(-30, -50, 150, 100).action_click().perform()
+                # Chain with another method
+                page.element.scroll_from_element(-30, -50, 150, 100).action_click().perform()
 
-            # or
-            page.element.scroll_from_element(-30, -50, 150, 100).action_click()
-            ...  # other process
-            page.perform()
+                # or
+                page.element.scroll_from_element(-30, -50, 150, 100).action_click()
+                ...  # other process
+                page.perform()
 
         """
         try:
@@ -2072,12 +2072,12 @@ class Element:
         This attribute must be used with `try-except`.
 
         Examples:
-        ::
+            ::
 
-            try:
-                self.select_try.options
-            except ELEMENT_REFERENCE_EXCEPTIONS:
-                self.select.options
+                try:
+                    self.select_try.options
+                except ELEMENT_REFERENCE_EXCEPTIONS:
+                    self.select.options
 
         """
         return self._cache_try(_Name._select_cache)
@@ -2251,11 +2251,11 @@ class Element:
             text: The text to input.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.input('123 456')
-            my_page.my_element.input('123').space().input('456')
-            my_page.my_element.input('6789', 4)
+                my_page.my_element.input('123 456')
+                my_page.my_element.input('123').space().input('456')
+                my_page.my_element.input('6789', 4)
 
         """
         try:
@@ -2269,9 +2269,9 @@ class Element:
         Send keys ENTER to the element.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.input('123 456').enter()
+                my_page.my_element.input('123 456').enter()
 
         """
         try:
@@ -2286,9 +2286,9 @@ class Element:
         Send keys "COMMAND/CONTROL + A" to the element.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.select_all().copy()
+                my_page.my_element.select_all().copy()
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
@@ -2303,10 +2303,10 @@ class Element:
         Send keys "COMMAND/CONTROL + X" to the element.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element1.cut()
-            my_page.my_element2.paste()
+                my_page.my_element1.cut()
+                my_page.my_element2.paste()
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
@@ -2321,10 +2321,10 @@ class Element:
         Send keys "COMMAND/CONTROL + C" to the element.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element1.copy()
-            my_page.my_element2.paste()
+                my_page.my_element1.copy()
+                my_page.my_element2.paste()
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
@@ -2339,10 +2339,10 @@ class Element:
         Send keys "COMMAND/CONTROL + V" to the element.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element1.copy()
-            my_page.my_element2.paste()
+                my_page.my_element1.copy()
+                my_page.my_element2.paste()
 
         """
         first = Keys.COMMAND if platform.system().lower() == "darwin" else Keys.CONTROL
@@ -2360,9 +2360,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.arrow_left(3)
+                my_page.my_element.arrow_left(3)
 
         """
         try:
@@ -2380,9 +2380,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.arrow_right(3)
+                my_page.my_element.arrow_right(3)
 
         """
         try:
@@ -2399,9 +2399,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.arrow_up(3)
+                my_page.my_element.arrow_up(3)
 
         """
         try:
@@ -2418,9 +2418,9 @@ class Element:
             - times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.arrow_down(3)
+                my_page.my_element.arrow_down(3)
 
         """
         try:
@@ -2437,9 +2437,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.backspace(3).input('123456').enter()
+                my_page.my_element.backspace(3).input('123456').enter()
 
         """
         try:
@@ -2456,9 +2456,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.delete(3)
+                my_page.my_element.delete(3)
 
         """
         try:
@@ -2475,9 +2475,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.tab(2)
+                my_page.my_element.tab(2)
 
         """
         try:
@@ -2494,9 +2494,9 @@ class Element:
             times: The input times of key.
 
         Examples:
-        ::
+            ::
 
-            my_page.my_element.space(4)
+                my_page.my_element.space(4)
 
         """
         try:

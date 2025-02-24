@@ -116,12 +116,12 @@ class Page:
             log_type: Type of log that which will be returned.
 
         Examples:
-        ::
+            ::
 
-            page.get_log('browser')
-            page.get_log('driver')
-            page.get_log('client')
-            page.get_log('server')
+                page.get_log('browser')
+                page.get_log('driver')
+                page.get_log('client')
+                page.get_log('server')
 
         """
         return self.driver.get_log(log_type)
@@ -157,18 +157,18 @@ class Page:
         Federated Credential Management (FedCM) dialog commands.
 
         Examples:
-        ::
+            ::
 
-            title = page.fedcm.title
-            subtitle = page.fedcm.subtitle
-            dialog_type = page.fedcm.dialog_type
-            accounts = page.fedcm.account_list
-            page.fedcm.select_account(0)
-            page.fedcm.accept()
-            page.fedcm.dismiss()
-            page.fedcm.enable_delay()
-            page.fedcm.disable_delay()
-            page.fedcm.reset_cooldown()
+                title = page.fedcm.title
+                subtitle = page.fedcm.subtitle
+                dialog_type = page.fedcm.dialog_type
+                accounts = page.fedcm.account_list
+                page.fedcm.select_account(0)
+                page.fedcm.accept()
+                page.fedcm.dismiss()
+                page.fedcm.enable_delay()
+                page.fedcm.disable_delay()
+                page.fedcm.reset_cooldown()
 
         """
         return self.driver.fedcm
@@ -446,16 +446,15 @@ class Page:
         other browsers should use set_window_position and set_window_size.
 
         Examples:
-        ::
+            ::
 
-            page.set_window_rect(x=10, y=10)
-            page.set_window_rect(width=100, height=200)
-            page.set_window_rect(x=10, y=10, width=100, height=200)
+                page.set_window_rect(x=10, y=10)
+                page.set_window_rect(width=100, height=200)
+                page.set_window_rect(x=10, y=10, width=100, height=200)
 
         """
         if all(v is None for v in (x, y, width, height)):
-            self.driver.maximize_window()
-            return None
+            return self.driver.maximize_window()
         return self.driver.set_window_rect(x, y, width, height)
 
     def get_window_rect(self) -> dict:
@@ -614,9 +613,9 @@ class Page:
             *args: Any applicable arguments for your JavaScript.
 
         Examples:
-        ::
+            ::
 
-            driver.execute_script('return document.title;')
+                driver.execute_script('return document.title;')
 
         """
         return self.driver.execute_script(script, *args)
@@ -647,12 +646,12 @@ class Page:
         once called, it will execute all stored actions in page.
 
         Examples:
-        ::
+            ::
 
-            # Perform all saved actions:
-            my_page.my_element1.scroll_to_element().action_click()
-            my_page.my_element2.drag_and_drop(my_page.element3)
-            my_page.perform()
+                # Perform all saved actions:
+                my_page.my_element1.scroll_to_element().action_click()
+                my_page.my_element2.drag_and_drop(my_page.element3)
+                my_page.perform()
 
         """
         self._action.perform()
@@ -663,12 +662,12 @@ class Page:
         once called, it will reset all stored actions in page.
 
         Examples:
-        ::
+            ::
 
-            # Reset all saved actions:
-            my_page.my_element1.scroll_to_element().action_click()
-            my_page.my_element2.drag_and_drop(my_page.element3)
-            my_page.reset_actions()
+                # Reset all saved actions:
+                my_page.my_element1.scroll_to_element().action_click()
+                my_page.my_element2.drag_and_drop(my_page.element3)
+                my_page.reset_actions()
 
         """
         self._action.reset_actions()
@@ -812,9 +811,9 @@ class Page:
             duration: length of time to tap, in ms. Default value is 100 ms.
 
         Examples:
-        ::
+            ::
 
-            page.tap([(100, 20), (100, 60), (100, 100)], 500)
+                page.tap([(100, 20), (100, 60), (100, 100)], 500)
 
         """
         self.driver.tap(positions, duration)  # type: ignore[attr-defined]
@@ -852,9 +851,9 @@ class Page:
                 note that default set to 250 by ActionBuilder.
 
         Examples:
-        ::
+            ::
 
-            page.swipe(100, 100, 100, 400)
+                page.swipe(100, 100, 100, 400)
 
         """
         self.driver.swipe(start_x, start_y, end_x, end_y, duration)  # type: ignore[attr-defined]
@@ -880,49 +879,49 @@ class Page:
             times: The number of times to perform the swipe.
 
         Examples:
-        ::
+            ::
 
-            # Swipe parameters. Refer to the Class notes for details.
-            from huskium import Offset, Area
+                # Swipe parameters. Refer to the Class notes for details.
+                from huskium import Offset, Area
 
-            # Swipe down.
-            my_page.swipe_by(Offset.DOWN)
+                # Swipe down.
+                my_page.swipe_by(Offset.DOWN)
 
-            # Swipe to the right.
-            my_page.swipe_by(Offset.RIGHT)
+                # Swipe to the right.
+                my_page.swipe_by(Offset.RIGHT)
 
-            # Swipe to the upper left.
-            my_page.swipe_by(Offset.UPPER_LEFT)
+                # Swipe to the upper left.
+                my_page.swipe_by(Offset.UPPER_LEFT)
 
-            # Default is swiping up.
-            # offset = Offset.UP = (0.5, 0.75, 0.5, 0.25)
-            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 0.5 of current window width.
-            # offset y: From 0.75 to 0.25 of current window height.
-            my_page.swipe_by()
+                # Default is swiping up.
+                # offset = Offset.UP = (0.5, 0.75, 0.5, 0.25)
+                # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
+                # offset x: Fixed 0.5 of current window width.
+                # offset y: From 0.75 to 0.25 of current window height.
+                my_page.swipe_by()
 
-            # Swipe within a swipeable range.
-            area = my_page.scrollable_element.rect
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), area)
+                # Swipe within a swipeable range.
+                area = my_page.scrollable_element.rect
+                my_page.swipe_by((0.3, 0.85, 0.5, 0.35), area)
 
-            # Swipe with customize absolute offset.
-            my_page.swipe_by((250, 300, 400, 700))
+                # Swipe with customize absolute offset.
+                my_page.swipe_by((250, 300, 400, 700))
 
-            # Swipe with customize relative offset of current window size.
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35))
+                # Swipe with customize relative offset of current window size.
+                my_page.swipe_by((0.3, 0.85, 0.5, 0.35))
 
-            # Swipe with customize relative offset of customize relative area.
-            # The area is relative to current window rect, for example:
-            # current window rect = (10, 20, 500, 1000)
-            # area = (0.1, 0.2, 0.6, 0.7)
-            # area_x = 10 + 500 x 0.1 = 60
-            # area_y = 20 + 1000 x 0.2 = 220
-            # area_width = 500 x 0.6 = 300
-            # area_height = 1000 x 0.7 = 700
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
+                # Swipe with customize relative offset of customize relative area.
+                # The area is relative to current window rect, for example:
+                # current window rect = (10, 20, 500, 1000)
+                # area = (0.1, 0.2, 0.6, 0.7)
+                # area_x = 10 + 500 x 0.1 = 60
+                # area_y = 20 + 1000 x 0.2 = 220
+                # area_width = 500 x 0.6 = 300
+                # area_height = 1000 x 0.7 = 700
+                my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
 
-            # Swipe with customize relative offset of customize absolute area.
-            my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
+                # Swipe with customize relative offset of customize absolute area.
+                my_page.swipe_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
         area = self._get_area(area)
@@ -949,9 +948,9 @@ class Page:
             end_y: y-coordinate at which to stop
 
         Examples:
-        ::
+            ::
 
-            page.flick(100, 100, 100, 400)
+                page.flick(100, 100, 100, 400)
 
         """
         self.driver.flick(start_x, start_y, end_x, end_y)  # type: ignore[attr-defined]
@@ -971,49 +970,50 @@ class Page:
             area: Please refer to the Examples.
             times: The number of times to perform the flick.
 
-        Usage::
+        Examples:
+            ::
 
-            # Swipe parameters. Refer to the Class notes for details.
-            from huskium import Offset, Area
+                # Swipe parameters. Refer to the Class notes for details.
+                from huskium import Offset, Area
 
-            # Flick down.
-            my_page.flick_by(Offset.DOWN)
+                # Flick down.
+                my_page.flick_by(Offset.DOWN)
 
-            # Flick to the right.
-            my_page.flick_by(Offset.RIGHT)
+                # Flick to the right.
+                my_page.flick_by(Offset.RIGHT)
 
-            # Flick to the upper left.
-            my_page.flick_by(Offset.UPPER_LEFT)
+                # Flick to the upper left.
+                my_page.flick_by(Offset.UPPER_LEFT)
 
-            # Default is flicking up.
-            # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
-            # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
-            # offset x: Fixed 0.5 of current window width.
-            # offset y: From 0.75 to 0.25 of current window height.
-            my_page.flick_by()
+                # Default is flicking up.
+                # offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)
+                # area = Area.FULL = (0.0, 0.0, 1.0, 1.0)
+                # offset x: Fixed 0.5 of current window width.
+                # offset y: From 0.75 to 0.25 of current window height.
+                my_page.flick_by()
 
-            # Flick within a swipeable range.
-            area = my_page.scrollable_element.rect
-            my_page.flick_by((0.3, 0.85, 0.5, 0.35), area)
+                # Flick within a swipeable range.
+                area = my_page.scrollable_element.rect
+                my_page.flick_by((0.3, 0.85, 0.5, 0.35), area)
 
-            # Flick with customize absolute offset.
-            my_page.flick_by((250, 300, 400, 700))
+                # Flick with customize absolute offset.
+                my_page.flick_by((250, 300, 400, 700))
 
-            # Flick with customize relative offset of current window size.
-            my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35))
+                # Flick with customize relative offset of current window size.
+                my_page.target_element.flick_by((0.3, 0.85, 0.5, 0.35))
 
-            # Flick with customize relative offset of customize relative area.
-            # The area is relative to current window rect, for example:
-            # current window rect = (10, 20, 500, 1000)
-            # area = (0.1, 0.2, 0.6, 0.7)
-            # area_x = 10 + 500 x 0.1 = 60
-            # area_y = 20 + 1000 x 0.2 = 220
-            # area_width = 500 x 0.6 = 300
-            # area_height = 1000 x 0.7 = 700
-            my_page.flick_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
+                # Flick with customize relative offset of customize relative area.
+                # The area is relative to current window rect, for example:
+                # current window rect = (10, 20, 500, 1000)
+                # area = (0.1, 0.2, 0.6, 0.7)
+                # area_x = 10 + 500 x 0.1 = 60
+                # area_y = 20 + 1000 x 0.2 = 220
+                # area_width = 500 x 0.6 = 300
+                # area_height = 1000 x 0.7 = 700
+                my_page.flick_by((0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7))
 
-            # Flick with customize relative offset of customize absolute area.
-            my_page.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
+                # Flick with customize relative offset of customize absolute area.
+                my_page.flick_by((0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700))
 
         """
         area = self._get_area(area)
@@ -1204,10 +1204,10 @@ class Page:
             window: `str` for Window name; `int` for Window index.
 
         Examples:
-        ::
+            ::
 
-            page.switch_to_window('main')
-            page.switch_to_window(1)
+                page.switch_to_window('main')
+                page.switch_to_window(1)
 
         """
         if isinstance(window, int):
@@ -1219,9 +1219,9 @@ class Page:
         Appium API. Get the Appium server status.
 
         Examples:
-        ::
+            ::
 
-            page.get_status()
+                page.get_status()
 
         """
         return self.driver.get_status()  # type: ignore[attr-defined]
@@ -1317,9 +1317,9 @@ class Page:
                 This should end with a `.png` extension.
 
         Examples:
-        ::
+            ::
 
-            driver.save_screenshot('/Screenshots/foo.png')
+                driver.save_screenshot('/Screenshots/foo.png')
 
         """
         return self.driver.save_screenshot(filename)
@@ -1335,10 +1335,10 @@ class Page:
                 or an integer representing the index.
 
         Examples:
-        ::
+            ::
 
-            xxx_page.switch_to_frame('name')
-            xxx_page.switch_to_frame(1)
+                xxx_page.switch_to_frame('name')
+                xxx_page.switch_to_frame(1)
 
         """
         self.driver.switch_to.frame(reference)
@@ -1367,12 +1367,12 @@ class Page:
                 "expiry", "sameSite".
 
         Examples:
-        ::
+            ::
 
-            page.add_cookie({'name': 'foo', 'value': 'bar'})
-            page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/'})
-            page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/', 'secure': True})
-            page.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
+                page.add_cookie({'name': 'foo', 'value': 'bar'})
+                page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/'})
+                page.add_cookie({'name': 'foo', 'value': 'bar', 'path': '/', 'secure': True})
+                page.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
 
         """
         self.driver.add_cookie(cookie)
@@ -1385,14 +1385,14 @@ class Page:
             cookies: list[dict]
 
         Examples:
-        ::
+            ::
 
-            cookies = [
-                {'name' : 'foo', 'value' : 'bar'},
-                {'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure' : True}},
-                ...
-            ]
-            page.add_cookies(cookies)
+                cookies = [
+                    {'name' : 'foo', 'value' : 'bar'},
+                    {'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure' : True}},
+                    ...
+                ]
+                page.add_cookies(cookies)
 
         """
         if not isinstance(cookies, list):
@@ -1412,9 +1412,10 @@ class Page:
         """
         Delete all cookies in the scope of the session.
 
-        Usage::
+        Examples:
+            ::
 
-            self.delete_all_cookies()
+                self.delete_all_cookies()
 
         """
         self.driver.delete_all_cookies()
@@ -1462,9 +1463,9 @@ class Page:
         an execute_async_script call before throwing an error.
 
         Examples:
-        ::
+            ::
 
-            page.set_script_timeout(30)
+                page.set_script_timeout(30)
 
         """
         self.driver.set_script_timeout(time_to_wait)
@@ -1475,9 +1476,9 @@ class Page:
         before throwing an error.
 
         Examples:
-        ::
+            ::
 
-            page.set_page_load_timeout(30)
+                page.set_page_load_timeout(30)
 
         """
         self.driver.set_page_load_timeout(time_to_wait)
