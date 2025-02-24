@@ -1,3 +1,22 @@
+# huskium v1.0.7
+
+## **Stable Release**  
+
+## Enhancements  
+- **Cache**: Optimized cache structure and data flow with `cache_try`.  
+- **Logging**: Improved configuration for `PrefixFilter` and related objects.  
+- **Debug**: Enhanced debug mode for core functionalities.  
+
+## Deprecation  
+- **logstack**: With the introduction of logging filters, `logstack` will be deprecated in v1.1.0+.
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.0.7
+```
+---
+
 # huskium v1.0.6
 
 ## Overview
