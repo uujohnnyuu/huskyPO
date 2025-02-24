@@ -58,12 +58,12 @@ class Page:
 
     @property
     def driver(self) -> WebDriver:
-        """driver"""
+        """driver."""
         return self._driver
 
     @property
     def remark(self) -> str:
-        """remark"""
+        """remark."""
         return self._remark
 
     @property

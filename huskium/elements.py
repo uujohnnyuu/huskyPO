@@ -148,12 +148,12 @@ class Elements:
 
     @property
     def by(self) -> str | None:
-        """by"""
+        """by."""
         return self._by
 
     @property
     def value(self) -> str | None:
-        """value"""
+        """value."""
         return self._value
 
     @property

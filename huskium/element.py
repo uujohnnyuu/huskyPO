@@ -196,12 +196,12 @@ class Element:
 
     @property
     def by(self) -> str | None:
-        """by"""
+        """by."""
         return self._by
 
     @property
     def value(self) -> str | None:
-        """value"""
+        """value."""
         return self._value
 
     @property
@@ -213,7 +213,7 @@ class Element:
 
     @property
     def index(self) -> int | None:
-        """index"""
+        """index."""
         return self._index
 
     @property
