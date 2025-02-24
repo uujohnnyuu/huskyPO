@@ -454,7 +454,8 @@ class Page:
 
         """
         if all(v is None for v in (x, y, width, height)):
-            return self.driver.maximize_window()
+            self.driver.maximize_window()
+            return None
         return self.driver.set_window_rect(x, y, width, height)
 
     def get_window_rect(self) -> dict:
