@@ -297,9 +297,9 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            (list[WebElement] | False): A list of `WebElement` if all are
-                present within the timeout. `False` if all remain absent
-                after the timeout(`reraise=False`).
+            (list[WebElement] | False): 
+                A list of `WebElement` if all are present within the timeout. 
+                `False` if all remain absent after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if all remain absent
@@ -332,7 +332,8 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            bool: `True` if all are absent within the timeout. `False` if
+            bool: 
+                `True` if all are absent within the timeout. `False` if
                 at least one is present after the timeout(`reraise=False`).
 
         Raises:
@@ -366,9 +367,10 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            (list[WebElement] | False): A list of `WebElement` if all are
-                visible within the timeout. `False` if at least one remain
-                invisible or absent after the timeout(`reraise=False`).
+            (list[WebElement] | False): 
+                A list of `WebElement` if all are visible within the timeout. 
+                `False` if at least one remain invisible or absent 
+                after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if at least one remain invisible or absent
@@ -401,9 +403,10 @@ class Elements:
                 if `False`, returns `False`.
 
         Returns:
-            (list[WebElement] | False): A list of `WebElement` if at least one
-                is visible within the timeout. `False` if all remain
-                invisible or absent after the timeout(`reraise=False`).
+            (list[WebElement] | False): 
+                A list of `WebElement` if at least one is visible 
+                within the timeout. `False` if all remain invisible or absent 
+                after the timeout(`reraise=False`).
 
         Raises:
             TimeoutException: Raised if all remain invisible or absent
@@ -447,8 +450,8 @@ class Elements:
             timeout: Maximum wait time in seconds.
 
         Returns:
-            bool: `True` if all are present within the timeout;
-                otherwise, `False`.
+            bool: 
+                `True` if all are present within the timeout, `False` otherwise.
         """
         return True if self.wait_all_present(timeout, False) else False
 
@@ -460,8 +463,8 @@ class Elements:
             timeout: Maximum wait time in seconds.
 
         Returns:
-            bool: `True` if all are visible within the timeout;
-                otherwise, `False`.
+            bool: 
+                `True` if all are visible within the timeout, `False` otherwise.
         """
         elements = self.all_present
         for index, element in enumerate(elements, 1):
@@ -479,8 +482,9 @@ class Elements:
             timeout: Maximum wait time in seconds.
 
         Returns:
-            bool: `True` if at least one is visible within the timeout;
-                otherwise, `False`.
+            bool: 
+                `True` if at least one is visible within the timeout, 
+                `False` otherwise.
         """
         elements = self.all_present
         visible_elements = [element for element in elements if element.is_displayed()]

@@ -202,7 +202,8 @@ class Page:
             ignored_exceptions: Exceptions to ignore while waiting.
 
         Returns:
-            Dialog: The FedCM dialog object if found.
+            Dialog: 
+                The FedCM dialog object if found.
 
         Raises:
             TimeoutException: If dialog doesn't appear.
@@ -1260,7 +1261,8 @@ class Page:
                 if False, returns False upon timeout.
 
         Returns:
-            (list | False): `list` for `['NATIVE_APP', 'WEBVIEW_XXX', ...]`;
+            (list | False): 
+                `list` for `['NATIVE_APP', 'WEBVIEW_XXX', ...]`;
                 `False` for no any WEBVIEW in contexts.
         """
         try:
@@ -1291,7 +1293,8 @@ class Page:
                 500ms by default.
 
         Returns:
-            bool: `True` if the app has been successfully terminated.
+            bool: 
+                `True` if the app has been successfully terminated.
         """
         return self.driver.terminate_app(app_id, **options)  # type: ignore[attr-defined]
 

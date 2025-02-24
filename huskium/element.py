@@ -757,21 +757,21 @@ class Element:
     @property
     def present_cache(self) -> WebElement | None:
         """
-        Retrieves the stored present element; otherwise, returns `None`.
+        Retrieves the stored present element, `None` otherwise.
         """
         return getattr(self, _Name._present_cache, None)
 
     @property
     def visible_cache(self) -> WebElement | None:
         """
-        Retrieves the stored visible element; otherwise, returns `None`.
+        Retrieves the stored visible element, `None` otherwise.
         """
         return getattr(self, _Name._visible_cache, None)
 
     @property
     def clickable_cache(self) -> WebElement | None:
         """
-        Retrieves the stored clickable element; otherwise, returns `None`.
+        Retrieves the stored clickable element, `None` otherwise.
         """
         return getattr(self, _Name._clickable_cache, None)
 
