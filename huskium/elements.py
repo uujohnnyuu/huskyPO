@@ -380,7 +380,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_all_elements_located(self.locator)
             )
-            self._logger.debug(f'locator -> all_visible_elements : {elements}')
+            self._logger.debug(f'locator -> AllVisibleE : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
@@ -416,7 +416,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_any_elements_located(self.locator)
             )
-            self._logger.debug(f'locator -> any_visible_elements : {elements}')
+            self._logger.debug(f'locator -> AnyVisibleE : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)
