@@ -58,19 +58,17 @@ class Page:
 
     @property
     def driver(self) -> WebDriver:
-        """driver."""
+        """The driver attribute."""
         return self._driver
 
     @property
     def remark(self) -> str:
-        """remark."""
+        """The remark attribute."""
         return self._remark
 
     @property
     def action(self) -> ActionChains:
-        """
-        The ActionChains object.
-        """
+        """The ActionChains object."""
         return self._action
 
     def wait(self, timeout: int | float | None = None) -> WebDriverWait:
