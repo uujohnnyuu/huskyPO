@@ -68,14 +68,6 @@ huskium.logging module
    :show-inheritance:
    :undoc-members:
 
-huskium.logstack module
------------------------
-
-.. automodule:: huskium.logstack
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 huskium.page module
 -------------------
 
