@@ -4,6 +4,7 @@
 *mypy*
 *flake8*
 *verify*
+*sphinx*
 
 log.log
 try*.py
@@ -14,5 +15,3 @@ dist/
 huskium.egg-info/
 
 example_google.py
-
-!sphinx/build/
