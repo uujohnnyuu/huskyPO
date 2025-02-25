@@ -25,6 +25,7 @@
 - **huskium** is a Page Object framework built on Selenium and Appium.
 - It leverages Python’s data descriptors to simplify and enhance UI automation.
 - Currently tracking Appium v4.5.0 (released on 2025/01/22).
+- Sphinx: https://uujohnnyuu.github.io/huskium/
 
 ---
 
