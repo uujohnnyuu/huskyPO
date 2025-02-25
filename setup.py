@@ -14,7 +14,7 @@ LONG_DESCRIPTION = io.open(
 
 setup(
     name='huskium',
-    version=VERSION+'.post1',
+    version=VERSION + '.post1',
     description='UI Automation Page Objects design pattern.',
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
