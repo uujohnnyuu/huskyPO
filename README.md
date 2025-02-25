@@ -152,10 +152,10 @@ Log.PREFIX_FILTER.prefix = 'test'
 
 # Specify whether to filter logs by function name.
 # If False, filtering is based on file (module) name instead.
-Log.PREFIX_FILTER.funcframe: bool = True
+Log.PREFIX_FILTER.funcframe = True
 
 # Set to True for case-insensitive filtering.
-Log.PREFIX_FILTER.lower: bool = True
+Log.PREFIX_FILTER.lower = True
 ```
 
 ### 2. Debug Log Display Example
