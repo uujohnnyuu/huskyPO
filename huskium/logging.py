@@ -72,9 +72,9 @@ class FuncPrefixFilter(logging.Filter):
     """
 
     def __init__(
-        self, 
-        prefix: str | None = None, 
-        lower: bool = True, 
+        self,
+        prefix: str | None = None,
+        lower: bool = True,
         isrecord: bool = False
     ):
         """
@@ -130,9 +130,9 @@ class FilePrefixFilter(logging.Filter):
     """
 
     def __init__(
-        self, 
-        prefix: str | None = None, 
-        lower: bool = True, 
+        self,
+        prefix: str | None = None,
+        lower: bool = True,
         isrecord: bool = False
     ):
         """
