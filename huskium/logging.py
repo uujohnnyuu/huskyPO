@@ -33,9 +33,9 @@ class PrefixFilter(logging.Filter):
     """
 
     def __init__(
-        self, 
-        prefix: str | None = None, 
-        lower: bool = True, 
+        self,
+        prefix: str | None = None,
+        lower: bool = True,
         funcframe: bool = True,
         isrecord: bool = False
     ):
@@ -71,13 +71,18 @@ class FuncPrefixFilter(logging.Filter):
     Displays logs of function frame whose names start with the target prefix.
     """
 
-    def __init__(self, prefix: str | None = None, lower: bool = True, isrecord: bool = False):
+    def __init__(
+        self, 
+        prefix: str | None = None, 
+        lower: bool = True, 
+        isrecord: bool = False
+    ):
         """
         Args:
             prefix: The frame prefix.
             lower: `True` for case-insensitive; `False` for case-sensitive.
             isrecord: Whether to save the `LogRecord` info.
-        
+
         Examples:
             ::
 
@@ -85,7 +90,7 @@ class FuncPrefixFilter(logging.Filter):
                 filter = FuncPrefixFilter('test', isrecord=True)
                 logger.addFilter(filter)
 
-                # If isrecord=True, you can access the record object's  
+                # If isrecord=True, you can access the record object's
                 # attributes directly after calling the log.
                 logger.info('some message')
                 funcname = filter.record.funcName
@@ -102,7 +107,7 @@ class FuncPrefixFilter(logging.Filter):
         self.record = None
         if self.prefix:
             prefix = self.prefix.lower() if self.lower else self.prefix
-            # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
+            # Do not use inspect.stack() as it is costly.
             frame = inspect.currentframe()
             while frame:
                 funcname = original_funcname = frame.f_code.co_name
@@ -124,7 +129,12 @@ class FilePrefixFilter(logging.Filter):
     Displays logs of file frame whose names start with the target prefix.
     """
 
-    def __init__(self, prefix: str | None = None, lower: bool = True, isrecord: bool = False):
+    def __init__(
+        self, 
+        prefix: str | None = None, 
+        lower: bool = True, 
+        isrecord: bool = False
+    ):
         """
         Args:
             prefix: The frame prefix.
@@ -141,7 +151,7 @@ class FilePrefixFilter(logging.Filter):
         self.record = None
         if self.prefix:
             prefix = self.prefix.lower() if self.lower else self.prefix
-            # Do not use inspect.stack(), not even inspect.stack(0), as both are costly.
+            # Do not use inspect.stack() as it is costly.
             frame = inspect.currentframe()
             while frame:
                 filename = original_filename = os.path.basename(frame.f_code.co_filename)
