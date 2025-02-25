@@ -7,6 +7,7 @@
 - **Logging**: Improved configuration for `PrefixFilter` and related objects.  
 - **Debug**: Enhanced debug mode for core functionalities.
 - **Docstring**: Refactored all documentation to follow the Sphinx Google style format.
+- **Sphinx**: https://uujohnnyuu.github.io/huskium/
 
 ## Deprecation  
 - **logstack**: With the introduction of logging filters, `logstack` will be deprecated in v1.1.0+.
